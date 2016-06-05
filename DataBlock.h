@@ -7,6 +7,9 @@
 class CDataBlock
 {
 public:
+	// Typedefs
+	using UPtr = std::unique_ptr<CDataBlock>;
+
 	// Construction
 	inline CDataBlock( CDataBlock&& other ) { assign( std::move(other) ); }
 	inline ~CDataBlock() { reset(); }

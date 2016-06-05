@@ -22,17 +22,17 @@ void CWorldManager::destroyEntity( EntityID id )
 
 void CWorldManager::createComponent(EntityID entityID, ComponentID componentID)
 {
-	m_Components.at(componentID).createComponent(entityID);
+	m_Components.at(componentID).create(entityID);
 }
 
 bool CWorldManager::hasComponent(EntityID entityID, ComponentID componentID) const
 {
-	return m_Components.at(componentID).hasComponent(entityID);
+	return m_Components.at(componentID).isValid(entityID);
 }
 
 void CWorldManager::destroyComponent(EntityID entityID, ComponentID componentID)
 {
-	m_Components.at(componentID).destroyComponent(entityID);
+	m_Components.at(componentID).destroy(entityID);
 }
 
 void CWorldManager::registerComponent( CComponentManager &&mgr )

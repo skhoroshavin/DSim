@@ -36,6 +36,8 @@ void CDataBlock::reserve( int nCount )
 	if( nCount <= m_nItemReserve ) return;
 
 	void * pNewData = aligned_alloc( m_nAlignment, nCount*m_nItemSize );
+	if( !pNewData )
+		throw std::runtime_error( "CDataBlock: Out of memory" );
 	if( m_pData )
 	{
 		moveImpl( m_pData, pNewData, m_nItemCount );
