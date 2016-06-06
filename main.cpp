@@ -1,4 +1,8 @@
 
+#define CATCH_CONFIG_MAIN
+#include "test/catch.hpp"
+
+/*
 #include "WorldManager.h"
 #include <assert.h>
 
@@ -50,3 +54,4 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+*/

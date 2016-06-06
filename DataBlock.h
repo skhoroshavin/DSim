@@ -19,6 +19,7 @@ public:
 
 	// Data access
 	inline size_t count() const { return m_nItemCount; }
+	inline size_t capacity() const { return m_nItemCapacity; }
 	inline const void * data( size_t i ) const { return reinterpret_cast<const char*>(m_pData) + i*m_nItemSize; }
 	inline void * data( size_t i ) { return reinterpret_cast<char*>(m_pData) + i*m_nItemSize; }
 
@@ -44,9 +45,9 @@ private:
 	size_t m_nAlignment;
 	size_t m_nItemSize;
 
-	size_t m_nItemCount   = 0;
-	size_t m_nItemReserve = 0;
-	void * m_pData        = 0;
+	size_t m_nItemCount    = 0;
+	size_t m_nItemCapacity = 0;
+	void * m_pData         = 0;
 
 	void assign( CDataBlock&& other );
 };

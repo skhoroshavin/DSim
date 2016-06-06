@@ -3,7 +3,7 @@
 
 void CDataBlock::push( size_t nCount )
 {
-	if( m_nItemCount + nCount < m_nItemReserve )
+	if( m_nItemCount + nCount < m_nItemCapacity )
 		reserve( 1.5*(m_nItemCount + nCount) );
 
 	initImpl( data(m_nItemCount), nCount );
@@ -33,7 +33,7 @@ void CDataBlock::clear()
 
 void CDataBlock::reserve( int nCount )
 {
-	if( nCount <= m_nItemReserve ) return;
+	if( nCount <= m_nItemCapacity ) return;
 
 	void * pNewData = aligned_alloc( m_nAlignment, nCount*m_nItemSize );
 	if( !pNewData )
@@ -45,7 +45,7 @@ void CDataBlock::reserve( int nCount )
 		free( m_pData );
 	}
 	m_pData = pNewData;
-	m_nItemReserve = nCount;
+	m_nItemCapacity = nCount;
 }
 
 void CDataBlock::reset()
@@ -54,7 +54,7 @@ void CDataBlock::reset()
 	if( m_pData )
 	{
 		free( m_pData );
-		m_nItemReserve = 0;
+		m_nItemCapacity = 0;
 	}
 }
 
@@ -69,10 +69,10 @@ void CDataBlock::assign(CDataBlock &&other)
 	m_nAlignment   = other.m_nAlignment;
 	m_nItemSize    = other.m_nItemSize;
 	m_nItemCount   = other.m_nItemCount;
-	m_nItemReserve = other.m_nItemReserve;
+	m_nItemCapacity = other.m_nItemCapacity;
 	m_pData        = other.m_pData;
 
 	other.m_nItemCount   = 0;
-	other.m_nItemReserve = 0;
+	other.m_nItemCapacity = 0;
 	other.m_pData        = 0;
 }
