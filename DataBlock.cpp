@@ -55,6 +55,7 @@ void CDataBlock::reset()
 	if( m_pData )
 	{
 		free( m_pData );
+		m_pData = 0;
 		m_nItemCapacity = 0;
 	}
 }

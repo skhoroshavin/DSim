@@ -8,6 +8,7 @@ SCENARIO( "working with datablocks")
 	typedef std::string DataElem;
 	typedef CTypedDataBlock<DataElem> DataBlock;
 
+
 	GIVEN( "empty datablock" )
 	{
 		DataBlock db;
@@ -163,6 +164,47 @@ SCENARIO( "working with datablocks")
 			AND_THEN( "others are intact" )
 			{
 				REQUIRE( db[1] == b );
+			}
+		}
+
+		WHEN( "moving to another location" )
+		{
+			DataBlock db2 = std::move(db);
+
+			THEN( "old datablock becomes empty" )
+			{
+				REQUIRE( db.count() == 0 );
+				REQUIRE( db.capacity() == 0 );
+			}
+			AND_THEN( "new datablock contains all data from old datablock" )
+			{
+				REQUIRE( db2.capacity() >= 3 );
+				REQUIRE( db2.count() == 3 );
+				REQUIRE( db2[0] == a );
+				REQUIRE( db2[1] == b );
+				REQUIRE( db2[2] == c );
+			}
+		}
+
+		WHEN( "clearing" )
+		{
+			db.clear();
+
+			THEN( "datablock becomes empty, retaining capacity" )
+			{
+				REQUIRE( db.count() == 0 );
+				REQUIRE( db.capacity() >= 3 );
+			}
+		}
+
+		WHEN( "resetting" )
+		{
+			db.reset();
+
+			THEN( "datablock becomes empty and frees memory" )
+			{
+				REQUIRE( db.count() == 0 );
+				REQUIRE( db.capacity() == 0 );
 			}
 		}
 
