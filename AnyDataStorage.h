@@ -1,8 +1,10 @@
 
 #pragma once
 
-#include "DataCommon.h"
+#include "DSimCommon.h"
 #include "DataType.h"
+
+namespace DSim {
 
 class AnyDataStorage
 {
@@ -24,3 +26,5 @@ private:
 	size_t m_capacity = 0;
 	size_t m_count = 0;
 };
+
+} // namespace DSim

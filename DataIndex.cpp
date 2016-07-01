@@ -3,6 +3,8 @@
 
 #include <algorithm>
 
+namespace DSim {
+
 index_t DataIndex::findById( entity_t id, index_t hint ) const
 {
 	if( (hint < m_entities.size()) && (m_entities[hint] == id) )
@@ -108,3 +110,5 @@ void DataIndex::swap( index_t a, index_t b )
 
 	m_swaps.emplace_back( a, b );
 }
+
+} // namespace DSim

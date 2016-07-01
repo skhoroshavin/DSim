@@ -6,7 +6,9 @@
 #include <stdexcept>
 #include <utility>
 
-#include "Utility.h"
+#include "DSimCommon.h"
+
+namespace DSim {
 
 class IDataType
 {
@@ -20,11 +22,6 @@ public:
 	virtual void move( void * src, void * dst, size_t stride, size_t count ) = 0;
 	virtual void swap( void * data, size_t stride, size_t * pairs, size_t pair_count ) = 0;
 	virtual void done( void * data, size_t stride, size_t count ) = 0;
-};
-
-struct XXX
-{
-
 };
 
 template<typename T>
@@ -91,4 +88,4 @@ private:
 	}
 };
 
-SimpleDataStorage<XXX> x;
+} // namespace DSim

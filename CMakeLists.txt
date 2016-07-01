@@ -3,7 +3,38 @@ cmake_minimum_required(VERSION 2.8)
 add_definitions(-std=c++14)
 include_directories(.)
 
-aux_source_directory(. SRC_LIST)
-aux_source_directory(./test TEST_LIST)
+set( HDR_LIST
+	json.h
 
-add_executable(${PROJECT_NAME} ${SRC_LIST} ${TEST_LIST})
+	DSimCommon.h
+
+	DataIndex.h
+	DataStorage.h
+
+	DataType.h
+	AnyDataStorage.h
+
+	ComponentStorage.h
+	ComponentRuntime.h
+)
+
+set( SRC_LIST
+	DataIndex.cpp
+
+	AnyDataStorage.cpp
+
+	ComponentStorage.cpp
+	ComponentRuntime.cpp
+
+	# TOREMOVE
+	DataBlock.cpp
+)
+
+set( TEST_LIST
+	main.cpp
+
+	# TOREMOVE
+	test/testDataBlock.cpp
+)
+
+add_executable(${PROJECT_NAME} ${HDR_LISR} ${SRC_LIST} ${TEST_LIST})

@@ -1,7 +1,9 @@
 
 #pragma once
 
-#include "DataCommon.h"
+#include "DSimCommon.h"
+
+namespace DSim {
 
 template<typename T>
 class DataStorage
@@ -39,3 +41,5 @@ public:
 private:
 	std::vector<T> m_data;
 };
+
+} // namespace DSim

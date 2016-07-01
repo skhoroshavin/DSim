@@ -1,6 +1,7 @@
 
 #include "AnyDataStorage.h"
 
+namespace DSim {
 
 const IDataType * AnyDataStorage::type() const
 {
@@ -36,3 +37,5 @@ void AnyDataStorage::swap( const index_pair_t * pairs, size_t count )
 {
 
 }
+
+} // namespace DSim

@@ -2,7 +2,9 @@
 #pragma once
 
 #include <unordered_map>
-#include "DataCommon.h"
+#include "DSimCommon.h"
+
+namespace DSim {
 
 typedef uint32_t bucket_t;
 typedef uint64_t entity_t;
@@ -34,3 +36,5 @@ private:
 
 	void swap( index_t a, index_t b );
 };
+
+} // namespace DSim
