@@ -17,9 +17,18 @@
 
 namespace DSim {
 
-using json = nlohmann::json;
+// Group
+typedef uint8_t group_t;
 
-typedef uint32_t index_t;
-typedef std::pair<index_t,index_t> index_pair_t;
+// Index
+typedef size_t index_t;
+typedef std::pair<index_t,index_t> swap_t;
+enum { INVALID_INDEX = index_t(-1) };
+
+// UUID
+typedef uint64_t uuid_t;
+
+// JSON
+using json = nlohmann::json;
 
 } // namespace DSim

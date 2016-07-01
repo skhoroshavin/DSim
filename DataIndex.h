@@ -6,33 +6,30 @@
 
 namespace DSim {
 
-typedef uint32_t bucket_t;
-typedef uint64_t entity_t;
-
 class DataIndex
 {
 public:
 	// Access
-	index_t findById( entity_t id, index_t hint = -1 ) const;
-	index_pair_t findByBucket( bucket_t min_bucket, bucket_t max_bucket ) const;
+	index_t findById( uuid_t id, index_t hint = INVALID_INDEX ) const;
+	swap_t findByGroup( group_t min_group, group_t max_group ) const;
 	size_t count() const;
-	const entity_t * entities() const;
-	const bucket_t * buckets() const;
+	const uuid_t * entities() const;
+	const group_t * groups() const;
 
 	// Modify
-	index_t create( entity_t id, bucket_t bucket = 0 );
+	index_t create( uuid_t id, group_t group = 0 );
 	void destroy( index_t idx );
 
 	// Swaps
 	size_t swapCount() const;
-	const index_pair_t * swaps() const;
+	const swap_t * swaps() const;
 	void clearSwaps();
 
 private:
-	std::unordered_map<entity_t,index_t> m_index;
-	std::vector<entity_t>     m_entities;
-	std::vector<bucket_t>     m_buckets;
-	std::vector<index_pair_t> m_swaps;
+	std::unordered_map<uuid_t,index_t> m_index;
+	std::vector<uuid_t>   m_entities;
+	std::vector<group_t>  m_groups;
+	std::vector<swap_t>   m_swaps;
 
 	void swap( index_t a, index_t b );
 };

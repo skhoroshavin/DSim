@@ -13,7 +13,7 @@ namespace DSim {
 class IDataType
 {
 public:
-	virtual ~IDataType() { }
+	virtual ~IDataType() = default;
 
 	virtual size_t size() const = 0;
 	virtual size_t alignment() const = 0;
@@ -25,7 +25,7 @@ public:
 };
 
 template<typename T>
-class SimpleDataStorage : public IDataType
+class SimpleDataType : public IDataType
 {
 public:
 	size_t size() const final { return sizeof(T); }

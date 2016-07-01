@@ -6,9 +6,12 @@
 
 namespace DSim {
 
-class AnyDataStorage
+class GenericDataStorage
 {
 public:
+	// Construction/destruction
+	explicit GenericDataStorage( const IDataType * type );
+
 	// Access
 	const IDataType * type() const;
 	size_t count() const;
@@ -18,7 +21,7 @@ public:
 	// Modification
 	void push( size_t count );
 	void pop( size_t count );
-	void swap( const index_pair_t * pairs, size_t count );
+	void swap( const swap_t * pairs, size_t count );
 
 private:
 	const IDataType * m_type = 0;

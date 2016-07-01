@@ -12,7 +12,7 @@ set( HDR_LIST
 	DataStorage.h
 
 	DataType.h
-	AnyDataStorage.h
+	GenericDataStorage.h
 
 	ComponentStorage.h
 	ComponentRuntime.h
@@ -21,20 +21,17 @@ set( HDR_LIST
 set( SRC_LIST
 	DataIndex.cpp
 
-	AnyDataStorage.cpp
+	GenericDataStorage.cpp
 
 	ComponentStorage.cpp
 	ComponentRuntime.cpp
-
-	# TOREMOVE
-	DataBlock.cpp
 )
 
 set( TEST_LIST
 	main.cpp
 
-	# TOREMOVE
-	test/testDataBlock.cpp
+	test/testGenericDataStorage.cpp
+	test/testComponentStorage.cpp
 )
 
 add_executable(${PROJECT_NAME} ${HDR_LISR} ${SRC_LIST} ${TEST_LIST})

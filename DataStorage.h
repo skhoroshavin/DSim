@@ -28,7 +28,7 @@ public:
 		m_data.resize( m_data.size() - count );
 	}
 
-	void swap( const index_pair_t * pairs, size_t count )
+	void swap( const swap_t * pairs, size_t count )
 	{
 		for( size_t i = 0; i < count; ++i )
 		{
