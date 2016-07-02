@@ -40,6 +40,8 @@ private:
 	DataIndex m_index;
 	std::vector<GenericDataStorage> m_fields;
 	std::vector<IComponentListener*> m_listeners;
+
+	void applyReorders();
 };
 
 } // namespace DSim

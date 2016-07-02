@@ -22,7 +22,7 @@ public:
 	// Modification
 	void push( size_t count );
 	void pop( size_t count );
-	void swap( const swap_t * pairs, size_t count );
+	void reorder( const swap_t * pairs, size_t count );
 
 private:
 	const IDataType * m_type = 0;

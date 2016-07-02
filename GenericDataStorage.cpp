@@ -39,7 +39,7 @@ void GenericDataStorage::pop( size_t count )
 
 }
 
-void GenericDataStorage::swap( const swap_t * pairs, size_t count )
+void GenericDataStorage::reorder( const swap_t * pairs, size_t count )
 {
 
 }

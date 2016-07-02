@@ -37,24 +37,29 @@ size_t ComponentStorage::create( uuid_t id )
 	size_t idx = m_index.create( id );
 
 	for( GenericDataStorage& data : m_fields )
-	{
 		data.push( 1 );
-		data.swap( m_index.swaps(), m_index.swapCount() );
-	}
 
 	for( IComponentListener * listener : m_listeners )
-	{
 		listener->componentsCreated( 1 );
-		listener->componentsReordered( m_index.swaps(), m_index.swapCount() );
-	}
 
-	m_index.clearSwaps();
+	applyReorders();
+
 	return idx;
 }
 
 void ComponentStorage::destroy( size_t idx )
 {
+	DSIM_ASSERT( idx < size(), "Trying to destroy nonexistant index" );
 
+	m_index.destroy( idx );
+
+	applyReorders();
+
+	for( IComponentListener * listener : m_listeners )
+		listener->componentsDestroyed( 1 );
+
+	for( GenericDataStorage& data : m_fields )
+		data.pop( 1 );
 }
 
 void ComponentStorage::addListener( IComponentListener * listener )
@@ -68,6 +73,19 @@ void ComponentStorage::removeListener( IComponentListener * listener )
 	auto it = std::find( m_listeners.begin(), m_listeners.end(), listener );
 	DSIM_ASSERT( it != m_listeners.end(), "Trying to delete nonexistant listener" );
 	m_listeners.erase( it );
+}
+
+void ComponentStorage::applyReorders()
+{
+	if( !m_index.swapCount() ) return;
+
+	for( GenericDataStorage& data : m_fields )
+		data.reorder( m_index.swaps(), m_index.swapCount() );
+
+	for( IComponentListener * listener : m_listeners )
+		listener->componentsReordered( m_index.swaps(), m_index.swapCount() );
+
+	m_index.clearSwaps();
 }
 
 } // namespace DSim
