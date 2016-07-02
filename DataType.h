@@ -20,7 +20,7 @@ public:
 
 	virtual void init( void * data, size_t stride, size_t count ) const = 0;
 	virtual void move( void * src, void * dst, size_t stride, size_t count ) const = 0;
-	virtual void swap( void * data, size_t stride, size_t * pairs, size_t pair_count ) const = 0;
+	virtual void reorder( void * data, size_t stride, const swap_t * pairs, size_t pair_count ) const = 0;
 	virtual void done( void * data, size_t stride, size_t count ) const = 0;
 };
 
@@ -50,14 +50,14 @@ public:
 			item(dst, i*stride) = std::move( item(src, i*stride) );
 	}
 
-	void swap( void * data, size_t stride, size_t * pairs, size_t pairCount ) const final
+	void reorder( void * data, size_t stride, const swap_t * pairs, size_t pairCount ) const final
 	{
 		checkPointer( data );
 		checkStride( stride );
 
 		for( size_t i = 0; i < pairCount; ++i )
-			std::swap( item(data, pairs[2*i+0]*stride),
-					   item(data, pairs[2*i+1]*stride) );
+			std::swap( item(data, stride*pairs[i].first),
+			           item(data, stride*pairs[i].second) );
 	}
 
 	void done( void * data, size_t stride, size_t count ) const final

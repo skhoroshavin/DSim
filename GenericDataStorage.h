@@ -25,7 +25,7 @@ public:
 	void reserve( size_t capacity );
 	void push( size_t size );
 	void pop( size_t size );
-	void reorder( const swap_t * pairs, size_t size );
+	void reorder( const swap_t * pairs, size_t count );
 	void clear();
 	void reset();
 

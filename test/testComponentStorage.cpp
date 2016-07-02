@@ -82,23 +82,23 @@ SCENARIO( "Adding/removing component storage listeners" )
 	}
 }
 
+namespace
+{
+DSim::SimpleDataType<float> g_floatType;
+DSim::SimpleDataType<int>   g_intType;
+}
+
 class TestComponentStorage : public DSim::ComponentStorage
 {
 public:
 	TestComponentStorage()
 	{
-		addField( &m_floatType  );
-		addField( &m_intType );
+		addField( &g_floatType  );
+		addField( &g_intType );
 	}
 
 	inline float * floatData() { return static_cast<float*>( data(0) ); }
 	inline int *   intData()   { return static_cast<int*>( data(1) );   }
-
-
-
-private:
-	DSim::SimpleDataType<float>  m_floatType;
-	DSim::SimpleDataType<int>    m_intType;
 };
 
 SCENARIO( "Working with component storage" )

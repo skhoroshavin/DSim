@@ -13,11 +13,7 @@ GenericDataStorage::GenericDataStorage( const IDataType * type ) :
 
 GenericDataStorage::~GenericDataStorage()
 {
-	if( m_data )
-	{
-
-		m_data = 0;
-	}
+	reset();
 }
 
 const IDataType * GenericDataStorage::type() const
@@ -61,8 +57,8 @@ void GenericDataStorage::reserve( size_t capacity )
 	if( alignment < MIN_ALIGN ) alignment = MIN_ALIGN;
 
 	void * newData;
-	if( int err = posix_memalign( &newData, alignment, capacity * m_type->size() ) )
-		throw std::runtime_error( "GenericDataStorage: Failed to allocate memory" );
+	int err = posix_memalign( &newData, alignment, capacity * m_type->size() );
+	if( err ) throw std::runtime_error( "GenericDataStorage: Failed to allocate memory" );
 
 	if( m_data )
 	{
@@ -85,22 +81,31 @@ void GenericDataStorage::push( size_t count )
 void GenericDataStorage::pop( size_t count )
 {
 	DSIM_ASSERT( count <= m_size, "Trying to pop more elements than contained" );
-
+	m_size -= count;
+	m_type->done( data(m_size), m_type->size(), count );
 }
 
 void GenericDataStorage::reorder( const swap_t * pairs, size_t count )
 {
-
+	DSIM_ASSERT( m_type, "Trying to modify typeless data storage" );
+	m_type->reorder( m_data, m_type->size(), pairs, count );
 }
 
 void GenericDataStorage::clear()
 {
-
+	DSIM_ASSERT( m_type, "Trying to modify typeless data storage" );
+	m_type->done( data(), m_type->size(), m_size );
+	m_size = 0;
 }
 
 void GenericDataStorage::reset()
 {
+	if( !m_data ) return;
 
+	clear();
+	free( m_data );
+	m_data = 0;
+	m_capacity = 0;
 }
 
 } // namespace DSim
