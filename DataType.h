@@ -18,20 +18,20 @@ public:
 	virtual size_t size() const = 0;
 	virtual size_t alignment() const = 0;
 
-	virtual void init( void * data, size_t stride, size_t count ) = 0;
-	virtual void move( void * src, void * dst, size_t stride, size_t count ) = 0;
-	virtual void swap( void * data, size_t stride, size_t * pairs, size_t pair_count ) = 0;
-	virtual void done( void * data, size_t stride, size_t count ) = 0;
+	virtual void init( void * data, size_t stride, size_t count ) const = 0;
+	virtual void move( void * src, void * dst, size_t stride, size_t count ) const = 0;
+	virtual void swap( void * data, size_t stride, size_t * pairs, size_t pair_count ) const = 0;
+	virtual void done( void * data, size_t stride, size_t count ) const = 0;
 };
 
 template<typename T>
 class SimpleDataType : public IDataType
 {
 public:
-	size_t size() const final { return sizeof(T); }
-	size_t alignment() const final { return alignof(T); }
+	size_t size() const override { return sizeof(T); }
+	size_t alignment() const override { return alignof(T); }
 
-	void init( void * data, size_t stride, size_t count ) final
+	void init( void * data, size_t stride, size_t count ) const final
 	{
 		checkPointer( data );
 		checkStride( stride );
@@ -40,7 +40,7 @@ public:
 			new (&item(data,i*stride)) T();
 	}
 
-	void move( void * src, void * dst, size_t stride, size_t count ) final
+	void move( void * src, void * dst, size_t stride, size_t count ) const final
 	{
 		checkPointer( src );
 		checkPointer( dst );
@@ -50,7 +50,7 @@ public:
 			item(dst, i*stride) = std::move( item(src, i*stride) );
 	}
 
-	void swap( void * data, size_t stride, size_t * pairs, size_t pairCount ) final
+	void swap( void * data, size_t stride, size_t * pairs, size_t pairCount ) const final
 	{
 		checkPointer( data );
 		checkStride( stride );
@@ -60,7 +60,7 @@ public:
 					   item(data, pairs[2*i+1]*stride) );
 	}
 
-	void done( void * data, size_t stride, size_t count ) final
+	void done( void * data, size_t stride, size_t count ) const final
 	{
 		checkPointer( data );
 		checkStride( stride );
@@ -72,13 +72,13 @@ public:
 private:
 	inline static void checkPointer( void * ptr )
 	{
-		DSIM_ASSERT( reinterpret_cast<uintptr_t>(ptr) % alignof(T), "Pointer is not properly aligned" );
+		DSIM_ASSERT( reinterpret_cast<uintptr_t>(ptr) % alignof(T) == 0, "Pointer is not properly aligned" );
 	}
 
 	inline static void checkStride( size_t stride )
 	{
 		DSIM_ASSERT( stride >= sizeof(T), "Stride is less than data size" );
-		DSIM_ASSERT( stride % alignof(T), "Stride is not multiple of data alignment" );
+		DSIM_ASSERT( stride % alignof(T) == 0, "Stride is not multiple of data alignment" );
 	}
 
 	inline static T& item( void * data, int offset )

@@ -91,8 +91,8 @@ public:
 		addField( &m_intType );
 	}
 
-	inline float * floatData() { return reinterpret_cast<float*>( data(0) ); }
-	inline int *   intData()   { return reinterpret_cast<int*>( data(1) );   }
+	inline float * floatData() { return static_cast<float*>( data(0) ); }
+	inline int *   intData()   { return static_cast<int*>( data(1) );   }
 
 
 
@@ -125,6 +125,10 @@ SCENARIO( "Working with component storage" )
 			THEN( "It should have valid index" ) {
 				REQUIRE( idx < storage.size() );
 			}
+			THEN( "It should be default constructed" ) {
+				REQUIRE( storage.floatData()[idx] == 0.0f );
+				REQUIRE( storage.intData()[idx] == 0 );
+			}
 			THEN( "It should be searchable" ) {
 				REQUIRE( storage.find(1) == idx );
 			}
@@ -139,18 +143,31 @@ SCENARIO( "Working with component storage" )
 
 	GIVEN( "Storage with some data" )
 	{
-		storage.create( 1 );
-		storage.create( 2 );
-		storage.create( 3 );
+		for( DSim::uuid_t i = 1; i <= 3; ++i )
+		{
+			auto idx = storage.create( i );
+			storage.floatData()[idx] = 0.1f * i;
+			storage.intData()[idx] = int(i);
+		}
 
 		THEN( "Elements should have valid indices" ) {
 			REQUIRE( storage.find(1) < storage.size() );
 			REQUIRE( storage.find(2) < storage.size() );
 			REQUIRE( storage.find(3) < storage.size() );
 		}
+		THEN( "Elements should have valid data" ) {
+			for( DSim::uuid_t i = 1; i <= 3; ++i )
+			{
+				auto idx = storage.find( i );
+				REQUIRE( storage.floatData()[idx] == 0.1f * i );
+				REQUIRE( storage.intData()[idx] == int(i) );
+			}
+		}
 		THEN( "Elements should have unique indices" ) {
 			REQUIRE( storage.find(1) != storage.find(2) );
 			REQUIRE( storage.find(2) != storage.find(3) );
+		}
+		THEN( "Elements should have corresponding data" ) {
 		}
 		THEN( "It should fail to create existing element" ) {
 			REQUIRE_THROWS( storage.create(3) );

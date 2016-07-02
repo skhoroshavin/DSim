@@ -31,13 +31,13 @@ size_t ComponentStorage::find( uuid_t id, size_t hint ) const
 	return m_index.findById( id, hint );
 }
 
-const uint8_t * ComponentStorage::data( size_t field ) const
+const void * ComponentStorage::data( size_t field ) const
 {
 	DSIM_ASSERT( field < m_fields.size(), "Trying to access data from nonexistant field" );
 	return m_fields[field].data();
 }
 
-uint8_t * ComponentStorage::data( size_t field )
+void * ComponentStorage::data( size_t field )
 {
 	DSIM_ASSERT( field < m_fields.size(), "Trying to access data from nonexistant field" );
 	return m_fields[field].data();
