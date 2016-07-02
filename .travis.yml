@@ -27,18 +27,12 @@ matrix:
             - llvm-toolchain-precise-3.6
           packages:
             - clang-3.6
-    - compiler: clang
-      env: MYCC=clang-3.7 MYCXX=clang++-3.7
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-          packages:
-            - clang-3.7
     
 script: 
   - export CC=$MYCC
   - export CXX=$MYCXX
   - $CXX --version
-  - cmake -DCMAKE_BUILD_TYPE=Debug && make && ./DSim
+  - mkdir build-debug && cd build-debug
+  - cmake -DCMAKE_BUILD_TYPE=Debug .. && make && ./DSim && cd ..
+  - mkdir build-release && cd build-release
+  - cmake -DCMAKE_BUILD_TYPE=Release .. && make && ./DSim --nothrow && cd ..
