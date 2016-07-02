@@ -1,6 +1,8 @@
 
 #include "GenericDataStorage.h"
 
+#include <stdlib.h>
+
 namespace DSim {
 
 GenericDataStorage::GenericDataStorage( const IDataType * type ) :
@@ -48,11 +50,19 @@ const void * GenericDataStorage::data( size_t idx ) const
 void GenericDataStorage::reserve( size_t capacity )
 {
 	DSIM_ASSERT( m_type, "Trying to modify typeless data storage" );
+
+	enum { MIN_ALIGN = 0x10 };
+	size_t capacityTail = capacity & (MIN_ALIGN-1);
+	if( capacityTail )
+		capacity += MIN_ALIGN - capacityTail;
 	if( capacity <= m_capacity ) return;
 
-	void * newData = aligned_alloc( m_type->alignment(), capacity * m_type->size() );
-	if( !newData )
-		throw std::runtime_error( "GenericDataStorage: Out of memory" );
+	size_t alignment = m_type->alignment();
+	if( alignment < MIN_ALIGN ) alignment = MIN_ALIGN;
+
+	void * newData;
+	if( int err = posix_memalign( &newData, alignment, capacity * m_type->size() ) )
+		throw std::runtime_error( "GenericDataStorage: Failed to allocate memory" );
 
 	if( m_data )
 	{
