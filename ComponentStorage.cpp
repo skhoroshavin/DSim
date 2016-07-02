@@ -31,6 +31,18 @@ size_t ComponentStorage::find( uuid_t id, size_t hint ) const
 	return m_index.findById( id, hint );
 }
 
+const uint8_t * ComponentStorage::data( size_t field ) const
+{
+	DSIM_ASSERT( field < m_fields.size(), "Trying to access data from nonexistant field" );
+	return m_fields[field].data();
+}
+
+uint8_t * ComponentStorage::data( size_t field )
+{
+	DSIM_ASSERT( field < m_fields.size(), "Trying to access data from nonexistant field" );
+	return m_fields[field].data();
+}
+
 size_t ComponentStorage::create( uuid_t id )
 {
 	DSIM_ASSERT( find(id) >= size(), "Trying to create same UUID twice" );
@@ -81,10 +93,10 @@ void ComponentStorage::applyReorders()
 	if( !m_index.swapCount() ) return;
 
 	for( GenericDataStorage& data : m_fields )
-		data.reorder( m_index.swaps(), m_index.swapCount() );
+		data.reorder( m_index.swapData(), m_index.swapCount() );
 
 	for( IComponentListener * listener : m_listeners )
-		listener->componentsReordered( m_index.swaps(), m_index.swapCount() );
+		listener->componentsReordered( m_index.swapData(), m_index.swapCount() );
 
 	m_index.clearSwaps();
 }

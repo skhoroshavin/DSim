@@ -21,12 +21,12 @@ SCENARIO( "Initializing component storage data scheme" )
 
 		WHEN( "Adding some fields" )
 		{
-			auto type1 = std::make_unique<DSim::SimpleDataType<float>>();
-			auto type2 = std::make_unique<DSim::SimpleDataType<double>>();
-			auto type3 = std::make_unique<DSim::SimpleDataType<double>>();
-			auto idx1 = storage.addField( type1.get() );
-			auto idx2 = storage.addField( type2.get() );
-			auto idx3 = storage.addField( type3.get() );
+			DSim::SimpleDataType<float> type1;
+			DSim::SimpleDataType<int>   type2;
+			DSim::SimpleDataType<float> type3;
+			auto idx1 = storage.addField( &type1 );
+			auto idx2 = storage.addField( &type2 );
+			auto idx3 = storage.addField( &type3 );
 			THEN( "Field count should increase accordingly" ) {
 				REQUIRE( storage.fieldCount() == 3 );
 			}
@@ -36,9 +36,9 @@ SCENARIO( "Initializing component storage data scheme" )
 				REQUIRE( idx3 == 2 );
 			}
 			THEN( "They should have given data types ") {
-				REQUIRE( storage.fieldType( idx1 ) == type1.get() );
-				REQUIRE( storage.fieldType( idx2 ) == type2.get() );
-				REQUIRE( storage.fieldType( idx3 ) == type3.get() );
+				REQUIRE( storage.fieldType( idx1 ) == &type1 );
+				REQUIRE( storage.fieldType( idx2 ) == &type2 );
+				REQUIRE( storage.fieldType( idx3 ) == &type3 );
 			}
 		}
 	}
@@ -82,13 +82,28 @@ SCENARIO( "Adding/removing component storage listeners" )
 	}
 }
 
+class TestComponentStorage : public DSim::ComponentStorage
+{
+public:
+	TestComponentStorage()
+	{
+		addField( &m_floatType  );
+		addField( &m_intType );
+	}
+
+	inline float * floatData() { return reinterpret_cast<float*>( data(0) ); }
+	inline int *   intData()   { return reinterpret_cast<int*>( data(1) );   }
+
+
+
+private:
+	DSim::SimpleDataType<float>  m_floatType;
+	DSim::SimpleDataType<int>    m_intType;
+};
+
 SCENARIO( "Working with component storage" )
 {
-	DSim::ComponentStorage storage;
-	auto type1 = std::make_unique<DSim::SimpleDataType<float>>();
-	auto type2 = std::make_unique<DSim::SimpleDataType<double>>();
-	storage.addField( type1.get() );
-	storage.addField( type2.get() );
+	TestComponentStorage storage;
 
 	fakeit::Mock<DSim::IComponentListener> mock;
 	When(Method(mock,componentsCreated)).AlwaysReturn();
@@ -141,8 +156,8 @@ SCENARIO( "Working with component storage" )
 			REQUIRE_THROWS( storage.create(3) );
 		}
 		THEN( "It should fail to add fields" ) {
-			auto type = std::make_unique<DSim::SimpleDataType<float>>();
-			REQUIRE_THROWS( storage.addField( type.get() ) );
+			DSim::SimpleDataType<float> floatType;
+			REQUIRE_THROWS( storage.addField( &floatType ) );
 		}
 
 		WHEN( "Trying to find nonexistant element" ) {

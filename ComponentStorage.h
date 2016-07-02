@@ -27,6 +27,8 @@ public:
 	// Data access
 	size_t size() const;
 	size_t find( uuid_t id, size_t hint = INVALID_INDEX ) const;
+	const uint8_t * data( size_t field ) const;
+	uint8_t * data( size_t field );
 
 	// Data modification
 	size_t create( uuid_t id );

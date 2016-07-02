@@ -22,14 +22,14 @@ public:
 
 	// Swaps
 	size_t swapCount() const;
-	const swap_t * swaps() const;
+	const swap_t * swapData() const;
 	void clearSwaps();
 
 private:
 	std::unordered_map<uuid_t,size_t> m_index;
-	std::vector<uuid_t>   m_entities;
-	std::vector<group_t>  m_groups;
-	std::vector<swap_t>   m_swaps;
+	std::vector<uuid_t>  m_entities;
+	std::vector<group_t> m_groups;
+	std::vector<swap_t>  m_swaps;
 
 	void swap( size_t a, size_t b );
 };

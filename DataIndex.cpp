@@ -85,7 +85,7 @@ size_t DataIndex::swapCount() const
 	return m_swaps.size();
 }
 
-const swap_t * DataIndex::swaps() const
+const swap_t * DataIndex::swapData() const
 {
 	return m_swaps.data();
 }
