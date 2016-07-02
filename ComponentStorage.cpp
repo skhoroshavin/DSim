@@ -15,6 +15,7 @@ const IDataType * ComponentStorage::fieldType(size_t idx ) const
 
 size_t ComponentStorage::addField( const IDataType * pType )
 {
+	DSIM_ASSERT( m_index.size() == 0, "Trying to add field to non-empty component storage" );
 	size_t result = m_fields.size();
 	m_fields.emplace_back( pType );
 	return result;

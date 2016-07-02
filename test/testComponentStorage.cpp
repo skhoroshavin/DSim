@@ -140,6 +140,10 @@ SCENARIO( "Working with component storage" )
 		THEN( "It should fail to create existing element" ) {
 			REQUIRE_THROWS( storage.create(3) );
 		}
+		THEN( "It should fail to add fields" ) {
+			auto type = std::make_unique<DSim::SimpleDataType<float>>();
+			REQUIRE_THROWS( storage.addField( type.get() ) );
+		}
 
 		WHEN( "Trying to find nonexistant element" ) {
 			auto idx = storage.find( 4 );
