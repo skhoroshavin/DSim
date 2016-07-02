@@ -4,6 +4,7 @@
 using namespace fakeit;
 
 #include "ComponentStorage.h"
+using DSim::UUID;
 
 SCENARIO( "Initializing component storage data scheme" )
 {
@@ -118,7 +119,7 @@ SCENARIO( "Working with component storage" )
 		}
 
 		WHEN( "Adding element" ) {
-			auto idx = storage.create( 1 );
+			auto idx = storage.create( UUID(1) );
 			THEN( "Storage size should be increased" ) {
 				REQUIRE( storage.size() == 1 );
 			}
@@ -130,7 +131,7 @@ SCENARIO( "Working with component storage" )
 				REQUIRE( storage.intData()[idx] == 0 );
 			}
 			THEN( "It should be searchable" ) {
-				REQUIRE( storage.find(1) == idx );
+				REQUIRE( storage.find(UUID(1)) == idx );
 			}
 			THEN( "It should be destroyable" ) {
 				REQUIRE_NOTHROW( storage.destroy(idx) );
@@ -143,34 +144,34 @@ SCENARIO( "Working with component storage" )
 
 	GIVEN( "Storage with some data" )
 	{
-		for( DSim::uuid_t i = 1; i <= 3; ++i )
+		for( size_t i = 1; i <= 3; ++i )
 		{
-			auto idx = storage.create( i );
+			auto idx = storage.create( UUID(i) );
 			storage.floatData()[idx] = 0.1f * i;
 			storage.intData()[idx] = int(i);
 		}
 
 		THEN( "Elements should have valid indices" ) {
-			REQUIRE( storage.find(1) < storage.size() );
-			REQUIRE( storage.find(2) < storage.size() );
-			REQUIRE( storage.find(3) < storage.size() );
+			REQUIRE( storage.find(UUID(1)) < storage.size() );
+			REQUIRE( storage.find(UUID(2)) < storage.size() );
+			REQUIRE( storage.find(UUID(3)) < storage.size() );
 		}
 		THEN( "Elements should have valid data" ) {
-			for( DSim::uuid_t i = 1; i <= 3; ++i )
+			for( size_t i = 1; i <= 3; ++i )
 			{
-				auto idx = storage.find( i );
-				REQUIRE( storage.floatData()[idx] == 0.1f * i );
+				auto idx = storage.find( UUID(i) );
+				REQUIRE( storage.floatData()[idx] == Approx(0.1f * i) );
 				REQUIRE( storage.intData()[idx] == int(i) );
 			}
 		}
 		THEN( "Elements should have unique indices" ) {
-			REQUIRE( storage.find(1) != storage.find(2) );
-			REQUIRE( storage.find(2) != storage.find(3) );
+			REQUIRE( storage.find(UUID(1)) != storage.find(UUID(2)) );
+			REQUIRE( storage.find(UUID(2)) != storage.find(UUID(3)) );
 		}
 		THEN( "Elements should have corresponding data" ) {
 		}
 		THEN( "It should fail to create existing element" ) {
-			REQUIRE_THROWS( storage.create(3) );
+			REQUIRE_THROWS( storage.create(UUID(3)) );
 		}
 		THEN( "It should fail to add fields" ) {
 			DSim::SimpleDataType<float> floatType;
@@ -178,7 +179,7 @@ SCENARIO( "Working with component storage" )
 		}
 
 		WHEN( "Trying to find nonexistant element" ) {
-			auto idx = storage.find( 4 );
+			auto idx = storage.find( UUID(4) );
 			THEN( "Index should be invalid" ) {
 				REQUIRE( idx >= storage.size() );
 				AND_THEN( "It should fail to destroy it" ) {
@@ -189,14 +190,14 @@ SCENARIO( "Working with component storage" )
 
 		WHEN( "Destroying existing element" )
 		{
-			auto idx = storage.find( 2 );
+			auto idx = storage.find( UUID(2) );
 			storage.destroy( idx );
 
 			THEN( "It should emit component destroyed event" ) {
 				VERIFY(Method(mock,componentsDestroyed).Using(1));
 			}
 			THEN( "It should no longer be searchable" ) {
-				REQUIRE( storage.find(2) >= storage.size() );
+				REQUIRE( storage.find( UUID(2) ) >= storage.size() );
 			}
 		}
 	}

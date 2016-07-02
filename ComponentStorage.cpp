@@ -21,12 +21,36 @@ size_t ComponentStorage::addField( const IDataType * pType )
 	return result;
 }
 
+void ComponentStorage::setState( State state )
+{
+	if( m_state == state ) return;
+
+	switch( m_state )
+	{
+	case State::Create:
+		applyCreate();
+		break;
+	case State::Destroy:
+		applyDestroy();
+		break;
+	default:
+		break;
+	}
+
+	m_state = state;
+}
+
+ComponentStorage::State ComponentStorage::state() const
+{
+	return m_state;
+}
+
 size_t ComponentStorage::size() const
 {
 	return m_index.size();
 }
 
-size_t ComponentStorage::find( uuid_t id, size_t hint ) const
+size_t ComponentStorage::find( UUID id, size_t hint ) const
 {
 	return m_index.findById( id, hint );
 }
@@ -43,8 +67,9 @@ void * ComponentStorage::data( size_t field )
 	return m_fields[field].data();
 }
 
-size_t ComponentStorage::create( uuid_t id )
+size_t ComponentStorage::create( UUID id )
 {
+	DSIM_ASSERT( m_state == State::Create, "Trying to create component from invalid state" );
 	DSIM_ASSERT( find(id) >= size(), "Trying to create same UUID twice" );
 
 	size_t idx = m_index.create( id );
@@ -62,6 +87,7 @@ size_t ComponentStorage::create( uuid_t id )
 
 void ComponentStorage::destroy( size_t idx )
 {
+	DSIM_ASSERT( m_state == State::Destroy, "Trying to destroy component from invalid state" );
 	DSIM_ASSERT( idx < size(), "Trying to destroy nonexistant index" );
 
 	m_index.destroy( idx );
@@ -86,6 +112,16 @@ void ComponentStorage::removeListener( IComponentListener * listener )
 	auto it = std::find( m_listeners.begin(), m_listeners.end(), listener );
 	DSIM_ASSERT( it != m_listeners.end(), "Trying to delete nonexistant listener" );
 	m_listeners.erase( it );
+}
+
+void ComponentStorage::applyCreate()
+{
+
+}
+
+void ComponentStorage::applyDestroy()
+{
+
 }
 
 void ComponentStorage::applyReorders()

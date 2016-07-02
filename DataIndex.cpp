@@ -5,7 +5,7 @@
 
 namespace DSim {
 
-size_t DataIndex::findById( uuid_t id, size_t hint ) const
+size_t DataIndex::findById( UUID id, size_t hint ) const
 {
 	if( (hint < m_entities.size()) && (m_entities[hint] == id) )
 		return hint;
@@ -29,7 +29,7 @@ size_t DataIndex::size() const
 	return m_entities.size();
 }
 
-const uuid_t * DataIndex::entities() const
+const UUID * DataIndex::entities() const
 {
 	return m_entities.data();
 }
@@ -39,7 +39,7 @@ const group_t * DataIndex::groups() const
 	return m_groups.data();
 }
 
-size_t DataIndex::create(uuid_t id, group_t group )
+size_t DataIndex::create(UUID id, group_t group )
 {
 	size_t idx = findById( id );
 	if( idx < m_entities.size() )
@@ -97,8 +97,8 @@ void DataIndex::clearSwaps()
 
 void DataIndex::swap( size_t a, size_t b )
 {
-	uuid_t id1 = m_entities[a];
-	uuid_t id2 = m_entities[b];
+	UUID id1 = m_entities[a];
+	UUID id2 = m_entities[b];
 
 	m_entities[b] = id1;
 	m_entities[a] = id2;
