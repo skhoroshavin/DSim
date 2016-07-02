@@ -47,7 +47,7 @@ public:
 		checkStride( stride );
 
 		for( size_t i = 0; i < count; ++i )
-			item(dst, i*stride) = std::move( item(src, i*stride) );
+			new (&item(dst, i*stride)) T( std::move( item(src, i*stride) ) );
 	}
 
 	void reorder( void * data, size_t stride, const swap_t * pairs, size_t pairCount ) const final

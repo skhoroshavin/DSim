@@ -48,9 +48,11 @@ void GenericDataStorage::reserve( size_t capacity )
 	DSIM_ASSERT( m_type, "Trying to modify typeless data storage" );
 
 	enum { MIN_ALIGN = 0x10 };
+#ifdef NDEBUG
 	size_t capacityTail = capacity & (MIN_ALIGN-1);
 	if( capacityTail )
 		capacity += MIN_ALIGN - capacityTail;
+#endif // NDEBUG
 	if( capacity <= m_capacity ) return;
 
 	size_t alignment = m_type->alignment();

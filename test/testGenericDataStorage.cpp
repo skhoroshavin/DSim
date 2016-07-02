@@ -3,19 +3,12 @@
 
 #include "GenericDataStorage.h"
 
-class AlignedIntDataType : public DSim::SimpleDataType<int>
-{
-public:
-	size_t size() const override;
-	size_t alignment() const override;
-};
-
-size_t AlignedIntDataType::size() const { return 16; }
-size_t AlignedIntDataType::alignment() const { return 16; }
+typedef std::string TestType;
+typedef DSim::SimpleDataType<TestType> TestDataType;
 
 SCENARIO( "Working with generic data storage" )
 {
-	AlignedIntDataType type;
+	TestDataType type;
 	DSim::GenericDataStorage storage(&type);
 
 	GIVEN( "Default constructed data storage" )
@@ -49,9 +42,9 @@ SCENARIO( "Working with generic data storage" )
 				REQUIRE( reinterpret_cast<uintptr_t>(storage.data()) % type.alignment() == 0 );
 			}
 			THEN( "Elements should be default constructed" ) {
-				REQUIRE( *static_cast<int*>(storage.data(0)) == 0 );
-				REQUIRE( *static_cast<int*>(storage.data(1)) == 0 );
-				REQUIRE( *static_cast<int*>(storage.data(2)) == 0 );
+				REQUIRE( *static_cast<TestType*>(storage.data(0)) == "" );
+				REQUIRE( *static_cast<TestType*>(storage.data(1)) == "" );
+				REQUIRE( *static_cast<TestType*>(storage.data(2)) == "" );
 			}
 		}
 
@@ -71,11 +64,11 @@ SCENARIO( "Working with generic data storage" )
 	GIVEN( "Data storage with some elements" )
 	{
 		storage.push( 5 );
-		*static_cast<int*>(storage.data(0)) = 1;
-		*static_cast<int*>(storage.data(1)) = 2;
-		*static_cast<int*>(storage.data(2)) = 3;
-		*static_cast<int*>(storage.data(3)) = 4;
-		*static_cast<int*>(storage.data(4)) = 5;
+		*static_cast<TestType*>(storage.data(0)) = "A";
+		*static_cast<TestType*>(storage.data(1)) = "B";
+		*static_cast<TestType*>(storage.data(2)) = "C";
+		*static_cast<TestType*>(storage.data(3)) = "D";
+		*static_cast<TestType*>(storage.data(4)) = "E";
 
 		WHEN( "Pushing some elements" )
 		{
@@ -86,15 +79,15 @@ SCENARIO( "Working with generic data storage" )
 				REQUIRE( storage.capacity() >= 7 );
 			}
 			THEN( "New elements should be default constructed" ) {
-				REQUIRE( *static_cast<int*>(storage.data(5)) == 0 );
-				REQUIRE( *static_cast<int*>(storage.data(6)) == 0 );
+				REQUIRE( *static_cast<TestType*>(storage.data(5)) == "" );
+				REQUIRE( *static_cast<TestType*>(storage.data(6)) == "" );
 			}
 			THEN( "Old elements should be intact" ) {
-				REQUIRE( *static_cast<int*>(storage.data(0)) == 1 );
-				REQUIRE( *static_cast<int*>(storage.data(1)) == 2 );
-				REQUIRE( *static_cast<int*>(storage.data(2)) == 3 );
-				REQUIRE( *static_cast<int*>(storage.data(3)) == 4 );
-				REQUIRE( *static_cast<int*>(storage.data(4)) == 5 );
+				REQUIRE( *static_cast<TestType*>(storage.data(0)) == "A" );
+				REQUIRE( *static_cast<TestType*>(storage.data(1)) == "B" );
+				REQUIRE( *static_cast<TestType*>(storage.data(2)) == "C" );
+				REQUIRE( *static_cast<TestType*>(storage.data(3)) == "D" );
+				REQUIRE( *static_cast<TestType*>(storage.data(4)) == "E" );
 			}
 		}
 
@@ -109,9 +102,9 @@ SCENARIO( "Working with generic data storage" )
 				REQUIRE( storage.capacity() >= 5 );
 			}
 			THEN( "Old elements should be intact" ) {
-				REQUIRE( *static_cast<int*>(storage.data(0)) == 1 );
-				REQUIRE( *static_cast<int*>(storage.data(1)) == 2 );
-				REQUIRE( *static_cast<int*>(storage.data(2)) == 3 );
+				REQUIRE( *static_cast<TestType*>(storage.data(0)) == "A" );
+				REQUIRE( *static_cast<TestType*>(storage.data(1)) == "B" );
+				REQUIRE( *static_cast<TestType*>(storage.data(2)) == "C" );
 			}
 		}
 
@@ -119,22 +112,21 @@ SCENARIO( "Working with generic data storage" )
 		{
 			const DSim::swap_t pairs[] =
 			{
-				{ 0, 2 },	// 3 2 1 4 5
-				{ 2, 4 },	// 3 2 5 4 1
-				{ 3, 0 }    // 4 2 5 3 1
+				{ 0, 2 },	// C B A D E
+				{ 2, 4 },	// C B E D A
+				{ 3, 0 }    // D B E C A
 			};
 			storage.reorder( pairs, 3 );
 
 			THEN( "Elements should be reordered" )
 			{
-				REQUIRE( *static_cast<int*>(storage.data(0)) == 4 );
-				REQUIRE( *static_cast<int*>(storage.data(1)) == 2 );
-				REQUIRE( *static_cast<int*>(storage.data(2)) == 5 );
-				REQUIRE( *static_cast<int*>(storage.data(3)) == 3 );
-				REQUIRE( *static_cast<int*>(storage.data(4)) == 1 );
+				REQUIRE( *static_cast<TestType*>(storage.data(0)) == "D" );
+				REQUIRE( *static_cast<TestType*>(storage.data(1)) == "B" );
+				REQUIRE( *static_cast<TestType*>(storage.data(2)) == "E" );
+				REQUIRE( *static_cast<TestType*>(storage.data(3)) == "C" );
+				REQUIRE( *static_cast<TestType*>(storage.data(4)) == "A" );
 			}
 		}
-
 
 		WHEN( "Clearing" )
 		{
