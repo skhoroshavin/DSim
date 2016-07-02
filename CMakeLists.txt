@@ -28,7 +28,7 @@ set( SRC_LIST
 )
 
 set( TEST_LIST
-	main.cpp
+	test/main.cpp
 
 	test/testGenericDataStorage.cpp
 	test/testComponentStorage.cpp
