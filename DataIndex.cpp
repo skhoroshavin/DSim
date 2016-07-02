@@ -5,7 +5,7 @@
 
 namespace DSim {
 
-index_t DataIndex::findById( uuid_t id, index_t hint ) const
+size_t DataIndex::findById( uuid_t id, size_t hint ) const
 {
 	if( (hint < m_entities.size()) && (m_entities[hint] == id) )
 		return hint;
@@ -24,7 +24,7 @@ swap_t DataIndex::findByGroup(group_t min_group, group_t max_group ) const
 	return swap_t( itMin - m_groups.begin(), itMax - m_groups.begin() );
 }
 
-size_t DataIndex::count() const
+size_t DataIndex::size() const
 {
 	return m_entities.size();
 }
@@ -39,19 +39,19 @@ const group_t * DataIndex::groups() const
 	return m_groups.data();
 }
 
-index_t DataIndex::create(uuid_t id, group_t group )
+size_t DataIndex::create(uuid_t id, group_t group )
 {
-	index_t idx = findById( id );
+	size_t idx = findById( id );
 	if( idx < m_entities.size() )
 		throw std::logic_error( "Trying to create existing component" );
 
-	index_t target_idx = std::distance( m_groups.begin(), std::upper_bound( m_groups.begin(), m_groups.end(), group ) );
+	size_t target_idx = std::distance( m_groups.begin(), std::upper_bound( m_groups.begin(), m_groups.end(), group ) );
 
 	m_index[id] = idx;
 	m_entities.push_back( id );
 	m_groups.push_back( group );
 
-	index_t swap_idx = target_idx;
+	size_t swap_idx = target_idx;
 	while( swap_idx < idx )
 	{
 		swap( swap_idx, idx );
@@ -61,14 +61,14 @@ index_t DataIndex::create(uuid_t id, group_t group )
 	return target_idx;
 }
 
-void DataIndex::destroy( index_t idx )
+void DataIndex::destroy( size_t idx )
 {
 	if( idx >= m_entities.size() )
 		throw std::logic_error( "Trying to remove nonexistant component" );
 
 	swap( idx, m_entities.size()-1 );
 
-	index_t swap_idx = std::lower_bound( m_groups.begin() + idx + 1, m_groups.end()-1, m_groups[idx] ) - m_groups.begin() - 1;
+	size_t swap_idx = std::lower_bound( m_groups.begin() + idx + 1, m_groups.end()-1, m_groups[idx] ) - m_groups.begin() - 1;
 	while( swap_idx > idx )
 	{
 		swap( idx, swap_idx );
@@ -95,7 +95,7 @@ void DataIndex::clearSwaps()
 	m_swaps.clear();
 }
 
-void DataIndex::swap( index_t a, index_t b )
+void DataIndex::swap( size_t a, size_t b )
 {
 	uuid_t id1 = m_entities[a];
 	uuid_t id2 = m_entities[b];

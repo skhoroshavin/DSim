@@ -10,6 +10,7 @@ class GenericDataStorage
 {
 public:
 	// Construction/destruction
+	GenericDataStorage() = delete;
 	explicit GenericDataStorage( const IDataType * type );
 
 	// Access

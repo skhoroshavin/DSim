@@ -32,8 +32,8 @@ public:
 	{
 		for( size_t i = 0; i < count; ++i )
 		{
-			index_t a = pairs[i].first;
-			index_t b = pairs[i].second;
+			size_t a = pairs[i].first;
+			size_t b = pairs[i].second;
 			std::swap( m_data[a], m_data[b] );
 		}
 	}

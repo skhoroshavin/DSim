@@ -20,20 +20,26 @@ class ComponentStorage
 {
 public:
 	// Data fields
-	index_t fieldCount() const;
-	const IDataType * fieldType( index_t idx ) const;
-	index_t addField( const IDataType * pType );
+	size_t fieldCount() const;
+	const IDataType * fieldType( size_t idx ) const;
+	size_t addField( const IDataType * pType );
 
 	// Data access
-	size_t count() const;
-	index_t find( uuid_t id, index_t hint = INVALID_INDEX ) const;
+	size_t size() const;
+	size_t find( uuid_t id, size_t hint = INVALID_INDEX ) const;
 
 	// Data modification
-	index_t create( uuid_t id );
-	void destroy( index_t idx );
+	size_t create( uuid_t id );
+	void destroy( size_t idx );
+
+	// Listeners
+	void addListener( IComponentListener * listener );
+	void removeListener( IComponentListener * listener );
 
 private:
-	std::vector<GenericDataStorage> m_Fields;
+	DataIndex m_index;
+	std::vector<GenericDataStorage> m_fields;
+	std::vector<IComponentListener*> m_listeners;
 };
 
 } // namespace DSim

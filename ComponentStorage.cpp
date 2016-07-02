@@ -3,41 +3,71 @@
 
 namespace DSim {
 
-index_t ComponentStorage::fieldCount() const
+size_t ComponentStorage::fieldCount() const
 {
-	return m_Fields.size();
+	return m_fields.size();
 }
 
-const IDataType * ComponentStorage::fieldType(index_t idx ) const
+const IDataType * ComponentStorage::fieldType(size_t idx ) const
 {
-	return m_Fields.at(idx).type();
+	return m_fields.at(idx).type();
 }
 
-index_t ComponentStorage::addField( const IDataType * pType )
+size_t ComponentStorage::addField( const IDataType * pType )
 {
-	index_t result = m_Fields.size();
-	m_Fields.emplace_back( pType );
+	size_t result = m_fields.size();
+	m_fields.emplace_back( pType );
 	return result;
 }
 
-size_t ComponentStorage::count() const
+size_t ComponentStorage::size() const
 {
-	return 0;
+	return m_index.size();
 }
 
-index_t ComponentStorage::find( uuid_t id, index_t hint ) const
+size_t ComponentStorage::find( uuid_t id, size_t hint ) const
 {
-	return INVALID_INDEX;
+	return m_index.findById( id, hint );
 }
 
-index_t ComponentStorage::create( uuid_t id )
+size_t ComponentStorage::create( uuid_t id )
 {
-//	DSIM_ASSERT( false, "Fails to create" );
+	DSIM_ASSERT( find(id) >= size(), "Trying to create same UUID twice" );
+
+	size_t idx = m_index.create( id );
+
+	for( GenericDataStorage& data : m_fields )
+	{
+		data.push( 1 );
+		data.swap( m_index.swaps(), m_index.swapCount() );
+	}
+
+	for( IComponentListener * listener : m_listeners )
+	{
+		listener->componentsCreated( 1 );
+		listener->componentsReordered( m_index.swaps(), m_index.swapCount() );
+	}
+
+	m_index.clearSwaps();
+	return idx;
 }
 
-void ComponentStorage::destroy( index_t idx )
+void ComponentStorage::destroy( size_t idx )
 {
-	//	DSIM_ASSERT( false );
+
+}
+
+void ComponentStorage::addListener( IComponentListener * listener )
+{
+	DSIM_ASSERT( std::find( m_listeners.begin(), m_listeners.end(), listener ) == m_listeners.end(), "Trying to add same listener twice" );
+	m_listeners.push_back( listener );
+}
+
+void ComponentStorage::removeListener( IComponentListener * listener )
+{
+	auto it = std::find( m_listeners.begin(), m_listeners.end(), listener );
+	DSIM_ASSERT( it != m_listeners.end(), "Trying to delete nonexistant listener" );
+	m_listeners.erase( it );
 }
 
 } // namespace DSim
