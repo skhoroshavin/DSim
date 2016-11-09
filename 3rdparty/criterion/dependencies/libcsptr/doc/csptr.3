@@ -1,0 +1,108 @@
+.TH CSPTR 3  2015-03-18 "" ""
+.SH NAME
+csptr \- smart pointers for the C programming language
+.SH SYNOPSIS
+.nf
+.B #include <csptr/smart_ptr.h>
+.sp
+.BI "void *unique_ptr(" "Type" ", " "Value" ", ... );"
+.BI "void *shared_ptr(" "Type" ", " "Value" ", ... );"
+.sp
+.B #include <csptr/smart_ptr.h>
+.B #include <csptr/smalloc.h>
+.BI "void *smalloc(size_t " "size" ", size_t " "nmemb" ", int " "kind");
+.BI "void *smalloc(size_t " "size" ", size_t " "nmemb" ", int " "kind" ", void (" "*dtor" ")(void *, void *));"
+.BI "void *smalloc(size_t " "size" ", size_t " "nmemb" ", int " "kind" ", void (" "*dtor" ")(void *, void *), struct { void *, size_t } " "meta" );
+.BI "void sfree(void " "*ptr" );
+.BI "void *sref(void " "*ptr" );
+.fi
+.SH DESCRIPTION
+.PP
+The
+.BR smalloc ()
+function calls an allocator
+.BR "" ( malloc (3)
+by default), such that the returned pointer is a smart pointer.
+.IR "The memory is not initialized" ,
+and great care should be taken to initialize it before destruction if a
+destructor has been specified. If
+.I size
+is 0, then
+.BR smalloc ()
+returns NULL.
+If
+.I nmemb
+is 0, then smalloc shall return a smart pointer to a memory block of at least
+.I size
+bytes, and the smart pointer is a scalar. Otherwise, it shall return a memory
+block to at least
+.I size * nmemb
+bytes, and the smart pointer is an array.
+.PP
+The
+.BR sfree ()
+function calls the deallocator associated to the
+.BR smalloc ()
+allocator
+.BR "" ( free (3)
+by default) on
+.I ptr
+if the smart pointer is either unique or shared with a reference
+count of 0. If the smart pointer is shared, it shall decrement the reference
+counter by 1 before checking if the deallocator needs to be called.
+.PP
+The
+.BR sref ()
+function creates a new reference to
+.IR "ptr" ,
+incrementing the internal reference counter of the smart shared pointer by 1.
+It shall only be called on a shared pointer.
+.PP
+The
+.BR unique_ptr ()
+and
+.BR shared_ptr ()
+macros expand to a call to the
+.BR smalloc ()
+function with either UNIQUE or SHARED for the
+.I kind
+parameter, then sets the newly returned memory with
+.IR Value .
+Additional parameters are passed as-is to the function.
+If
+.I Type
+is an array type, then
+.I size
+shall contain the size of the compound type, and
+.I nmemb
+shall contain the length of the array. Otherwise, if
+.I Type
+is a scalar or complex type, then
+.I size
+shall contain the size of the type, and
+.I nmemb
+shall be 0.
+.SH RETURN VALUE
+The
+.BR smalloc ()
+function return a pointer to the newly allocated memory.
+On error, it returns NULL.
+NULL may also be returned by a successful call to
+.BR smalloc ()
+with a
+.I size
+of zero.
+.PP
+The
+.BR sfree ()
+function returns no value.
+.PP
+The
+.BR sref ()
+function returns
+.IR "ptr" .
+
+.SH SEE ALSO
+.ad l
+.nh
+.BR malloc (3)

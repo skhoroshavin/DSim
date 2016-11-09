@@ -29,10 +29,6 @@ matrix:
             - clang-3.6
     
 script: 
-  - wget https://github.com/Snaipe/Criterion/releases/download/v2.3.0-rc2/criterion-v2.3.0-rc2-linux-x86_64.tar.bz2
-  - tar -xf criterion-v2.3.0-rc2-linux-x86_64.tar.bz2
-  - sudo mv -v criterion-v2.3.0-rc2/include/* /usr/include/
-  - sudo mv -v criterion-v2.3.0-rc2/lib/* /usr/lib
   - export CC=$MYCC
   - export CXX=$MYCXX
   - $CXX --version
