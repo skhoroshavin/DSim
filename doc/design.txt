@@ -1,0 +1,56 @@
+
+allocators
+    allocator [OK]
+    system_allocator
+    buddy_allocator
+    pool_allocator
+    stack_allocator
+    generic_allocator
+
+containers
+    array [OK]
+    hash [WIP]
+    list
+    bps_tree
+    range_list
+
+tables
+    table_logger
+    table_processor [?]
+    table_schema [?]
+    table_fixed_column
+    table_var_column
+    table
+    hash_table : table
+    bps_table : table
+    partition_table : table, table_processor
+    processed_table : table, table_processor
+    hash_index : table_processor
+    bps_tree_index : table_processor
+
+tasks
+
+debug
+
+
+-----------------------------------------------------------------------------
+
+Table log events:
+    INSERT FAST/ORDERED block, start_id, count
+    REMOVE FAST/ORDERED block, index, count
+    UPDATE block, index, count, column
+
+Table interface:
+    // Reflection
+    column_count()
+    column_size( col )
+    block_count()
+    block_size( block )
+
+    // Access
+    insert( start_id, count )
+    remove( start_id, count )
+    id_data( block )
+    data( block, col )
+    find( id, count, hint )
+

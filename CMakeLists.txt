@@ -1,37 +1,10 @@
 project(DSim)
 cmake_minimum_required(VERSION 2.8)
-add_definitions(-std=c++14)
-include_directories(.)
-
-set( HDR_LIST
-	json.h
-
-	DSimCommon.h
-
-	DataIndex.h
-	DataStorage.h
-
-	DataType.h
-	GenericDataStorage.h
-
-	ComponentStorage.h
-	ComponentRuntime.h
-)
-
-set( SRC_LIST
-	DataIndex.cpp
-
-	GenericDataStorage.cpp
-
-	ComponentStorage.cpp
-	ComponentRuntime.cpp
-)
-
-set( TEST_LIST
-	test/main.cpp
-
-	test/testGenericDataStorage.cpp
-	test/testComponentStorage.cpp
-)
-
-add_executable(${PROJECT_NAME} ${HDR_LISR} ${SRC_LIST} ${TEST_LIST})
+include_directories(src)
+aux_source_directory(src/allocators SRC_LIST)
+aux_source_directory(src/containers SRC_LIST)
+aux_source_directory(src/utils SRC_LIST)
+aux_source_directory(test/containers SRC_LIST)
+add_definitions(-std=c99)
+add_executable(${PROJECT_NAME} ${SRC_LIST})
+target_link_libraries(${PROJECT_NAME} -lcriterion)
