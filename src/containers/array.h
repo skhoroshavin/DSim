@@ -21,7 +21,7 @@ typedef struct _dsim_array_
 
 void _dsim_array_reserve(_dsim_array *a, dsim_index_t capacity, dsim_index_t elem_size );
 void _dsim_array_resize( _dsim_array *a, dsim_index_t count, dsim_index_t elem_size );
-void _dsim_array_fill( _dsim_array *a, uint8_t value, dsim_index_t elem_size );
+void _dsim_array_fill( _dsim_array *a, void *value, dsim_index_t elem_size );
 void _dsim_array_push_back( _dsim_array *a, const void *data, dsim_index_t count, dsim_index_t elem_size );
 void _dsim_array_reset( _dsim_array *a, dsim_index_t elem_size );
 
@@ -37,8 +37,8 @@ void _dsim_array_reset( _dsim_array *a, dsim_index_t elem_size );
     { _dsim_array_reserve( (_dsim_array*)array, count, sizeof(type)); } \
     inline static void name##_resize( name *array, dsim_index_t count ) \
     { _dsim_array_resize( (_dsim_array*)array, count, sizeof(type) ); } \
-    inline static void name##_fill( name *array, uint8_t value ) \
-    { _dsim_array_fill( (_dsim_array*)array, value, sizeof(type) ); } \
+    inline static void name##_fill( name *array, type value ) \
+    { _dsim_array_fill( (_dsim_array*)array, &value, sizeof(type) ); } \
     inline static void name##_push_back( name *array, type value ) \
     { _dsim_array_push_back( (_dsim_array*)array, &value, 1, sizeof(type) ); } \
     inline static void name##_push_back_n( name *array, const type * data, dsim_index_t count ) \

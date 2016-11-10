@@ -21,10 +21,11 @@ void _dsim_array_resize( _dsim_array *a, dsim_index_t count, dsim_index_t elem_s
     a->count = count;
 }
 
-void _dsim_array_fill( _dsim_array *a, uint8_t value, dsim_index_t elem_size )
+void _dsim_array_fill( _dsim_array *a, void* value, dsim_index_t elem_size )
 {
     if( !a->data ) return;
-    memset( a->data, value, a->count*elem_size );
+    for( dsim_index_t i = 0; i < a->count; ++i )
+        memcpy( (char*)a->data + i*elem_size, value, elem_size );
 }
 
 void _dsim_array_push_back( _dsim_array *a, const void *data, dsim_index_t count, dsim_index_t elem_size )
