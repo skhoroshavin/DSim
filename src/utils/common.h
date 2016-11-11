@@ -15,6 +15,9 @@
 
 DSIM_BEGIN_HEADER
 
+typedef uint32_t uint32;
+typedef uint64_t uint64;
+
 #ifndef count_of
 #define count_of(a) (sizeof(a)/sizeof((a)[0]))
 #endif // count_of

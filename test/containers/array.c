@@ -143,12 +143,12 @@ Test(array_non_empty, resize_less)
 
 Test(array_non_empty, fill)
 {
-    dsim_uint64_array_fill( &array, 0xdeadbeef );
+    dsim_uint64_array_fill( &array, 0xdeadbeefcafe );
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) );
     cr_assert( array.capacity >= count_of(test_data) );
     for( size_t i = 0; i < array.count; ++i )
-        cr_assert( array.data[i] == 0xdeadbeef );
+        cr_assert( array.data[i] == 0xdeadbeefcafe );
 }
 
 Test(array_non_empty, push_back)
