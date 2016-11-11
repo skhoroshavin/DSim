@@ -3,7 +3,7 @@
 
 #include "containers/array.h"
 
-static dsim_index_array array = dsim_array_init(&dsim_default_allocator);
+static dsim_uint64_array array = dsim_array_init(&dsim_default_allocator);
 
 /*
  * Empty array
@@ -16,7 +16,7 @@ void init_array_empty()
 
 void done_array_empty()
 {
-    dsim_index_array_reset( &array );
+    dsim_uint64_array_reset( &array );
 }
 
 TestSuite(array_empty, .init = init_array_empty, .fini = done_array_empty );
@@ -30,7 +30,7 @@ Test(array_empty, assert_empty)
 
 Test(array_empty, reserve)
 {
-    dsim_index_array_reserve( &array, 10 );
+    dsim_uint64_array_reserve( &array, 10 );
     cr_assert( array.data != 0 );
     cr_assert( array.count == 0 );
     cr_assert( array.capacity >= 10 );
@@ -38,7 +38,7 @@ Test(array_empty, reserve)
 
 Test(array_empty, resize)
 {
-    dsim_index_array_resize( &array, 10 );
+    dsim_uint64_array_resize( &array, 10 );
     cr_assert( array.data != 0 );
     cr_assert( array.count == 10 );
     cr_assert( array.capacity >= 10 );
@@ -46,7 +46,7 @@ Test(array_empty, resize)
 
 Test(array_empty, push_back)
 {
-    dsim_index_array_push_back( &array, 5 );
+    dsim_uint64_array_push_back( &array, 5 );
     cr_assert( array.data != 0 );
     cr_assert( array.count == 1 );
     cr_assert( array.capacity >= 1 );
@@ -55,8 +55,8 @@ Test(array_empty, push_back)
 
 Test(array_empty, push_back_n)
 {
-    const dsim_index_t data[] = { 43, 3, 16, 5 };
-    dsim_index_array_push_back_n( &array, data, count_of(data) );
+    const uint64_t data[] = { 43, 3, 16, 5 };
+    dsim_uint64_array_push_back_n( &array, data, count_of(data) );
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(data) );
     cr_assert( array.capacity >= count_of(data) );
@@ -65,7 +65,7 @@ Test(array_empty, push_back_n)
 
 Test(array_empty, clear)
 {
-    dsim_index_array_clear( &array );
+    dsim_uint64_array_clear( &array );
     cr_assert( array.data == 0 );
     cr_assert( array.count == 0 );
     cr_assert( array.capacity == 0 );
@@ -73,7 +73,7 @@ Test(array_empty, clear)
 
 Test(array_empty, reset)
 {
-    dsim_index_array_reset( &array );
+    dsim_uint64_array_reset( &array );
     cr_assert( array.data == 0 );
     cr_assert( array.count == 0 );
     cr_assert( array.capacity == 0 );
@@ -83,16 +83,16 @@ Test(array_empty, reset)
  * Non empty array
  */
 
-static dsim_index_t test_data[] = { 5, 3, 7, 52, 12, 3 };
+static uint64_t test_data[] = { 5, 3, 7, 52, 12, 3 };
 
 void init_array_non_empty()
 {
-    dsim_index_array_push_back_n( &array, test_data, count_of(test_data) );
+    dsim_uint64_array_push_back_n( &array, test_data, count_of(test_data) );
 }
 
 void done_array_non_empty()
 {
-    dsim_index_array_reset( &array );
+    dsim_uint64_array_reset( &array );
 }
 
 TestSuite(array_non_empty, .init = init_array_non_empty, .fini = done_array_non_empty );
@@ -107,7 +107,7 @@ Test(array_non_empty, assert_non_empty)
 
 Test(array_non_empty, reserve_more)
 {
-    dsim_index_array_reserve( &array, count_of(test_data) + 4 );
+    dsim_uint64_array_reserve( &array, count_of(test_data) + 4 );
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) );
     cr_assert( array.capacity >= count_of(test_data) + 4 );
@@ -116,7 +116,7 @@ Test(array_non_empty, reserve_more)
 
 Test(array_non_empty, reserve_less)
 {
-    dsim_index_array_reserve( &array, count_of(test_data) - 4 );
+    dsim_uint64_array_reserve( &array, count_of(test_data) - 4 );
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) );
     cr_assert( array.capacity >= count_of(test_data) );
@@ -125,7 +125,7 @@ Test(array_non_empty, reserve_less)
 
 Test(array_non_empty, resize_more)
 {
-    dsim_index_array_resize( &array, count_of(test_data) + 4 );
+    dsim_uint64_array_resize( &array, count_of(test_data) + 4 );
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) + 4 );
     cr_assert( array.capacity >= count_of(test_data) + 4 );
@@ -134,7 +134,7 @@ Test(array_non_empty, resize_more)
 
 Test(array_non_empty, resize_less)
 {
-    dsim_index_array_resize( &array, count_of(test_data) - 4 );
+    dsim_uint64_array_resize( &array, count_of(test_data) - 4 );
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) - 4 );
     cr_assert( array.capacity >= count_of(test_data) );
@@ -143,7 +143,7 @@ Test(array_non_empty, resize_less)
 
 Test(array_non_empty, fill)
 {
-    dsim_index_array_fill( &array, 0xdeadbeef );
+    dsim_uint64_array_fill( &array, 0xdeadbeef );
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) );
     cr_assert( array.capacity >= count_of(test_data) );
@@ -153,7 +153,7 @@ Test(array_non_empty, fill)
 
 Test(array_non_empty, push_back)
 {
-    dsim_index_array_push_back( &array, 42 );
+    dsim_uint64_array_push_back( &array, 42 );
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) + 1 );
     cr_assert( array.capacity >= count_of(test_data) + 1 );
@@ -163,8 +163,8 @@ Test(array_non_empty, push_back)
 
 Test(array_non_empty, push_back_n)
 {
-    const dsim_index_t more_data[] = { 65, 0, 123, 87, 1 };
-    dsim_index_array_push_back_n( &array, more_data, count_of(more_data) );
+    const uint64_t more_data[] = { 65, 0, 123, 87, 1 };
+    dsim_uint64_array_push_back_n( &array, more_data, count_of(more_data) );
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) + count_of(more_data) );
     cr_assert( array.capacity >= count_of(test_data) + count_of(more_data) );
@@ -174,7 +174,7 @@ Test(array_non_empty, push_back_n)
 
 Test(array_non_empty, pop_back)
 {
-    dsim_index_array_pop_back( &array );
+    dsim_uint64_array_pop_back( &array );
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) - 1 );
     cr_assert( array.capacity >= count_of(test_data) );
@@ -183,7 +183,7 @@ Test(array_non_empty, pop_back)
 
 Test(array_non_empty, pop_back_n)
 {
-    dsim_index_array_pop_back_n( &array, 3 );
+    dsim_uint64_array_pop_back_n( &array, 3 );
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) - 3 );
     cr_assert( array.capacity >= count_of(test_data) );
@@ -192,7 +192,7 @@ Test(array_non_empty, pop_back_n)
 
 Test(array_non_empty, clear)
 {
-    dsim_index_array_clear( &array );
+    dsim_uint64_array_clear( &array );
     cr_assert( array.data != 0 );
     cr_assert( array.count == 0 );
     cr_assert( array.capacity >= count_of(test_data) );
@@ -200,7 +200,7 @@ Test(array_non_empty, clear)
 
 Test(array_non_empty, reset)
 {
-    dsim_index_array_reset( &array );
+    dsim_uint64_array_reset( &array );
     cr_assert( array.data == 0 );
     cr_assert( array.count == 0 );
     cr_assert( array.capacity == 0 );

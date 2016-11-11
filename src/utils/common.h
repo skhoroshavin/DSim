@@ -31,10 +31,7 @@ DSIM_BEGIN_HEADER
 #define min(a,b) ((a < b) ? a : b)
 #endif // min
 
-typedef uint32_t dsim_index_t;
-#define DSIM_INVALID_INDEX ((dsim_index_t)-1)
-
-typedef uint64_t dsim_id_t;
+#define DSIM_INVALID_INDEX ((uint32_t)-1)
 
 uint64_t dsim_hash64( uint64_t key );
 size_t dsim_next_pow_2( size_t value );

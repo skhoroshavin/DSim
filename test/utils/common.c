@@ -3,10 +3,10 @@
 
 #include "utils/common.h"
 
-struct test_struct { int a; float b; };
-
 Test(utils_common, count_of)
 {
+    struct test_struct { int a; float b; };
+
     uint64_t arr1[23];
     int arr2[] = { 2, 5, 1, 0, 2 };
     struct test_struct arr3[] = { { 1, 2.0f }, { -10, 0.0f } };
