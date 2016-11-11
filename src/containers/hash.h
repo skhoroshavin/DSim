@@ -19,10 +19,7 @@ typedef struct _dsim_hash_
     /* ._hash = */ dsim_array_init(alloc), \
     /* ._next = */ dsim_array_init(alloc) }
 
-int _dsim_hash_contains( const _dsim_hash *h, uint64_t key );
 void _dsim_hash_reserve( _dsim_hash *h, uint32_t count, uint32_t elem_size );
-uint32_t _dsim_hash_insert( _dsim_hash *h, uint64_t key, uint32_t elem_size );
-uint32_t _dsim_hash_insert_multi( _dsim_hash *h, uint64_t key, uint32_t elem_size );
 void _dsim_hash_reset( _dsim_hash *h , uint32_t elem_size );
 
 #define DSIM_DEFINE_HASH(type) \
@@ -33,6 +30,8 @@ void _dsim_hash_reset( _dsim_hash *h , uint32_t elem_size );
         dsim_uint32_array   _hash; \
         dsim_uint32_array   _next; \
     } dsim_##type##_hash; \
+    inline static void dsim_##type##_hash_reserve( dsim_##type##_hash *h, uint32_t count ) \
+    { _dsim_hash_reserve( (_dsim_hash*)h, count, sizeof(type) ); } \
     inline static void dsim_##type##_hash_reset( dsim_##type##_hash *h ) \
     { _dsim_hash_reset( (_dsim_hash*)h, sizeof(type) ); } \
 

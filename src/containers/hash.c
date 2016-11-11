@@ -63,6 +63,8 @@ static uint32_t _dsim_hash_make( _dsim_hash *h, uint64_t key )
     return i;
 }
 
+uint32_t _dsim_hash_insert_multi( _dsim_hash *h, uint64_t key, uint32_t elem_size );
+
 static void _dsim_hash_rehash( _dsim_hash *h, uint32_t count, uint32_t elem_size )
 {
     if( count <= h->_hash.count )
@@ -96,8 +98,8 @@ void _dsim_hash_reserve( _dsim_hash *h, uint32_t count, uint32_t elem_size )
     dsim_uint64_array_reserve( &h->keys, count );
     _dsim_array_reserve( &h->data, count, elem_size );
 
-    _dsim_hash_rehash( h, dsim_next_pow_2(count*16/11), elem_size );
     dsim_uint32_array_reserve( &h->_next, count );
+    //_dsim_hash_rehash( h, dsim_next_pow_2(count*16/11), elem_size );
 }
 
 uint32_t _dsim_hash_insert( _dsim_hash *h, uint64_t key, uint32_t elem_size )

@@ -31,3 +31,16 @@ Test(hash_empty, assert_empty)
     cr_assert( hash.data.count == 0 );
     cr_assert( hash.data.capacity == 0 );
 }
+
+Test(hash_empty, reserve)
+{
+    dsim_uint64_hash_reserve( &hash, 10 );
+
+    cr_assert( hash.keys.data != 0 );
+    cr_assert( hash.keys.count == 0 );
+    cr_assert( hash.keys.capacity >= 10 );
+
+    cr_assert( hash.data.data != 0 );
+    cr_assert( hash.data.count == 0 );
+    cr_assert( hash.data.capacity >= 10 );
+}
