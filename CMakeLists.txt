@@ -10,10 +10,12 @@ add_definitions(-std=c99)
 
 aux_source_directory(src/allocators SRC_LIST)
 aux_source_directory(src/containers SRC_LIST)
+aux_source_directory(src/table SRC_LIST)
 aux_source_directory(src/utils SRC_LIST)
 
 aux_source_directory(test/allocators SRC_LIST)
 aux_source_directory(test/containers SRC_LIST)
+aux_source_directory(test/table SRC_LIST)
 aux_source_directory(test/utils SRC_LIST)
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})

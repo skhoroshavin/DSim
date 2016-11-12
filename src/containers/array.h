@@ -52,6 +52,8 @@ void _dsim_array_reset( _dsim_array *a, uint32_t elem_size );
     inline static void dsim_##type##_array_reset( dsim_##type##_array *a ) \
     { _dsim_array_reset( (_dsim_array*)a, sizeof(type) ); } \
 
+DSIM_DEFINE_ARRAY(uint8)
+DSIM_DEFINE_ARRAY(uint16)
 DSIM_DEFINE_ARRAY(uint32)
 DSIM_DEFINE_ARRAY(uint64)
 

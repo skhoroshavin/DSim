@@ -11,7 +11,7 @@ containers
     array [OK]
     hash [WIP]
     list
-    bps_tree
+    btree
     range_list
 
 tables
@@ -26,11 +26,22 @@ tables
     partition_table : table, table_processor
     processed_table : table, table_processor
     hash_index : table_processor
-    bps_tree_index : table_processor
+    btree_index : table_processor
 
 tasks
 
-debug
+-----------------------------------------------------------------------------
+
+Table cases:
+1) frequent allocation/deallocation of single objects, updated every frame, order not important
+	insert by one id to end of list (index = insert( id ), data[index] = initial)
+	update all objects per frame, order independent (update( data() ))
+	remove by one id swapping with end of list (remove( id ))
+
+2) rare allocation/deallocation of continuous ranges of ids, preferably saving ordering
+	insert by id range to end of list (index = insert( id, count ), init( data+index, data+index+count) )
+	remove by id range preserving order (remove( id, count ))
+
 
 
 -----------------------------------------------------------------------------
