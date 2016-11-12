@@ -10,7 +10,7 @@ static uint32_t _dsim_array_grow( uint32_t new_size, uint32_t elem_size )
 void _dsim_array_reserve( _dsim_array *a, uint32_t capacity, uint32_t elem_size )
 {
     if( a->capacity >= capacity ) return;
-    a->data = dsim_reallocate( a->alloc, a->data, a->capacity*elem_size, capacity*elem_size, a->count*elem_size );
+    a->data = dsim_reallocate( a->alloc, a->data, a->capacity*elem_size, capacity*elem_size );
     a->capacity = capacity;
 }
 
