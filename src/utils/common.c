@@ -11,7 +11,7 @@ uint64_t dsim_hash64( uint64_t key )
     return key;
 }
 
-size_t dsim_next_pow_2( size_t value )
+uint64_t dsim_next_pow_2( uint64_t value )
 {
     value--;
     value |= value >> 1;
