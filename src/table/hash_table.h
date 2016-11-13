@@ -10,9 +10,9 @@ struct dsim_table_column
     struct _dsim_array data;
 };
 
-#define dsim_table_column_init(width,alloc) { \
+#define dsim_table_column_static_init(width,alloc) { \
     /* .width = */ width, \
-    /* .data = */  dsim_array_init(alloc) }
+    /* .data = */  dsim_array_static_init(alloc) }
 
 extern struct dsim_table_operations dsim_hash_table_ops;
 
@@ -24,8 +24,8 @@ struct dsim_hash_table
     struct dsim_table_column * columns;
 };
 
-#define dsim_hash_table_init(column_count,columns,alloc) { \
-    /* .table = */        dsim_table_init(&dsim_hash_table_ops), \
-    /* .ids = */          dsim_array_init(alloc), \
+#define dsim_hash_table_static_init(column_count,columns,alloc) { \
+    /* .table = */        dsim_table_static_init(&dsim_hash_table_ops), \
+    /* .ids = */          dsim_array_static_init(alloc), \
     /* .column_count = */ column_count, \
     /* .columns = */      columns }

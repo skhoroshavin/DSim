@@ -25,7 +25,7 @@ struct dsim_table
     struct dsim_table_operations * _ops;
 };
 
-#define dsim_table_init(ops) { \
+#define dsim_table_static_init(ops) { \
     /* ._ops = */ ops }
 
 inline static uint32_t dsim_table_column_count( const struct dsim_table *table )

@@ -70,7 +70,7 @@ static void _dsim_hash_rehash( struct _dsim_hash *h, uint32_t count, uint32_t el
     if( count <= h->_hash.count )
         return;
 
-    struct _dsim_hash new_set = dsim_hash_init(h->_hash.alloc);
+    struct _dsim_hash new_set = dsim_hash_static_init(h->_hash.alloc);
     dsim_uint32_array_resize( &new_set._hash, count );
     dsim_uint32_array_fill( &new_set._hash, 0xff );
 

@@ -13,7 +13,7 @@ struct _dsim_array
     struct dsim_allocator * alloc;
 };
 
-#define dsim_array_init(alloc) { \
+#define dsim_array_static_init(alloc) { \
     /* .data = */     0, \
     /* .count = */    0, \
     /* .capacity = */ 0, \

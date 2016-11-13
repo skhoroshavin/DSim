@@ -3,7 +3,7 @@
 
 #include "containers/array.h"
 
-static struct dsim_uint64_array array = dsim_array_init(&dsim_default_allocator);
+static struct dsim_uint64_array array = dsim_array_static_init(&dsim_default_allocator);
 
 /*
  * Empty array

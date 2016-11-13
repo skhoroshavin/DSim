@@ -3,7 +3,7 @@
 
 #include "containers/hash.h"
 
-static struct dsim_uint64_hash hash = dsim_hash_init(&dsim_default_allocator);
+static struct dsim_uint64_hash hash = dsim_hash_static_init(&dsim_default_allocator);
 
 /*
  * Empty hash

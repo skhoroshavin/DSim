@@ -13,11 +13,11 @@ struct _dsim_hash
     struct dsim_uint32_array _next;
 };
 
-#define dsim_hash_init(alloc) { \
-    /* .keys  = */ dsim_array_init(alloc), \
-    /* .data  = */ dsim_array_init(alloc), \
-    /* ._hash = */ dsim_array_init(alloc), \
-    /* ._next = */ dsim_array_init(alloc) }
+#define dsim_hash_static_init(alloc) { \
+    /* .keys  = */ dsim_array_static_init(alloc), \
+    /* .data  = */ dsim_array_static_init(alloc), \
+    /* ._hash = */ dsim_array_static_init(alloc), \
+    /* ._next = */ dsim_array_static_init(alloc) }
 
 void _dsim_hash_reserve( struct _dsim_hash *h, uint32_t count, uint32_t elem_size );
 void _dsim_hash_reset( struct _dsim_hash *h , uint32_t elem_size );
