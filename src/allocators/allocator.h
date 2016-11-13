@@ -6,11 +6,13 @@
 
 DSIM_BEGIN_HEADER
 
+struct dsim_allocator;
+
 struct dsim_allocator_operations
 {
-    void* (*allocate)   (void *self, size_t size);
-    void* (*reallocate) (void *self, void *data, size_t old_size, size_t new_size );
-    void  (*deallocate) (void *self, void *data, size_t size);
+    void* (*allocate)   (struct dsim_allocator *self, size_t size);
+    void* (*reallocate) (struct dsim_allocator *self, void *data, size_t old_size, size_t new_size );
+    void  (*deallocate) (struct dsim_allocator *self, void *data, size_t size);
 };
 
 struct dsim_allocator
