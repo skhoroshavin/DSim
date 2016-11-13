@@ -20,45 +20,45 @@ Test(utils_common, count_of)
 
 Test(utils_common, container_of)
 {
-    typedef struct
+    struct B
     {
         int x;
         int y;
-    } B;
+    };
 
-    typedef struct
+    struct A
     {
-        B   x;
-        int y;
-        B   z;
-    } A;
+        struct B x;
+        int      y;
+        struct B z;
+    };
 
-    A   test;
+    struct A test;
 
-    B   *test_x = &test.x;
-    int *test_y = &test.y;
-    B   *test_z = &test.z;
+    struct B *test_x = &test.x;
+    int      *test_y = &test.y;
+    struct B *test_z = &test.z;
 
-    cr_assert( container_of( test_x, A, x ) == &test );
-    cr_assert( container_of( test_y, A, y ) == &test );
-    cr_assert( container_of( test_z, A, z ) == &test );
+    cr_assert( container_of( test_x, struct A, x ) == &test );
+    cr_assert( container_of( test_y, struct A, y ) == &test );
+    cr_assert( container_of( test_z, struct A, z ) == &test );
 
     int *test_xx = &test_x->x;
     int *test_xy = &test_x->y;
 
-    cr_assert( container_of( test_xx, B, x ) == test_x );
-    cr_assert( container_of( test_xy, B, y ) == test_x );
+    cr_assert( container_of( test_xx, struct B, x ) == test_x );
+    cr_assert( container_of( test_xy, struct B, y ) == test_x );
 
     int *test_zx = &test_z->x;
     int *test_zy = &test_z->y;
 
-    cr_assert( container_of( test_zx, B, x ) == test_z );
-    cr_assert( container_of( test_zy, B, y ) == test_z );
+    cr_assert( container_of( test_zx, struct B, x ) == test_z );
+    cr_assert( container_of( test_zy, struct B, y ) == test_z );
 
-    cr_assert( container_of( test_xx, A, x.x ) == &test );
-    cr_assert( container_of( test_xy, A, x.y ) == &test );
-    cr_assert( container_of( test_zx, A, z.x ) == &test );
-    cr_assert( container_of( test_zy, A, z.y ) == &test );
+    cr_assert( container_of( test_xx, struct A, x.x ) == &test );
+    cr_assert( container_of( test_xy, struct A, x.y ) == &test );
+    cr_assert( container_of( test_zx, struct A, z.x ) == &test );
+    cr_assert( container_of( test_zy, struct A, z.y ) == &test );
 }
 
 Test(utils_common, next_pow_2)
