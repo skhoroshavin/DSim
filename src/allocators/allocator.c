@@ -3,17 +3,17 @@
 #include <stdio.h>
 #include <memory.h>
 
-void * default_allocate( struct dsim_allocator *self, size_t size )
+static void * default_allocate( struct dsim_allocator *self, size_t size )
 {
     return malloc( size );
 }
 
-void default_deallocate( struct dsim_allocator *self, void *data, size_t size )
+static void default_deallocate( struct dsim_allocator *self, void *data, size_t size )
 {
     free( data );
 }
 
-void * default_reallocate( struct dsim_allocator *self, void *data, size_t old_size, size_t new_size )
+static void * default_reallocate( struct dsim_allocator *self, void *data, size_t old_size, size_t new_size )
 {
     return realloc( data, new_size );
 }

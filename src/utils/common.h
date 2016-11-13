@@ -2,8 +2,8 @@
 #pragma once
 
 #include <assert.h>
-#include <stdlib.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 #define DSIM_BEGIN_HEADER extern "C" {
