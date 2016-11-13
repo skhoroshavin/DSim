@@ -18,6 +18,7 @@ struct dsim_table_operations
     uint32_t (*find)( const struct dsim_table *self, uint64_t id );
     void     (*insert)( struct dsim_table *self, uint64_t start_id, uint32_t count );
     void     (*remove)( struct dsim_table *self, uint64_t start_id, uint32_t count );
+    void     (*reset)( struct dsim_table *self );
 };
 
 struct dsim_table
@@ -42,9 +43,11 @@ inline static const uint64_t *dsim_table_id_data( const struct dsim_table *table
 inline static void *dsim_table_data( struct dsim_table *table, uint32_t block, uint32_t col )
 { return table->_ops->data( table, block, col ); }
 
-inline static uint32_t dsim_find( const struct dsim_table *table, uint64_t id )
+inline static uint32_t dsim_table_find( const struct dsim_table *table, uint64_t id )
 { return table->_ops->find( table, id ); }
-inline static void dsim_insert( struct dsim_table *table, uint64_t start_id, uint32_t count )
+inline static void dsim_table_insert( struct dsim_table *table, uint64_t start_id, uint32_t count )
 { table->_ops->insert( table, start_id, count ); }
-inline static void dsim_remove( struct dsim_table *table, uint64_t start_id, uint32_t count )
+inline static void dsim_table_remove( struct dsim_table *table, uint64_t start_id, uint32_t count )
 { table->_ops->remove( table, start_id, count ); }
+inline static void dsim_table_reset( struct dsim_table *table )
+{ table->_ops->reset( table ); }
