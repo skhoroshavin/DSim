@@ -17,19 +17,19 @@ static struct dsim_hash_table table = dsim_hash_table_static_init(
  * Empty table
  */
 
-void init_table_empty()
+void init_hash_table_empty()
 {
 
 }
 
-void done_table_empty()
+void done_hash_table_empty()
 {
     dsim_table_reset( &table.table );
 }
 
-TestSuite(table_empty, .init = init_table_empty, .fini = done_table_empty );
+TestSuite(hash_table_empty, .init = init_hash_table_empty, .fini = done_hash_table_empty );
 
-Test(table_empty, assert_empty)
+Test(hash_table_empty, assert_empty)
 {
     cr_assert( dsim_table_column_count( &table.table ) == count_of(table_columns) );
     for( uint32_t i = 0; i < count_of(table.columns); ++i )
@@ -48,7 +48,7 @@ Test(table_empty, assert_empty)
     cr_assert( dsim_table_find( &table.table, -1 ) == DSIM_INVALID_INDEX );
 }
 
-Test(table_empty, insert)
+Test(hash_table_empty, insert)
 {
     dsim_table_insert( &table.table, 100, 4 );
 
@@ -70,7 +70,7 @@ static const uint64_t test_data_0[] = { 12, 64, 23, 76, 643, 0, 2, 9, 7234, 36 }
 static const float    test_data_1[] = { 0, -1, 23.2, 0.64, -0.0001, -0, -2634.6, 54, 0, 6024 };
 static uint8_t test_data_2[10*128];
 
-void init_table_filled()
+void init_hash_table_filled()
 {
     assert( count_of(test_data_0) == test_count );
     assert( count_of(test_data_1) == test_count );
@@ -84,14 +84,14 @@ void init_table_filled()
     memcpy( dsim_table_data( &table.table, 0, 2 ), test_data_0, sizeof(test_data_2) );
 }
 
-void done_table_filled()
+void done_hash_table_filled()
 {
     dsim_table_reset( &table.table );
 }
 
-TestSuite(table_filled, .init = init_table_filled, .fini = done_table_filled );
+TestSuite(hash_table_filled, .init = init_hash_table_filled, .fini = done_hash_table_filled );
 
-Test(table_filled, assert_filled)
+Test(hash_table_filled, assert_filled)
 {
     cr_assert( dsim_table_column_count( &table.table ) == count_of(table_columns) );
     for( uint32_t i = 0; i < count_of(table.columns); ++i )

@@ -83,7 +83,7 @@ Test(array_empty, reset)
  * Non empty array
  */
 
-static uint64_t test_data[] = { 5, 3, 7, 52, 12, 3 };
+static uint64_t test_data[] = { 5, 3, 7, 52, 0, 12, 3, 623, 23 };
 
 void init_array_non_empty()
 {
@@ -138,7 +138,7 @@ Test(array_non_empty, resize_less)
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) - 4 );
     cr_assert( array.capacity >= count_of(test_data) );
-    cr_assert( memcmp(array.data, test_data, sizeof(test_data) - 4*sizeof(test_data[0])) == 0 );
+    cr_assert( memcmp(array.data, test_data, array.count*sizeof(test_data[0])) == 0 );
 }
 
 Test(array_non_empty, fill)
@@ -178,7 +178,7 @@ Test(array_non_empty, pop_back)
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) - 1 );
     cr_assert( array.capacity >= count_of(test_data) );
-    cr_assert( memcmp(array.data, test_data, sizeof(test_data) - sizeof(test_data[0])) == 0 );
+    cr_assert( memcmp(array.data, test_data, array.count*sizeof(test_data[0])) == 0 );
 }
 
 Test(array_non_empty, pop_back_n)
@@ -187,7 +187,7 @@ Test(array_non_empty, pop_back_n)
     cr_assert( array.data != 0 );
     cr_assert( array.count == count_of(test_data) - 3 );
     cr_assert( array.capacity >= count_of(test_data) );
-    cr_assert( memcmp(array.data, test_data, sizeof(test_data) - 3*sizeof(test_data[0])) == 0 );
+    cr_assert( memcmp(array.data, test_data, array.count*sizeof(test_data[0])) == 0 );
 }
 
 Test(array_non_empty, remove)
@@ -197,7 +197,28 @@ Test(array_non_empty, remove)
     cr_assert( array.count == count_of(test_data) - 3 );
     cr_assert( array.capacity >= count_of(test_data) );
     cr_assert( memcmp(array.data, test_data, 2*sizeof(test_data[0])) == 0 );
-    cr_assert( memcmp(array.data + 2, test_data + 5, sizeof(test_data) - 5*sizeof(test_data[0])) == 0 );
+    cr_assert( memcmp(array.data + 2, test_data + 5, (count_of(test_data) - 5)*sizeof(test_data[0])) == 0 );
+}
+
+Test(array_non_empty, remove_fast_unordered)
+{
+    dsim_uint64_array_remove_fast( &array, 3, 2 );
+    cr_assert( array.data != 0 );
+    cr_assert( array.count == count_of(test_data) - 2 );
+    cr_assert( array.capacity >= count_of(test_data) );
+    cr_assert( memcmp(array.data, test_data, 3*sizeof(test_data[0])) == 0 );
+    cr_assert( memcmp(array.data + 3, test_data + count_of(test_data) - 2, 2*sizeof(test_data[0])) == 0 );
+    cr_assert( memcmp(array.data + 5, test_data + 5, (array.count - 5)*sizeof(test_data[0])) == 0 );
+}
+
+Test(array_non_empty, remove_fast_ordered)
+{
+    dsim_uint64_array_remove_fast( &array, 2, 4 );
+    cr_assert( array.data != 0 );
+    cr_assert( array.count == count_of(test_data) - 4 );
+    cr_assert( array.capacity >= count_of(test_data) );
+    cr_assert( memcmp(array.data, test_data, 2*sizeof(test_data[0])) == 0 );
+    cr_assert( memcmp(array.data + 2, test_data + 6, (count_of(test_data) - 6)*sizeof(test_data[0])) == 0 );
 }
 
 Test(array_non_empty, clear)
