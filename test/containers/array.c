@@ -190,6 +190,16 @@ Test(array_non_empty, pop_back_n)
     cr_assert( memcmp(array.data, test_data, sizeof(test_data) - 3*sizeof(test_data[0])) == 0 );
 }
 
+Test(array_non_empty, remove)
+{
+    dsim_uint64_array_remove( &array, 2, 3 );
+    cr_assert( array.data != 0 );
+    cr_assert( array.count == count_of(test_data) - 3 );
+    cr_assert( array.capacity >= count_of(test_data) );
+    cr_assert( memcmp(array.data, test_data, 2*sizeof(test_data[0])) == 0 );
+    cr_assert( memcmp(array.data + 2, test_data + 5, sizeof(test_data) - 5*sizeof(test_data[0])) == 0 );
+}
+
 Test(array_non_empty, clear)
 {
     dsim_uint64_array_clear( &array );

@@ -37,6 +37,14 @@ void _dsim_array_push_back( struct _dsim_array *a, const void *data, uint32_t co
     a->count += count;
 }
 
+void _dsim_array_remove( struct _dsim_array *a, uint32_t pos, uint32_t count, uint32_t elem_size )
+{
+    uint32_t move_count= a->count - pos - count;
+    if( move_count )
+        memmove( (char*)a->data + pos*elem_size, (char*)a->data + (pos + count)*elem_size, move_count*elem_size );
+    a->count -= count;
+}
+
 void _dsim_array_reset( struct _dsim_array *a, uint32_t elem_size )
 {
     if( a->data )
