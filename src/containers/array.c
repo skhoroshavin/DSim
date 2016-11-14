@@ -2,16 +2,18 @@
 #include "array.h"
 #include <memory.h>
 
-static uint32_t _dsim_array_grow( uint32_t new_size, uint32_t elem_size )
-{
-    return dsim_next_pow_2( new_size*elem_size ) / elem_size;
-}
-
 void _dsim_array_reserve( struct _dsim_array *a, uint32_t capacity, uint32_t elem_size )
 {
     if( a->capacity >= capacity ) return;
     a->data = dsim_reallocate( a->alloc, a->data, a->capacity*elem_size, capacity*elem_size );
     a->capacity = capacity;
+}
+
+void _dsim_array_grow( struct _dsim_array *a, uint32_t count, uint32_t elem_size )
+{
+    uint32_t capacity = a->count + count;
+    capacity = dsim_next_pow_2( capacity*elem_size ) / elem_size;
+    _dsim_array_reserve( a, capacity, elem_size );
 }
 
 void _dsim_array_resize( struct _dsim_array *a, uint32_t count, uint32_t elem_size )
@@ -30,8 +32,7 @@ void _dsim_array_fill( struct _dsim_array *a, void* value, uint32_t elem_size )
 
 void _dsim_array_push_back( struct _dsim_array *a, const void *data, uint32_t count, uint32_t elem_size )
 {
-    if( a->capacity < a->count + count )
-        _dsim_array_reserve( a, _dsim_array_grow( a->count + count, elem_size ), elem_size );
+    _dsim_array_grow( a, count, elem_size );
     memcpy( (char*)a->data + a->count*elem_size, data, count*elem_size );
     a->count += count;
 }
