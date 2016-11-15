@@ -15,6 +15,12 @@
 
 DSIM_BEGIN_HEADER
 
+#ifdef _MSC_VER
+#define dsim_thread __declspec(thread)
+#else
+#define dsim_thread __thread
+#endif
+
 #ifndef count_of
 #define count_of(a) (sizeof(a)/sizeof((a)[0]))
 #endif // count_of
