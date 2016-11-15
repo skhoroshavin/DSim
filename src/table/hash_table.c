@@ -14,7 +14,7 @@ static uint32_t dsim_hash_table_column_size( const struct dsim_table *self, uint
     const struct dsim_hash_table * t = container_of( self, const struct dsim_hash_table, table );
 
     assert( col < t->column_count );
-    return t->columns[col].width;
+    return t->columns[col].elem_size;
 }
 
 static uint32_t dsim_hash_table_block_count( const struct dsim_table *self )
@@ -68,7 +68,7 @@ static void dsim_hash_table_insert( struct dsim_table *self, uint64_t start_id, 
         dsim_uint64_array_push_back( &t->ids, start_id + i );
 
     for( uint32_t i = 0; i != t->column_count; ++i )
-        _dsim_array_resize( &t->columns[i].data, new_count, t->columns[i].width );
+        dsim_table_column_resize( t->columns + i, new_count );
 }
 
 static void dsim_hash_table_remove_range( struct dsim_table *self, uint32_t pos, uint32_t count )
@@ -77,7 +77,7 @@ static void dsim_hash_table_remove_range( struct dsim_table *self, uint32_t pos,
 
     dsim_uint64_array_remove_fast( &t->ids, pos, count );
     for( uint32_t i = 0; i < t->column_count; ++i )
-        _dsim_array_remove_fast( &t->columns[i].data, pos, count, t->columns[i].width );
+        dsim_table_column_remove_fast( t->columns + i, pos, count );
 }
 
 static void dsim_hash_table_remove( struct dsim_table *self, uint64_t start_id, uint32_t count )
@@ -119,7 +119,7 @@ static void dsim_hash_table_reset( struct dsim_table *self )
 
     dsim_uint64_array_reset( &t->ids );
     for( uint32_t i = 0; i != t->column_count; ++i )
-        _dsim_array_reset( &t->columns[i].data, t->columns[i].width );
+        dsim_table_column_reset( t->columns + i );
 };
 
 struct dsim_table_operations dsim_hash_table_ops =

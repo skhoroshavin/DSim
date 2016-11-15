@@ -2,17 +2,7 @@
 #pragma once
 
 #include "table.h"
-#include "containers/array.h"
-
-struct dsim_table_column
-{
-    uint32_t width;
-    struct _dsim_array data;
-};
-
-#define dsim_table_column_static_init(width,alloc) { \
-    /* .width = */ width, \
-    /* .data = */  dsim_array_static_init(alloc) }
+#include "table_column.h"
 
 extern struct dsim_table_operations dsim_hash_table_ops;
 

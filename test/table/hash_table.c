@@ -19,7 +19,7 @@ static void test_hash_table_scheme()
 {
     cr_assert( dsim_table_column_count( table ) == count_of(table_columns) );
     for( uint32_t i = 0; i < count_of(hash_table.columns); ++i )
-        cr_assert( dsim_table_column_size( table, i ) == table_columns[i].width );
+        cr_assert( dsim_table_column_size( table, i ) == table_columns[i].elem_size );
 
     cr_assert( dsim_table_block_count( table) == 1 );
 }

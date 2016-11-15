@@ -18,10 +18,10 @@ tables
     table_logger
     table_processor [?]
     table_schema [?]
-    table_fixed_column
+    table_fixed_column [WIP]
     table_var_column
-    table
-    hash_table : table
+    table [WIP]
+    hash_table : table [WIP]
     bps_table : table
     partition_table : table, table_processor
     processed_table : table, table_processor
