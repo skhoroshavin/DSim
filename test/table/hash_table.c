@@ -24,6 +24,11 @@ static void test_hash_table_scheme()
     cr_assert( dsim_table_block_count( table) == 1 );
 }
 
+inline static int check_index( dsim_table_index ti, uint32_t block, uint32_t index )
+{
+    return (ti.block == block) && (ti.index == index);
+}
+
 static void test_hash_table_empty()
 {
     cr_assert( dsim_table_block_size( table, 0 ) == 0 );
@@ -32,10 +37,10 @@ static void test_hash_table_empty()
     for( uint32_t i = 0; i < count_of(hash_table.columns); ++i )
         cr_assert( dsim_table_data( table, 0, i ) == 0 );
 
-    cr_assert( dsim_table_find( table, 0 ) == DSIM_INVALID_INDEX );
-    cr_assert( dsim_table_find( table, 1 ) == DSIM_INVALID_INDEX );
-    cr_assert( dsim_table_find( table, 25 ) == DSIM_INVALID_INDEX );
-    cr_assert( dsim_table_find( table, 30 ) == DSIM_INVALID_INDEX );
+    cr_assert( check_index( dsim_table_find( table, 0 ),  0, DSIM_INVALID_INDEX ) );
+    cr_assert( check_index( dsim_table_find( table, 1 ),  0, DSIM_INVALID_INDEX ) );
+    cr_assert( check_index( dsim_table_find( table, 25 ), 0, DSIM_INVALID_INDEX ) );
+    cr_assert( check_index( dsim_table_find( table, 30 ), 0, DSIM_INVALID_INDEX ) );
 
     cr_assert( table->log.version == 0 );
     cr_assert( table->log.commands.count == 0 );
@@ -111,11 +116,11 @@ static void test_hash_table_data()
     cr_assert( memcmp( dsim_table_data( table, 0, 1 ), test_data_1, sizeof(test_data_1) ) == 0 );
     cr_assert( memcmp( dsim_table_data( table, 0, 2 ), test_data_2, sizeof(test_data_2) ) == 0 );
 
-    cr_assert( dsim_table_find( table, 0 ) == DSIM_INVALID_INDEX );
-    cr_assert( dsim_table_find( table, 1 ) == DSIM_INVALID_INDEX );
-    cr_assert( dsim_table_find( table, 20 ) == 0 );
-    cr_assert( dsim_table_find( table, 27 ) == 7 );
-    cr_assert( dsim_table_find( table, 324 ) == DSIM_INVALID_INDEX );
+    cr_assert( check_index( dsim_table_find( table, 0 ),   0, DSIM_INVALID_INDEX ) );
+    cr_assert( check_index( dsim_table_find( table, 1 ),   0, DSIM_INVALID_INDEX ) );
+    cr_assert( check_index( dsim_table_find( table, 20 ),  0, 0 ) );
+    cr_assert( check_index( dsim_table_find( table, 27 ),  0, 7 ) );
+    cr_assert( check_index( dsim_table_find( table, 324 ), 0, DSIM_INVALID_INDEX ) );
 }
 
 static void init_hash_table_filled()
@@ -160,9 +165,9 @@ Test(hash_table_filled, insert_more)
     test_hash_table_count( 13 );
     test_hash_table_data();
 
-    cr_assert( dsim_table_find( table, 15 ) == 10 );
-    cr_assert( dsim_table_find( table, 17 ) == 12 );
-    cr_assert( dsim_table_find( table, 18 ) == DSIM_INVALID_INDEX );
+    cr_assert( check_index( dsim_table_find( table, 15 ), 0, 10 ) );
+    cr_assert( check_index( dsim_table_find( table, 17 ), 0, 12 ) );
+    cr_assert( check_index( dsim_table_find( table, 18 ), 0, DSIM_INVALID_INDEX ) );
 
     cr_assert( table->log.commands.count == 2 );
     cr_assert( table->log.commands.data[0].type == TCT_PUSH_BACK );
@@ -194,13 +199,13 @@ Test(hash_table_filled, remove_fast)
     cr_assert( memcmp( (uint8_t*)dsim_table_data( table, 0, 2 ) + 2*128, test_data_2 + (10 - 3)*128, 3*128 ) == 0 );
     cr_assert( memcmp( (uint8_t*)dsim_table_data( table, 0, 2 ) + 5*128, test_data_2 + 5*128,        2*128 ) == 0 );
 
-    cr_assert( dsim_table_find( table, 0 ) == DSIM_INVALID_INDEX );
-    cr_assert( dsim_table_find( table, 15 ) == DSIM_INVALID_INDEX );
-    cr_assert( dsim_table_find( table, 20 ) == 0 );
-    cr_assert( dsim_table_find( table, 21 ) == 1 );
-    cr_assert( dsim_table_find( table, 23 ) == DSIM_INVALID_INDEX );
-    cr_assert( dsim_table_find( table, 26 ) == 6 );
-    cr_assert( dsim_table_find( table, 28 ) == 3 );
+    cr_assert( check_index( dsim_table_find( table, 0 ) , 0, DSIM_INVALID_INDEX ) );
+    cr_assert( check_index( dsim_table_find( table, 15 ), 0, DSIM_INVALID_INDEX ) );
+    cr_assert( check_index( dsim_table_find( table, 20 ), 0, 0 ) );
+    cr_assert( check_index( dsim_table_find( table, 21 ), 0, 1 ) );
+    cr_assert( check_index( dsim_table_find( table, 23 ), 0, DSIM_INVALID_INDEX ) );
+    cr_assert( check_index( dsim_table_find( table, 26 ), 0, 6 ) );
+    cr_assert( check_index( dsim_table_find( table, 28 ), 0, 3 ) );
 
     cr_assert( table->log.commands.count == 2 );
     cr_assert( table->log.commands.data[0].type == TCT_PUSH_BACK );
@@ -229,13 +234,13 @@ Test(hash_table_filled, remove_ordered)
     cr_assert( memcmp( (uint8_t*)dsim_table_data( table, 0, 2 ),         test_data_2,         3*128 ) == 0 );
     cr_assert( memcmp( (uint8_t*)dsim_table_data( table, 0, 2 ) + 3*128, test_data_2 + 7*128, 3*128 ) == 0 );
 
-    cr_assert( dsim_table_find( table, 0 ) == DSIM_INVALID_INDEX );
-    cr_assert( dsim_table_find( table, 15 ) == DSIM_INVALID_INDEX );
-    cr_assert( dsim_table_find( table, 20 ) == 0 );
-    cr_assert( dsim_table_find( table, 22 ) == 2 );
-    cr_assert( dsim_table_find( table, 24 ) == DSIM_INVALID_INDEX );
-    cr_assert( dsim_table_find( table, 27 ) == 3 );
-    cr_assert( dsim_table_find( table, 29 ) == 5 );
+    cr_assert( check_index( dsim_table_find( table, 0 ), 0, DSIM_INVALID_INDEX ) );
+    cr_assert( check_index( dsim_table_find( table, 15 ), 0, DSIM_INVALID_INDEX ) );
+    cr_assert( check_index( dsim_table_find( table, 20 ), 0, 0 ) );
+    cr_assert( check_index( dsim_table_find( table, 22 ), 0, 2 ) );
+    cr_assert( check_index( dsim_table_find( table, 24 ), 0, DSIM_INVALID_INDEX ) );
+    cr_assert( check_index( dsim_table_find( table, 27 ), 0, 3 ) );
+    cr_assert( check_index( dsim_table_find( table, 29 ), 0, 5 ) );
 
     cr_assert( table->log.commands.count == 2 );
     cr_assert( table->log.commands.data[0].type == TCT_PUSH_BACK );

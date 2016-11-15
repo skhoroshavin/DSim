@@ -47,14 +47,53 @@ static void *dsim_hash_table_data( struct dsim_table *self, uint32_t block, uint
     return t->columns[col].data.data;
 }
 
-static uint32_t dsim_hash_table_find( const struct dsim_table *self, uint64_t id )
+static dsim_table_index dsim_hash_table_find( const struct dsim_table *self, uint64_t id )
 {
+    dsim_table_index result =
+    {
+        .block = 0,
+        .index = DSIM_INVALID_INDEX
+    };
+
     const struct dsim_hash_table * t = container_of( self, const struct dsim_hash_table, table );
 
     for( uint32_t i = 0; i < t->ids.count; ++i )
         if( t->ids.data[i] == id )
-            return i;
-    return DSIM_INVALID_INDEX;
+        {
+            result.index = i;
+            break;
+        }
+    return result;
+}
+
+static void dsim_hash_table_find_range( const struct dsim_table *self, uint64_t start_id, uint32_t count, struct dsim_table_range_array * result )
+{
+    const struct dsim_hash_table * t = container_of( self, const struct dsim_hash_table, table );
+
+    struct dsim_table_range range =
+    {
+        .block = 0,
+        .start_index = 0,
+        .count = 0
+    };
+
+    for( uint32_t i = 0; i < count; ++i )
+    {
+        dsim_table_index pos = dsim_hash_table_find( self, start_id + i );
+
+        range.start_index = pos.index;
+        range.count = count - i;
+        i = count-1;
+        for( uint32_t j = 1; j < count-i; ++j )
+            if( (pos.index + j >= t->ids.count) || (t->ids.data[pos.index+j] != start_id+i+j) )
+            {
+                range.count = j;
+                i = j-1;
+                break;
+            }
+
+        dsim_table_range_array_push_back( result, range );
+    }
 }
 
 static void dsim_hash_table_insert( struct dsim_table *self, uint64_t start_id, uint32_t count )
@@ -86,35 +125,13 @@ static void dsim_hash_table_remove_range( struct dsim_table *self, uint32_t pos,
 
 static void dsim_hash_table_remove( struct dsim_table *self, uint64_t start_id, uint32_t count )
 {
-    struct dsim_hash_table * t = container_of( self, struct dsim_hash_table, table );
+    struct dsim_table_range_array range_list = dsim_array_static_init(&dsim_default_allocator);
 
-    uint32_t begin = 0;
-    uint32_t end = 0;
+    dsim_hash_table_find_range( self, start_id, count, &range_list );
+    for( uint32_t i = 0; i != range_list.count; ++i )
+        dsim_hash_table_remove_range( self, range_list.data[i].start_index, range_list.data[i].count );
 
-    for( uint32_t i = 0; i < count; ++i )
-    {
-        uint32_t pos = dsim_hash_table_find( self, start_id + i );
-
-        if( begin == end )
-        {
-            begin = pos;
-            end = begin + 1;
-            continue;
-        }
-
-        if( end == pos )
-        {
-            ++end;
-            continue;
-        }
-
-        dsim_hash_table_remove_range( self, begin, end - begin );
-        begin = pos;
-        end = begin + 1;
-    }
-
-    if( end > begin )
-        dsim_hash_table_remove_range( self, begin, end - begin );
+    dsim_table_range_array_reset( &range_list );
 }
 
 static void dsim_hash_table_reset( struct dsim_table *self )
@@ -136,7 +153,9 @@ struct dsim_table_operations dsim_hash_table_ops =
     .id_data = dsim_hash_table_id_data,
     .data = dsim_hash_table_data,
 
-    .find   = dsim_hash_table_find,
+    .find       = dsim_hash_table_find,
+    .find_range = dsim_hash_table_find_range,
+
     .insert = dsim_hash_table_insert,
     .remove = dsim_hash_table_remove,
     .reset  = dsim_hash_table_reset
