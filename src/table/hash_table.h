@@ -4,6 +4,8 @@
 #include "table.h"
 #include "table_column.h"
 
+DSIM_BEGIN_HEADER
+
 extern struct dsim_table_operations dsim_hash_table_ops;
 
 struct dsim_hash_table
@@ -15,7 +17,9 @@ struct dsim_hash_table
 };
 
 #define dsim_hash_table_static_init(column_count,columns,alloc) { \
-    /* .table = */        dsim_table_static_init(&dsim_hash_table_ops), \
+    /* .table = */        dsim_table_static_init(&dsim_hash_table_ops, alloc), \
     /* .ids = */          dsim_array_static_init(alloc), \
     /* .column_count = */ column_count, \
     /* .columns = */      columns }
+
+DSIM_END_HEADER

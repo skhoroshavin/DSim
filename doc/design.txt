@@ -15,7 +15,7 @@ containers
     range_list
 
 tables
-    table_logger
+    table_log [WIP]
     table_processor [?]
     table_schema [?]
     table_fixed_column [WIP]

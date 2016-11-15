@@ -1,7 +1,9 @@
 
 #pragma once
 
-#include "utils/common.h"
+#include "table_log.h"
+
+DSIM_BEGIN_HEADER
 
 struct dsim_table;
 
@@ -24,10 +26,12 @@ struct dsim_table_operations
 struct dsim_table
 {
     struct dsim_table_operations * _ops;
+    struct dsim_table_log log;
 };
 
-#define dsim_table_static_init(ops) { \
-    /* ._ops = */ ops }
+#define dsim_table_static_init(ops,alloc) { \
+    /* ._ops = */ ops, \
+    /* .log = */ dsim_table_log_static_init(alloc) }
 
 inline static uint32_t dsim_table_column_count( const struct dsim_table *table )
 { return table->_ops->column_count( table ); }
@@ -50,4 +54,6 @@ inline static void dsim_table_insert( struct dsim_table *table, uint64_t start_i
 inline static void dsim_table_remove( struct dsim_table *table, uint64_t start_id, uint32_t count )
 { table->_ops->remove( table, start_id, count ); }
 inline static void dsim_table_reset( struct dsim_table *table )
-{ table->_ops->reset( table ); }
+{ table->_ops->reset( table ); dsim_table_log_reset( &table->log ); }
+
+DSIM_END_HEADER
