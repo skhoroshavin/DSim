@@ -1,9 +1,9 @@
 project(dsim)
 cmake_minimum_required(VERSION 2.8)
 
-#add_subdirectory(3rdparty/criterion)
-#include_directories(3rdparty/criterion/include)
-#link_directories(${PROJECT_BINARY_DIR}/3rdparty/criterion)
+############################################################
+# dsim
+############################################################
 
 include_directories(src)
 add_definitions(-std=c99)
@@ -13,11 +13,22 @@ aux_source_directory(src/containers SRC_LIST)
 aux_source_directory(src/table SRC_LIST)
 aux_source_directory(src/utils SRC_LIST)
 
-aux_source_directory(test/allocators SRC_LIST)
-aux_source_directory(test/containers SRC_LIST)
-aux_source_directory(test/table SRC_LIST)
-aux_source_directory(test/utils SRC_LIST)
+add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 
-add_executable(${PROJECT_NAME} ${SRC_LIST})
-target_link_libraries(${PROJECT_NAME} -lcriterion)
-#add_dependencies(${PROJECT_NAME} criterion)
+############################################################
+# Tests
+############################################################
+
+#add_subdirectory(3rdparty/criterion)
+#include_directories(3rdparty/criterion/include)
+#link_directories(${PROJECT_BINARY_DIR}/3rdparty/criterion)
+
+aux_source_directory(test/allocators TST_LIST)
+aux_source_directory(test/containers TST_LIST)
+aux_source_directory(test/table TST_LIST)
+aux_source_directory(test/utils TST_LIST)
+
+link_directories(${PROJECT_BINARY_DIR})
+add_executable(test_${PROJECT_NAME} ${TST_LIST})
+add_dependencies(test_${PROJECT_NAME} ${PROJECT_NAME})
+target_link_libraries(test_${PROJECT_NAME} -ldsim -lcriterion)

@@ -28,6 +28,6 @@ script:
   - export CXX=$MYCXX
   - $CXX --version
   - mkdir build-debug && cd build-debug
-  - cmake -DCMAKE_BUILD_TYPE=Debug .. && make && ./dsim && cd ..
+  - cmake -DCMAKE_BUILD_TYPE=Debug .. && make && ./test_dsim && cd ..
   - mkdir build-release && cd build-release
-  - cmake -DCMAKE_BUILD_TYPE=Release .. && make && ./dsim && cd ..
+  - cmake -DCMAKE_BUILD_TYPE=Release .. && make && ./test_dsim && cd ..
