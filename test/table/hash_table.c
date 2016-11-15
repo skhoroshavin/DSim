@@ -36,6 +36,9 @@ static void test_hash_table_empty()
     cr_assert( dsim_table_find( table, 1 ) == DSIM_INVALID_INDEX );
     cr_assert( dsim_table_find( table, 25 ) == DSIM_INVALID_INDEX );
     cr_assert( dsim_table_find( table, 30 ) == DSIM_INVALID_INDEX );
+
+    cr_assert( table->log.version == 0 );
+    cr_assert( table->log.commands.count == 0 );
 }
 
 static void test_hash_table_count( uint32_t count )
@@ -78,6 +81,12 @@ Test(hash_table_empty, insert)
 
     for( int i = 0; i < 4; ++i )
         cr_assert( dsim_table_id_data( table, 0 )[i] == 100 + i );
+
+    cr_assert( table->log.commands.count == 1 );
+    cr_assert( table->log.commands.data[0].type == TCT_PUSH_BACK );
+    cr_assert( table->log.commands.data[0].block == 0 );
+    cr_assert( table->log.commands.data[0].start == 100 );
+    cr_assert( table->log.commands.data[0].count == 4 );
 }
 
 Test(hash_table_empty, reset)
@@ -135,6 +144,12 @@ Test(hash_table_filled, assert_filled)
     test_hash_table_scheme();
     test_hash_table_count( 10 );
     test_hash_table_data();
+
+    cr_assert( table->log.commands.count == 1 );
+    cr_assert( table->log.commands.data[0].type == TCT_PUSH_BACK );
+    cr_assert( table->log.commands.data[0].block == 0 );
+    cr_assert( table->log.commands.data[0].start == 20 );
+    cr_assert( table->log.commands.data[0].count == 10 );
 }
 
 Test(hash_table_filled, insert_more)
@@ -148,6 +163,16 @@ Test(hash_table_filled, insert_more)
     cr_assert( dsim_table_find( table, 15 ) == 10 );
     cr_assert( dsim_table_find( table, 17 ) == 12 );
     cr_assert( dsim_table_find( table, 18 ) == DSIM_INVALID_INDEX );
+
+    cr_assert( table->log.commands.count == 2 );
+    cr_assert( table->log.commands.data[0].type == TCT_PUSH_BACK );
+    cr_assert( table->log.commands.data[0].block == 0 );
+    cr_assert( table->log.commands.data[0].start == 20 );
+    cr_assert( table->log.commands.data[0].count == 10 );
+    cr_assert( table->log.commands.data[1].type == TCT_PUSH_BACK );
+    cr_assert( table->log.commands.data[1].block == 0 );
+    cr_assert( table->log.commands.data[1].start == 15 );
+    cr_assert( table->log.commands.data[1].count == 3 );
 }
 
 Test(hash_table_filled, remove_fast)
@@ -176,6 +201,16 @@ Test(hash_table_filled, remove_fast)
     cr_assert( dsim_table_find( table, 23 ) == DSIM_INVALID_INDEX );
     cr_assert( dsim_table_find( table, 26 ) == 6 );
     cr_assert( dsim_table_find( table, 28 ) == 3 );
+
+    cr_assert( table->log.commands.count == 2 );
+    cr_assert( table->log.commands.data[0].type == TCT_PUSH_BACK );
+    cr_assert( table->log.commands.data[0].block == 0 );
+    cr_assert( table->log.commands.data[0].start == 20 );
+    cr_assert( table->log.commands.data[0].count == 10 );
+    cr_assert( table->log.commands.data[1].type == TCT_REMOVE_FAST );
+    cr_assert( table->log.commands.data[1].block == 0 );
+    cr_assert( table->log.commands.data[1].start == 2 );
+    cr_assert( table->log.commands.data[1].count == 3 );
 }
 
 Test(hash_table_filled, remove_ordered)
@@ -201,6 +236,16 @@ Test(hash_table_filled, remove_ordered)
     cr_assert( dsim_table_find( table, 24 ) == DSIM_INVALID_INDEX );
     cr_assert( dsim_table_find( table, 27 ) == 3 );
     cr_assert( dsim_table_find( table, 29 ) == 5 );
+
+    cr_assert( table->log.commands.count == 2 );
+    cr_assert( table->log.commands.data[0].type == TCT_PUSH_BACK );
+    cr_assert( table->log.commands.data[0].block == 0 );
+    cr_assert( table->log.commands.data[0].start == 20 );
+    cr_assert( table->log.commands.data[0].count == 10 );
+    cr_assert( table->log.commands.data[1].type == TCT_REMOVE_FAST );
+    cr_assert( table->log.commands.data[1].block == 0 );
+    cr_assert( table->log.commands.data[1].start == 3 );
+    cr_assert( table->log.commands.data[1].count == 4 );
 }
 
 Test(hash_table_filled, reset)
