@@ -9,12 +9,12 @@ static struct dsim_uint64_array array = dsim_array_static_init(&dsim_default_all
  * Empty array
  */
 
-void init_array_empty()
+static void init_array_empty()
 {
 
 }
 
-void done_array_empty()
+static void done_array_empty()
 {
     dsim_uint64_array_reset( &array );
 }
@@ -85,12 +85,12 @@ Test(array_empty, reset)
 
 static uint64_t test_data[] = { 5, 3, 7, 52, 0, 12, 3, 623, 23 };
 
-void init_array_non_empty()
+static void init_array_non_empty()
 {
     dsim_uint64_array_push_back_n( &array, test_data, count_of(test_data) );
 }
 
-void done_array_non_empty()
+static void done_array_non_empty()
 {
     dsim_uint64_array_reset( &array );
 }

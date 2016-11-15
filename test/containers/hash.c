@@ -9,12 +9,12 @@ static struct dsim_uint64_hash hash = dsim_hash_static_init(&dsim_default_alloca
  * Empty hash
  */
 
-void init_hash_empty()
+static void init_hash_empty()
 {
 
 }
 
-void done_hash_empty()
+static void done_hash_empty()
 {
     dsim_uint64_hash_reset( &hash );
 }
