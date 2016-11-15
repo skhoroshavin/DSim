@@ -71,29 +71,46 @@ static void dsim_hash_table_insert( struct dsim_table *self, uint64_t start_id, 
         _dsim_array_resize( &t->columns[i].data, new_count, t->columns[i].width );
 }
 
+static void dsim_hash_table_remove_range( struct dsim_table *self, uint32_t pos, uint32_t count )
+{
+    struct dsim_hash_table * t = container_of( self, struct dsim_hash_table, table );
+
+    dsim_uint64_array_remove_fast( &t->ids, pos, count );
+    for( uint32_t i = 0; i < t->column_count; ++i )
+        _dsim_array_remove_fast( &t->columns[i].data, pos, count, t->columns[i].width );
+}
+
 static void dsim_hash_table_remove( struct dsim_table *self, uint64_t start_id, uint32_t count )
 {
     struct dsim_hash_table * t = container_of( self, struct dsim_hash_table, table );
 
+    uint32_t begin = 0;
+    uint32_t end = 0;
+
     for( uint32_t i = 0; i < count; ++i )
     {
-        uint32_t src_i = t->ids.count - count + i;
-        uint32_t dst_i = dsim_hash_table_find( self, start_id + i );
-        assert( dst_i != DSIM_INVALID_INDEX );
-        if( src_i == dst_i ) continue;
+        uint32_t pos = dsim_hash_table_find( self, start_id + i );
 
-        t->ids.data[dst_i] = t->ids.data[src_i];
-        for( uint32_t j = 0; j < t->column_count; ++j )
+        if( begin == end )
         {
-            uint8_t * data = (uint8_t*)t->columns[j].data.data;
-            uint32_t elem_size = t->columns[j].width;
-            memcpy( data + dst_i*elem_size, data + dst_i*elem_size, elem_size );
+            begin = pos;
+            end = begin + 1;
+            continue;
         }
+
+        if( end == pos )
+        {
+            ++end;
+            continue;
+        }
+
+        dsim_hash_table_remove_range( self, begin, end - begin );
+        begin = pos;
+        end = begin + 1;
     }
 
-    t->ids.count -= count;
-    for( uint32_t i = 0; i <t->column_count; ++i )
-        t->columns[i].data.count -= count;
+    if( end > begin )
+        dsim_hash_table_remove_range( self, begin, end - begin );
 }
 
 static void dsim_hash_table_reset( struct dsim_table *self )
