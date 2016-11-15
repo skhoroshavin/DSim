@@ -32,7 +32,8 @@ void _dsim_array_fill( struct _dsim_array *a, void* value, uint32_t elem_size )
 
 void _dsim_array_push_back( struct _dsim_array *a, const void *data, uint32_t count, uint32_t elem_size )
 {
-    _dsim_array_grow( a, count, elem_size );
+    if( a->count + count > a->capacity )
+        _dsim_array_grow( a, count, elem_size );
     memcpy( (char*)a->data + a->count*elem_size, data, count*elem_size );
     a->count += count;
 }
