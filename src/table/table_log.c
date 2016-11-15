@@ -33,5 +33,6 @@ void dsim_table_log_shrink( struct dsim_table_log *tl )
 
 void dsim_table_log_reset( struct dsim_table_log *tl )
 {
+    tl->version = 0;
     dsim_table_command_array_reset( &tl->commands );
 }
