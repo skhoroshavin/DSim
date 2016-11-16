@@ -1,2 +1,2 @@
-# DSim [![Build Status](https://travis-ci.org/skhoroshavin/DSim.svg?branch=master)](https://travis-ci.org/skhoroshavin/DSim)
+# DSim [![Build Status](https://travis-ci.org/skhoroshavin/dsim.svg?branch=master)](https://travis-ci.org/skhoroshavin/dsim)
 Data oriented simulation/game framework

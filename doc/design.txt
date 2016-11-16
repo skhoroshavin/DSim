@@ -4,7 +4,7 @@ allocators
     system_allocator
     buddy_allocator
     pool_allocator
-    stack_allocator
+    stack_allocator [WIP]
     generic_allocator
 
 containers
