@@ -21,3 +21,18 @@ inline static void dsim_table_column_remove_fast( struct dsim_table_column *tc, 
 { _dsim_array_remove_fast( &tc->data, pos, count, tc->elem_size ); }
 inline static void dsim_table_column_reset( struct dsim_table_column *tc )
 { _dsim_array_reset( &tc->data, tc->elem_size ); }
+
+struct dsim_table_block
+{
+    uint32_t col_count;
+    struct dsim_table_column *columns;
+};
+
+#define dsim_table_block_static_init(count,columns) { \
+    /* .count = */ count, \
+    /* .columns = */ columns }
+
+void dsim_table_block_resize( struct dsim_table_block *tb, uint32_t count );
+void dsim_table_block_remove( struct dsim_table_block *tb, uint32_t pos, uint32_t count );
+void dsim_table_block_remove_fast( struct dsim_table_block *tb, uint32_t pos, uint32_t count );
+void dsim_table_block_reset( struct dsim_table_block *tb );

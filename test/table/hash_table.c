@@ -18,7 +18,7 @@ static struct dsim_table *const table = &hash_table.table;
 static void test_hash_table_scheme()
 {
     cr_assert( dsim_table_column_count( table ) == count_of(table_columns) );
-    for( uint32_t i = 0; i < count_of(hash_table.columns); ++i )
+    for( uint32_t i = 0; i < dsim_table_column_count( table ); ++i )
         cr_assert( dsim_table_column_size( table, i ) == table_columns[i].elem_size );
 
     cr_assert( dsim_table_block_count( table) == 1 );
@@ -34,7 +34,7 @@ static void test_hash_table_empty()
     cr_assert( dsim_table_block_size( table, 0 ) == 0 );
 
     cr_assert( dsim_table_id_data( table, 0 ) == 0 );
-    for( uint32_t i = 0; i < count_of(hash_table.columns); ++i )
+    for( uint32_t i = 0; i < dsim_table_column_count( table ); ++i )
         cr_assert( dsim_table_data( table, 0, i ) == 0 );
 
     cr_assert( check_index( dsim_table_find( table, 0 ),  0, DSIM_INVALID_INDEX ) );
@@ -51,7 +51,7 @@ static void test_hash_table_count( uint32_t count )
     cr_assert( dsim_table_block_size( table, 0 ) == count );
 
     cr_assert( dsim_table_id_data( table, 0 ) != 0 );
-    for( uint32_t i = 0; i < count_of(hash_table.columns); ++i )
+    for( uint32_t i = 0; i < dsim_table_column_count( table ); ++i )
         cr_assert( dsim_table_data( table, 0, i ) != 0 );
 }
 
