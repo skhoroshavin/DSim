@@ -1,5 +1,6 @@
 
 #include "hash_table.h"
+#include "allocators/stack_allocator.h"
 #include <memory.h>
 
 static uint32_t dsim_hash_table_column_count( const struct dsim_table *self )
@@ -125,13 +126,15 @@ static void dsim_hash_table_remove_range( struct dsim_table *self, uint32_t pos,
 
 static void dsim_hash_table_remove( struct dsim_table *self, uint64_t start_id, uint32_t count )
 {
-    struct dsim_table_range_array range_list = dsim_array_static_init(&dsim_default_allocator);
+    dsim_stack_alloc_save(0);
+    struct dsim_table_range_array range_list = dsim_array_static_init( dsim_stack_alloc(0) );
 
     dsim_hash_table_find_range( self, start_id, count, &range_list );
     for( uint32_t i = 0; i != range_list.count; ++i )
         dsim_hash_table_remove_range( self, range_list.data[i].start_index, range_list.data[i].count );
 
     dsim_table_range_array_reset( &range_list );
+    dsim_stack_alloc_restore(0);
 }
 
 static void dsim_hash_table_reset( struct dsim_table *self )
