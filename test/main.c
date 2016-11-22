@@ -13,7 +13,7 @@ int main( int argc, char * argv[] )
 {
     int result = 0;
 
-    //result |= test_common();
+    result |= test_common();
 
     result |= test_allocator();
 
