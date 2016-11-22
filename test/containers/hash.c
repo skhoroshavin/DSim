@@ -1,14 +1,14 @@
-
+/*
 #include <criterion/criterion.h>
 
 #include "containers/hash.h"
 
 static struct dsim_hash hash = dsim_hash_static_init(&dsim_default_allocator);
-
+*/
 /*
  * Empty hash
  */
-
+/*
 static void init_hash_empty()
 {
 
@@ -47,7 +47,6 @@ Test(hash_empty, reserve)
     cr_assert( dsim_hash_find( &hash, 10 ) == DSIM_INVALID_INDEX );
 }
 
-/*
 Test(hash_empty, insert_one)
 {
     dsim_hash_insert( &hash, 5, 1 );
@@ -61,7 +60,6 @@ Test(hash_empty, insert_one)
     cr_assert( dsim_hash_find( &hash, 5 )  == 0 );
     cr_assert( dsim_hash_find( &hash, 10 ) == DSIM_INVALID_INDEX );
 }
-*/
 
 Test(hash_empty, clear)
 {
@@ -90,3 +88,4 @@ Test(hash_empty, reset)
     cr_assert( dsim_hash_find( &hash, 5 )  == DSIM_INVALID_INDEX );
     cr_assert( dsim_hash_find( &hash, 10 ) == DSIM_INVALID_INDEX );
 }
+*/

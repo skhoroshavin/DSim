@@ -1,14 +1,16 @@
-
+/*
 #include <criterion/criterion.h>
 
 #include "containers/array.h"
 
 static struct dsim_uint64_array array = dsim_array_static_init(&dsim_default_allocator);
+*/
 
 /*
  * Empty array
  */
 
+/*
 static void init_array_empty()
 {
 
@@ -78,11 +80,11 @@ Test(array_empty, reset)
     cr_assert( array.count == 0 );
     cr_assert( array.capacity == 0 );
 }
-
+*/
 /*
  * Non empty array
  */
-
+/*
 static uint64_t test_data[] = { 5, 3, 7, 52, 0, 12, 3, 623, 23 };
 
 static void init_array_non_empty()
@@ -236,3 +238,4 @@ Test(array_non_empty, reset)
     cr_assert( array.count == 0 );
     cr_assert( array.capacity == 0 );
 }
+*/

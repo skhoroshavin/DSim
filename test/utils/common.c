@@ -1,4 +1,5 @@
 
+/*
 #include <criterion/criterion.h>
 
 #include "utils/common.h"
@@ -78,3 +79,4 @@ Test(utils_common, next_pow_2)
     cr_assert( dsim_next_pow_2(0x8000000000000000) == 0x8000000000000000 );
     cr_assert( dsim_next_pow_2(0x8000000000000001) == 0 );
 }
+*/

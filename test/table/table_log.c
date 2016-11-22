@@ -1,4 +1,4 @@
-
+/*
 #include <criterion/criterion.h>
 
 #include "table/table_log.h"
@@ -6,11 +6,11 @@
 #include <stdio.h>
 
 static struct dsim_table_log tlog = dsim_table_log_static_init(&dsim_default_allocator);
-
+*/
 /*
  * Empty log
  */
-
+/*
 static void init_table_log_empty()
 {
 
@@ -78,11 +78,11 @@ Test(table_log_empty, reset)
     cr_assert( tlog.commands.capacity == 0 );
     cr_assert( tlog.commands.count == 0 );
 }
-
+*/
 /*
  * Filled log
  */
-
+/*
 static void init_table_log_filled()
 {
     dsim_table_log_cmd_push_back( &tlog, 0, 1000, 250 );
@@ -157,3 +157,4 @@ Test(table_log_filled, reset)
     cr_assert( tlog.commands.capacity == 0 );
     cr_assert( tlog.commands.count == 0 );
 }
+*/
