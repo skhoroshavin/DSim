@@ -14,6 +14,8 @@ aux_source_directory(src/table SRC_LIST)
 aux_source_directory(src/utils SRC_LIST)
 
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
+#target_compile_options(${PROJECT_NAME} PRIVATE --coverage)
+#target_link_libraries(${PROJECT_NAME} -lgcov)
 
 ############################################################
 # Tests
