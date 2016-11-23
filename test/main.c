@@ -1,27 +1,30 @@
 
-extern int test_common();
+#include "unity_fixture.h"
 
-extern int test_allocator();
+extern int run_test_common();
 
-extern int test_array();
-extern int test_hash();
+extern int run_test_allocator();
 
-extern int test_table_log();
-extern int test_hash_table();
+extern int run_test_array();
+extern int run_test_hash();
 
-int main( int argc, char * argv[] )
+extern int run_test_table_log();
+extern int run_test_hash_table();
+
+static void run_all_tests()
 {
-    int result = 0;
+    run_test_common();
 
-    result |= test_common();
+    run_test_allocator();
 
-    result |= test_allocator();
+    run_test_array();
+    //run_test_hash();
 
-    //result |= test_array();
-    //result |= test_hash();
+    //run_test_table_log();
+    //run_test_hash_table();
+}
 
-    //result |= test_table_log();
-    //result |= test_hash_table();
-
-    return result;
+int main( int argc, const char * argv[] )
+{
+    return UnityMain( argc, argv, run_all_tests );
 }
