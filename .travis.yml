@@ -11,5 +11,5 @@ script:
   - make test
   - cd ..
   - mkdir build-debug && cd build-debug
-  - cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug .. 
+  - cmake -DCMAKE_BUILD_TYPE=Debug .. 
   - make coverage

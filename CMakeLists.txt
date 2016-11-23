@@ -1,6 +1,7 @@
 project(dsim)
 cmake_minimum_required(VERSION 2.8)
 
+
 ############################################################
 # dsim
 ############################################################
@@ -16,8 +17,7 @@ aux_source_directory(src/utils SRC_LIST)
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-    target_compile_options(${PROJECT_NAME} PRIVATE --coverage)
-    target_link_libraries(${PROJECT_NAME} --coverage)
+    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS --coverage LINK_FLAGS --coverage)
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 ############################################################
