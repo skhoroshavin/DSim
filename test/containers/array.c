@@ -1,8 +1,8 @@
 
 #include "unity_fixture.h"
+#include "test_allocator.h"
 
 #include "containers/array.h"
-#include "test_allocator.h"
 
 static struct dsim_uint64_array array = dsim_array_static_init(&dsim_test_allocator);
 
