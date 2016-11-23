@@ -2,25 +2,11 @@ project(dsim)
 cmake_minimum_required(VERSION 2.8)
 
 ############################################################
-# Coveralls
-############################################################
-
-option(COVERALLS "Turn on coveralls support" OFF)
-option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
-
-if (COVERALLS)
-	include(Coveralls)
-	coveralls_turn_on_coverage()
-endif()
-
-############################################################
 # dsim
 ############################################################
 
-include_directories(src)
 add_definitions(-std=c99)
+include_directories(src)
 
 aux_source_directory(src/allocators SRC_LIST)
 aux_source_directory(src/containers SRC_LIST)
@@ -28,16 +14,15 @@ aux_source_directory(src/table SRC_LIST)
 aux_source_directory(src/utils SRC_LIST)
 
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
-#target_compile_options(${PROJECT_NAME} PRIVATE --coverage)
-#target_link_libraries(${PROJECT_NAME} -lgcov)
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    target_compile_options(${PROJECT_NAME} PRIVATE --coverage)
+    target_link_libraries(${PROJECT_NAME} --coverage)
+endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 ############################################################
 # Tests
 ############################################################
-
-if (COVERALLS)
-    coveralls_setup("${SRC_LIST}" ${COVERALLS_UPLOAD})
-endif()
 
 enable_testing()
 
@@ -55,3 +40,13 @@ add_dependencies(test_${PROJECT_NAME} ${PROJECT_NAME})
 target_link_libraries(test_${PROJECT_NAME} -ldsim)
 
 add_test(${PROJECT_NAME} ${PROJECT_BINARY_DIR}/test_${PROJECT_NAME})
+
+############################################################
+# Coverage
+############################################################
+
+add_custom_target(coverage
+    COMMAND test_${PROJECT_NAME}
+    COMMAND lcov --capture --directory CMakeFiles/dsim.dir/ --output-file coverage.info
+    COMMAND genhtml coverage.info --output-directory coverage
+    DEPENDS test_${PROJECT_NAME})
