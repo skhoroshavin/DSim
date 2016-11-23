@@ -84,7 +84,7 @@ void dsim_hash_reserve( struct dsim_hash *h, uint32_t count )
 
     dsim_uint64_array_reserve( &h->keys, count );
     dsim_uint32_array_reserve( &h->_next, count );
-    if( h->_hash.count < (count * 11 / 16) )
+    if( h->_hash.count * 11 / 16 < count )
         _dsim_hash_rehash( h, 2*count );
 }
 
