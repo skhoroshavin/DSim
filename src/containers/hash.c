@@ -14,7 +14,7 @@ struct dsim_hash_find_result
     .prev_i = DSIM_INVALID_INDEX, \
     .hash_i = DSIM_INVALID_INDEX } \
 
-static struct dsim_hash_find_result _dsim_hash_find( const struct dsim_hash *h, uint64_t key )
+static struct dsim_hash_find_result _dsim_hash_find_key( const struct dsim_hash *h, uint64_t key )
 {
     struct dsim_hash_find_result r = dsim_create_hash_find_result();
     if( h->_hash.count == 0 )
@@ -34,6 +34,27 @@ static struct dsim_hash_find_result _dsim_hash_find( const struct dsim_hash *h, 
     return r;
 }
 
+static struct dsim_hash_find_result _dsim_hash_find_pos( const struct dsim_hash *h, uint32_t pos )
+{
+    struct dsim_hash_find_result r = dsim_create_hash_find_result();
+    if( h->_hash.count == 0 )
+        return r;
+
+    r.hash_i = dsim_hash64( h->keys.data[pos] ) % h->_hash.count;
+    r.key_i = h->_hash.data[r.hash_i];
+    while( r.key_i != DSIM_INVALID_INDEX )
+    {
+        if( r.key_i == pos )
+            return r;
+
+        r.prev_i = r.key_i;
+        r.key_i = h->_next.data[r.key_i];
+    }
+
+    assert( 0 ); // Should never get there!
+    return r;
+}
+
 static void _dsim_hash_key_insert( struct dsim_hash *h, uint32_t pos )
 {
     uint32_t hash_i = dsim_hash64( h->keys.data[pos] ) % h->_hash.count;
@@ -43,7 +64,7 @@ static void _dsim_hash_key_insert( struct dsim_hash *h, uint32_t pos )
 
 static void _dsim_hash_key_remove( struct dsim_hash *h, uint32_t pos, uint32_t src )
 {
-    struct dsim_hash_find_result fr = _dsim_hash_find( h, h->keys.data[pos] );
+    struct dsim_hash_find_result fr = _dsim_hash_find_pos( h, pos );
 
     if( fr.prev_i == DSIM_INVALID_INDEX )
         h->_hash.data[fr.hash_i] = h->_next.data[pos];
@@ -52,7 +73,7 @@ static void _dsim_hash_key_remove( struct dsim_hash *h, uint32_t pos, uint32_t s
 
     if( src < h->keys.count )
     {
-        fr = _dsim_hash_find( h, h->keys.data[src] );
+        fr = _dsim_hash_find_pos( h, src );
         if( fr.prev_i == DSIM_INVALID_INDEX )
             h->_hash.data[fr.hash_i] = pos;
         else
@@ -74,7 +95,7 @@ static void _dsim_hash_rehash( struct dsim_hash *h, uint32_t count )
 
 uint32_t dsim_hash_find( const struct dsim_hash *h, uint64_t key )
 {
-    return _dsim_hash_find( h, key ).key_i;
+    return _dsim_hash_find_key( h, key ).key_i;
 }
 
 void dsim_hash_reserve( struct dsim_hash *h, uint32_t count )
