@@ -95,7 +95,7 @@ static void dsim_hash_table_insert( struct dsim_table *self, uint64_t start_id, 
 
     size_t new_count = t->ids.keys.count + count;
 
-    dsim_hash_insert( &t->ids, start_id, count );
+    dsim_hash_push_back( &t->ids, start_id, count );
     dsim_table_block_resize( &t->data, new_count );
 
     dsim_table_log_cmd_push_back( &self->log, 0, start_id, count );
@@ -105,7 +105,7 @@ static void dsim_hash_table_remove_range( struct dsim_table *self, uint32_t pos,
 {
     struct dsim_hash_table * t = container_of( self, struct dsim_hash_table, table );
 
-    dsim_hash_remove_range( &t->ids, pos, count );
+    dsim_hash_remove_fast( &t->ids, pos, count );
     dsim_table_block_remove_fast( &t->data, pos, count );
 
     dsim_table_log_cmd_remove_fast( &self->log, 0, pos, count );

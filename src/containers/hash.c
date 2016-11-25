@@ -88,11 +88,8 @@ void dsim_hash_reserve( struct dsim_hash *h, uint32_t count )
         _dsim_hash_rehash( h, 2*count );
 }
 
-void dsim_hash_insert( struct dsim_hash *h, uint64_t start_key, uint32_t count )
+void dsim_hash_push_back( struct dsim_hash *h, uint64_t start_key, uint32_t count )
 {
-    if( dsim_hash_find( h, start_key ) != DSIM_INVALID_INDEX )
-        return;
-
     if( h->keys.count + count > h->keys.capacity )
         dsim_hash_reserve( h, dsim_next_pow_2(h->keys.count + count) );
 
@@ -104,7 +101,7 @@ void dsim_hash_insert( struct dsim_hash *h, uint64_t start_key, uint32_t count )
     }
 }
 
-void dsim_hash_remove_range( struct dsim_hash *h, uint32_t start, uint32_t count )
+void dsim_hash_remove_fast( struct dsim_hash *h, uint32_t start, uint32_t count )
 {
     if( h->keys.count - start - count < count )
     {
