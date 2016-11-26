@@ -55,7 +55,7 @@ TEST(hash_empty, push_back)
     TEST_ASSERT_NOT_NULL( hash.keys.data );
     TEST_ASSERT_EQUAL( hash.keys.count, 1 );
     TEST_ASSERT( hash.keys.capacity >= 1 );
-    TEST_ASSERT_EQUAL( hash.keys.data[0], 5 );
+    TEST_ASSERT_EQUAL( hash.keys.at[0], 5 );
 
     TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 0 ),  0 );
     TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 1 ),  0 );
@@ -96,12 +96,12 @@ TEST(hash_empty, push_back_n)
     struct dsim_uint32_array idx = dsim_array_static_init(&dsim_test_allocator);
     for( uint32_t i = dsim_hash_find( &hash, 5 ); i != DSIM_INVALID_INDEX; i = dsim_hash_find_next( &hash, i ) )
     {
-        TEST_ASSERT_EQUAL( hash.keys.data[i], 5 );
+        TEST_ASSERT_EQUAL( hash.keys.at[i], 5 );
         dsim_uint32_array_push_back( &idx, i );
     }
     TEST_ASSERT_EQUAL( idx.count, 2 );
-    TEST_ASSERT_EQUAL( min( idx.data[0], idx.data[1] ), 1 );
-    TEST_ASSERT_EQUAL( max( idx.data[0], idx.data[1] ), 3 );
+    TEST_ASSERT_EQUAL( min( idx.at[0], idx.at[1] ), 1 );
+    TEST_ASSERT_EQUAL( max( idx.at[0], idx.at[1] ), 3 );
 
     dsim_uint32_array_reset( &idx );
 }

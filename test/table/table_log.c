@@ -39,15 +39,15 @@ TEST(table_log_empty, add_commands)
     TEST_ASSERT_NOT_NULL( tlog.commands.data );
     TEST_ASSERT_EQUAL( tlog.commands.count, 2 );
 
-    TEST_ASSERT_EQUAL( tlog.commands.data[0].type, TCT_REMOVE_FAST );
-    TEST_ASSERT_EQUAL( tlog.commands.data[0].block, 2 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[0].start, 5 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[0].count, 10 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[0].type, TCT_REMOVE_FAST );
+    TEST_ASSERT_EQUAL( tlog.commands.at[0].block, 2 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[0].start, 5 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[0].count, 10 );
 
-    TEST_ASSERT_EQUAL( tlog.commands.data[1].type, TCT_PUSH_BACK );
-    TEST_ASSERT_EQUAL( tlog.commands.data[1].block, 1 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[1].start, 100 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[1].count, 20 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[1].type, TCT_PUSH_BACK );
+    TEST_ASSERT_EQUAL( tlog.commands.at[1].block, 1 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[1].start, 100 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[1].count, 20 );
 }
 
 TEST(table_log_empty, shrink_empty)
@@ -115,15 +115,15 @@ TEST(table_log_non_empty, assert_non_empty)
     TEST_ASSERT_NOT_NULL( tlog.commands.data );
     TEST_ASSERT_EQUAL( tlog.commands.count, 2 );
 
-    TEST_ASSERT_EQUAL( tlog.commands.data[0].type, TCT_REMOVE_FAST );
-    TEST_ASSERT_EQUAL( tlog.commands.data[0].block, 0 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[0].start, 250 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[0].count, 100 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[0].type, TCT_REMOVE_FAST );
+    TEST_ASSERT_EQUAL( tlog.commands.at[0].block, 0 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[0].start, 250 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[0].count, 100 );
 
-    TEST_ASSERT_EQUAL( tlog.commands.data[1].type, TCT_PUSH_BACK );
-    TEST_ASSERT_EQUAL( tlog.commands.data[1].block, 0 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[1].start, 2000 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[1].count, 50 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[1].type, TCT_PUSH_BACK );
+    TEST_ASSERT_EQUAL( tlog.commands.at[1].block, 0 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[1].start, 2000 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[1].count, 50 );
 }
 
 TEST(table_log_non_empty, add_commands)
@@ -133,20 +133,20 @@ TEST(table_log_non_empty, add_commands)
     TEST_ASSERT_EQUAL( tlog.version, 4 );
     TEST_ASSERT_EQUAL( tlog.commands.count, 3 );
 
-    TEST_ASSERT_EQUAL( tlog.commands.data[0].type, TCT_REMOVE_FAST );
-    TEST_ASSERT_EQUAL( tlog.commands.data[0].block, 0 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[0].start, 250 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[0].count, 100 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[0].type, TCT_REMOVE_FAST );
+    TEST_ASSERT_EQUAL( tlog.commands.at[0].block, 0 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[0].start, 250 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[0].count, 100 );
 
-    TEST_ASSERT_EQUAL( tlog.commands.data[1].type, TCT_PUSH_BACK );
-    TEST_ASSERT_EQUAL( tlog.commands.data[1].block, 0 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[1].start, 2000 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[1].count, 50 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[1].type, TCT_PUSH_BACK );
+    TEST_ASSERT_EQUAL( tlog.commands.at[1].block, 0 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[1].start, 2000 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[1].count, 50 );
 
-    TEST_ASSERT_EQUAL( tlog.commands.data[2].type, TCT_REMOVE_FAST );
-    TEST_ASSERT_EQUAL( tlog.commands.data[2].block, 2 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[2].start, 5 );
-    TEST_ASSERT_EQUAL( tlog.commands.data[2].count, 10 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[2].type, TCT_REMOVE_FAST );
+    TEST_ASSERT_EQUAL( tlog.commands.at[2].block, 2 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[2].start, 5 );
+    TEST_ASSERT_EQUAL( tlog.commands.at[2].count, 10 );
 }
 
 TEST(table_log_non_empty, shrink)

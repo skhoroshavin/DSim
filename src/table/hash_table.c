@@ -120,7 +120,7 @@ static void dsim_hash_table_remove( struct dsim_table *self, uint64_t start_id, 
 
     dsim_hash_table_find_range( self, start_id, count, &range_list );
     for( uint32_t i = 0; i != range_list.count; ++i )
-        dsim_hash_table_remove_range( self, range_list.data[i].start_index, range_list.data[i].count );
+        dsim_hash_table_remove_range( self, range_list.at[i].start_index, range_list.at[i].count );
 
     dsim_table_range_array_reset( &range_list );
     dsim_stack_alloc_restore(0);

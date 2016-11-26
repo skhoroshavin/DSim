@@ -91,10 +91,10 @@ TEST(hash_table_empty, insert)
         TEST_ASSERT_EQUAL( dsim_table_id_data( table, 0 )[i], 100 + i );
 
     TEST_ASSERT_EQUAL( table->log.commands.count, 1 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].type, TCT_PUSH_BACK );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].block, 0 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].start, 100 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].count, 4 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].type, TCT_PUSH_BACK );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].block, 0 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].start, 100 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].count, 4 );
 }
 
 TEST(hash_table_empty, reset)
@@ -161,10 +161,10 @@ TEST(hash_table_non_empty, assert_non_empty)
     test_hash_table_data();
 
     TEST_ASSERT_EQUAL( table->log.commands.count, 1 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].type, TCT_PUSH_BACK );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].block, 0 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].start, 20 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].count, 10 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].type, TCT_PUSH_BACK );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].block, 0 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].start, 20 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].count, 10 );
 }
 
 TEST(hash_table_non_empty, insert_more)
@@ -180,14 +180,14 @@ TEST(hash_table_non_empty, insert_more)
     check_index( dsim_table_find( table, 18 ), 0, DSIM_INVALID_INDEX );
 
     TEST_ASSERT_EQUAL( table->log.commands.count, 2 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].type, TCT_PUSH_BACK );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].block, 0 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].start, 20 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].count, 10 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[1].type, TCT_PUSH_BACK );
-    TEST_ASSERT_EQUAL( table->log.commands.data[1].block, 0 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[1].start, 15 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[1].count, 3 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].type, TCT_PUSH_BACK );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].block, 0 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].start, 20 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].count, 10 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[1].type, TCT_PUSH_BACK );
+    TEST_ASSERT_EQUAL( table->log.commands.at[1].block, 0 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[1].start, 15 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[1].count, 3 );
 }
 
 TEST(hash_table_non_empty, remove_fast)
@@ -218,14 +218,14 @@ TEST(hash_table_non_empty, remove_fast)
     check_index( dsim_table_find( table, 28 ), 0, 3 );
 
     TEST_ASSERT_EQUAL( table->log.commands.count, 2 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].type, TCT_PUSH_BACK );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].block, 0 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].start, 20 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].count, 10 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[1].type, TCT_REMOVE_FAST );
-    TEST_ASSERT_EQUAL( table->log.commands.data[1].block, 0 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[1].start, 2 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[1].count, 3 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].type, TCT_PUSH_BACK );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].block, 0 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].start, 20 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].count, 10 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[1].type, TCT_REMOVE_FAST );
+    TEST_ASSERT_EQUAL( table->log.commands.at[1].block, 0 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[1].start, 2 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[1].count, 3 );
 }
 
 TEST(hash_table_non_empty, remove_ordered)
@@ -253,14 +253,14 @@ TEST(hash_table_non_empty, remove_ordered)
     check_index( dsim_table_find( table, 29 ), 0, 5 );
 
     TEST_ASSERT_EQUAL( table->log.commands.count, 2 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].type, TCT_PUSH_BACK );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].block, 0 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].start, 20 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[0].count, 10 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[1].type, TCT_REMOVE_FAST );
-    TEST_ASSERT_EQUAL( table->log.commands.data[1].block, 0 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[1].start, 3 );
-    TEST_ASSERT_EQUAL( table->log.commands.data[1].count, 4 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].type, TCT_PUSH_BACK );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].block, 0 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].start, 20 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[0].count, 10 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[1].type, TCT_REMOVE_FAST );
+    TEST_ASSERT_EQUAL( table->log.commands.at[1].block, 0 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[1].start, 3 );
+    TEST_ASSERT_EQUAL( table->log.commands.at[1].count, 4 );
 }
 
 TEST(hash_table_non_empty, reset)

@@ -51,7 +51,7 @@ TEST(array_empty, push_back)
     TEST_ASSERT_NOT_NULL( array.data );
     TEST_ASSERT_EQUAL( array.count, 1 );
     TEST_ASSERT( array.capacity >= 1 );
-    TEST_ASSERT_EQUAL( array.data[0], 5 );
+    TEST_ASSERT_EQUAL( array.at[0], 5 );
 }
 
 TEST(array_empty, push_back_n)
@@ -160,7 +160,7 @@ TEST(array_non_empty, fill)
     TEST_ASSERT_EQUAL( array.count, count_of(test_data) );
     TEST_ASSERT( array.capacity >= count_of(test_data) );
     for( size_t i = 0; i < array.count; ++i )
-        TEST_ASSERT_EQUAL_HEX64( array.data[i], 0xdeadbeefcafe );
+        TEST_ASSERT_EQUAL_HEX64( array.at[i], 0xdeadbeefcafe );
 }
 
 TEST(array_non_empty, push_back)
@@ -170,7 +170,7 @@ TEST(array_non_empty, push_back)
     TEST_ASSERT_EQUAL( array.count, count_of(test_data) + 1 );
     TEST_ASSERT( array.capacity >= count_of(test_data) + 1 );
     TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, sizeof(test_data) );
-    TEST_ASSERT_EQUAL( array.data[count_of(test_data)], 42 );
+    TEST_ASSERT_EQUAL( array.at[count_of(test_data)], 42 );
 }
 
 TEST(array_non_empty, push_back_n)
