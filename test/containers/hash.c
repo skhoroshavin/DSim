@@ -28,10 +28,10 @@ TEST(hash_empty, assert_empty)
     TEST_ASSERT_EQUAL( hash.keys.count, 0 );
     TEST_ASSERT_EQUAL( hash.keys.capacity, 0 );
 
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 0 ),  DSIM_INVALID_INDEX );
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 1 ),  DSIM_INVALID_INDEX );
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 5 ),  DSIM_INVALID_INDEX );
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 10 ), DSIM_INVALID_INDEX );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 0 ),  0 );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 1 ),  0 );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 5 ),  0 );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 10 ), 0 );
 }
 
 TEST(hash_empty, reserve)
@@ -42,10 +42,10 @@ TEST(hash_empty, reserve)
     TEST_ASSERT_EQUAL( hash.keys.count, 0 );
     TEST_ASSERT( hash.keys.capacity >= 10 );
 
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 0 ),  DSIM_INVALID_INDEX );
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 1 ),  DSIM_INVALID_INDEX );
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 5 ),  DSIM_INVALID_INDEX );
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 10 ), DSIM_INVALID_INDEX );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 0 ),  0 );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 1 ),  0 );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 5 ),  0 );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 10 ), 0 );
 }
 
 TEST(hash_empty, push_back)
@@ -55,11 +55,55 @@ TEST(hash_empty, push_back)
     TEST_ASSERT_NOT_NULL( hash.keys.data );
     TEST_ASSERT_EQUAL( hash.keys.count, 1 );
     TEST_ASSERT( hash.keys.capacity >= 1 );
+    TEST_ASSERT_EQUAL( hash.keys.data[0], 5 );
 
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 0 ),  DSIM_INVALID_INDEX );
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 1 ),  DSIM_INVALID_INDEX );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 0 ),  0 );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 1 ),  0 );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 5 ),  1 );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 10 ), 0 );
+
     TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 5 ),  0 );
+}
+
+TEST(hash_empty, push_back_n)
+{
+    const uint64_t test_keys[] = { 2, 5, 3, 5, 9, 0 };
+    dsim_hash_push_back_n( &hash, test_keys, count_of(test_keys) );
+
+    TEST_ASSERT_NOT_NULL( hash.keys.data );
+    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_keys) );
+    TEST_ASSERT( hash.keys.capacity >= count_of(test_keys) );
+    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_keys, sizeof(test_keys) );
+
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 0 ),  1 );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 1 ),  0 );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 5 ),  2 );
+    TEST_ASSERT_EQUAL( dsim_hash_count_of( &hash, 10 ), 0 );
+
+    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 2 ), 0 );
+    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 3 ), 2 );
+    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 9 ), 4 );
+    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 0 ), 5 );
+
+    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 1  ), DSIM_INVALID_INDEX );
     TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 10 ), DSIM_INVALID_INDEX );
+
+    TEST_ASSERT_EQUAL( dsim_hash_find_next( &hash, 0 ), DSIM_INVALID_INDEX );
+    TEST_ASSERT_EQUAL( dsim_hash_find_next( &hash, 2 ), DSIM_INVALID_INDEX );
+    TEST_ASSERT_EQUAL( dsim_hash_find_next( &hash, 4 ), DSIM_INVALID_INDEX );
+    TEST_ASSERT_EQUAL( dsim_hash_find_next( &hash, 5 ), DSIM_INVALID_INDEX );
+
+    struct dsim_uint32_array idx = dsim_array_static_init(&dsim_test_allocator);
+    for( uint32_t i = dsim_hash_find( &hash, 5 ); i != DSIM_INVALID_INDEX; i = dsim_hash_find_next( &hash, i ) )
+    {
+        TEST_ASSERT_EQUAL( hash.keys.data[i], 5 );
+        dsim_uint32_array_push_back( &idx, i );
+    }
+    TEST_ASSERT_EQUAL( idx.count, 2 );
+    TEST_ASSERT_EQUAL( min( idx.data[0], idx.data[1] ), 1 );
+    TEST_ASSERT_EQUAL( max( idx.data[0], idx.data[1] ), 3 );
+
+    dsim_uint32_array_reset( &idx );
 }
 
 TEST(hash_empty, clear)
@@ -95,6 +139,7 @@ TEST_GROUP_RUNNER(hash_empty)
     RUN_TEST_CASE(hash_empty, assert_empty);
     RUN_TEST_CASE(hash_empty, reserve);
     RUN_TEST_CASE(hash_empty, push_back);
+    RUN_TEST_CASE(hash_empty, push_back_n);
     RUN_TEST_CASE(hash_empty, clear);
     RUN_TEST_CASE(hash_empty, reset);
 }
