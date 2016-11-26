@@ -7,7 +7,7 @@ DSIM_BEGIN_HEADER
 
 struct _dsim_array
 {
-    void * data;
+    union { void * data; uint8_t * at; };
     uint32_t count;
     uint32_t capacity;
 
@@ -15,7 +15,7 @@ struct _dsim_array
 };
 
 #define dsim_array_static_init(alloc) { \
-    /* .data = */     0, \
+    /* .data = */     { 0 }, \
     /* .count = */    0, \
     /* .capacity = */ 0, \
     /* ._alloc = */    alloc }

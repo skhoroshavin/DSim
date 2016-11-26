@@ -20,6 +20,7 @@ static uint32_t dsim_hash_table_column_size( const struct dsim_table *self, uint
 
 static uint32_t dsim_hash_table_block_count( const struct dsim_table *self )
 {
+    dsim_unused(self);
     return 1;
 }
 

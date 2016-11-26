@@ -39,6 +39,8 @@ DSIM_BEGIN_HEADER
 
 #define DSIM_INVALID_INDEX ((uint32_t)-1)
 
+#define dsim_unused(a) (void)a
+
 uint64_t dsim_hash64( uint64_t key );
 uint64_t dsim_next_pow_2( uint64_t value );
 

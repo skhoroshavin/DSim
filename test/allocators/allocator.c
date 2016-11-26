@@ -87,8 +87,7 @@ static void test_reallocate_less( struct dsim_allocator *alloc )
         RUN_TEST_CASE( name, reallocate_from_null ); \
         RUN_TEST_CASE( name, reallocate_twin ); \
         RUN_TEST_CASE( name, reallocate_less ); \
-    } \
-    static void run_test_##name()    { RUN_TEST_GROUP(name); }
+    }
 
 TEST_ALLOCATOR(default_allocator, &dsim_default_allocator)
 TEST_ALLOCATOR(stack_allocator, &dsim_stack_allocator_0.alloc)

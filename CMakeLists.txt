@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8)
 # dsim
 ############################################################
 
-add_definitions(-std=c99)
+add_definitions(-std=c99 -Wall -Wextra)
 include_directories(src)
 
 aux_source_directory(src/allocators SRC_LIST)
