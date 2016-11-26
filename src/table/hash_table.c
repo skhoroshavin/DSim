@@ -95,7 +95,9 @@ static void dsim_hash_table_insert( struct dsim_table *self, uint64_t start_id, 
 
     size_t new_count = t->ids.keys.count + count;
 
-    dsim_hash_push_back( &t->ids, start_id, count );
+    dsim_hash_reserve( &t->ids, new_count );
+    for( uint32_t i = 0; i < count; ++i )
+        dsim_hash_push_back( &t->ids, start_id + i );
     dsim_table_block_resize( &t->data, new_count );
 
     dsim_table_log_cmd_push_back( &self->log, 0, start_id, count );

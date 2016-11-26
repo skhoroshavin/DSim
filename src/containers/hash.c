@@ -109,30 +109,27 @@ void dsim_hash_reserve( struct dsim_hash *h, uint32_t count )
         _dsim_hash_rehash( h, 2*count );
 }
 
-void dsim_hash_push_back( struct dsim_hash *h, uint64_t start_key, uint32_t count )
+void dsim_hash_push_back( struct dsim_hash *h, uint64_t key )
 {
-    if( h->keys.count + count > h->keys.capacity )
-        dsim_hash_reserve( h, dsim_next_pow_2(h->keys.count + count) );
+    if( h->keys.count == h->keys.capacity )
+        dsim_hash_reserve( h, dsim_next_pow_2(h->keys.count + 8) );
 
-    for( uint32_t i = 0; i < count; ++i )
-    {
-        dsim_uint64_array_push_back( &h->keys, start_key + i );
-        dsim_uint32_array_push_back( &h->_next, DSIM_INVALID_INDEX );
-        _dsim_hash_key_insert( h, h->keys.count-1 );
-    }
+    dsim_uint64_array_push_back( &h->keys, key );
+    dsim_uint32_array_push_back( &h->_next, DSIM_INVALID_INDEX );
+    _dsim_hash_key_insert( h, h->keys.count-1 );
 }
 
-void dsim_hash_remove_fast( struct dsim_hash *h, uint32_t start, uint32_t count )
+void dsim_hash_remove_fast( struct dsim_hash *h, uint32_t pos, uint32_t count )
 {
-    if( h->keys.count - start - count < count )
+    if( h->keys.count - pos - count < count )
     {
         for( uint32_t i = 0; i < count; ++i )
-            _dsim_hash_key_remove( h, i + start, i + start + count );
+            _dsim_hash_key_remove( h, i + pos, i + pos + count );
     }
     else
     {
         for( uint32_t i = 0; i < count; ++i )
-            _dsim_hash_key_remove( h, i + start, i + h->keys.count - count );
+            _dsim_hash_key_remove( h, i + pos, i + h->keys.count - count );
     }
 
     dsim_uint64_array_pop_back_n( &h->keys, count );

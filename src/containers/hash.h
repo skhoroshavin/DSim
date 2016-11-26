@@ -19,8 +19,8 @@ struct dsim_hash
 
 uint32_t dsim_hash_find( const struct dsim_hash *h, uint64_t key );
 void dsim_hash_reserve( struct dsim_hash *h, uint32_t count );
-void dsim_hash_push_back( struct dsim_hash *h, uint64_t start_key, uint32_t count );
-void dsim_hash_remove_fast( struct dsim_hash *h, uint32_t start, uint32_t count );
+void dsim_hash_push_back( struct dsim_hash *h, uint64_t key );
+void dsim_hash_remove_fast( struct dsim_hash *h, uint32_t pos, uint32_t count );
 void dsim_hash_clear( struct dsim_hash *h );
 void dsim_hash_reset( struct dsim_hash *h  );
 

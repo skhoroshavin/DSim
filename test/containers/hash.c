@@ -48,9 +48,9 @@ TEST(hash_empty, reserve)
     TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 10 ), DSIM_INVALID_INDEX );
 }
 
-TEST(hash_empty, push_back_one)
+TEST(hash_empty, push_back)
 {
-    dsim_hash_push_back( &hash, 5, 1 );
+    dsim_hash_push_back( &hash, 5 );
 
     TEST_ASSERT_NOT_NULL( hash.keys.data );
     TEST_ASSERT_EQUAL( hash.keys.count, 1 );
@@ -59,21 +59,6 @@ TEST(hash_empty, push_back_one)
     TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 0 ),  DSIM_INVALID_INDEX );
     TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 1 ),  DSIM_INVALID_INDEX );
     TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 5 ),  0 );
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 10 ), DSIM_INVALID_INDEX );
-}
-
-TEST(hash_empty, push_back_multi)
-{
-    dsim_hash_push_back( &hash, 3, 5 );
-
-    TEST_ASSERT_NOT_NULL( hash.keys.data );
-    TEST_ASSERT_EQUAL( hash.keys.count, 5 );
-    TEST_ASSERT( hash.keys.capacity >= 5 );
-
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 0 ),  DSIM_INVALID_INDEX );
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 1 ),  DSIM_INVALID_INDEX );
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 5 ),  2 );
-    TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 7 ),  4 );
     TEST_ASSERT_EQUAL( dsim_hash_find( &hash, 10 ), DSIM_INVALID_INDEX );
 }
 
@@ -109,8 +94,7 @@ TEST_GROUP_RUNNER(hash_empty)
 {
     RUN_TEST_CASE(hash_empty, assert_empty);
     RUN_TEST_CASE(hash_empty, reserve);
-    RUN_TEST_CASE(hash_empty, push_back_one);
-    RUN_TEST_CASE(hash_empty, push_back_multi);
+    RUN_TEST_CASE(hash_empty, push_back);
     RUN_TEST_CASE(hash_empty, clear);
     RUN_TEST_CASE(hash_empty, reset);
 }
