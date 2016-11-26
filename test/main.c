@@ -1,11 +1,12 @@
 
 #include "unity_fixture.h"
 
+#include "containers/test_array.h"
+
 extern void run_test_common();
 
 extern void run_test_allocator();
 
-extern void run_test_array();
 extern void run_test_hash();
 
 extern void run_test_table_log();
