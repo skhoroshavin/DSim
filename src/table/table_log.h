@@ -25,7 +25,7 @@ DSIM_DEFINE_ARRAY(struct dsim_table_command, table_command)
 struct dsim_table_log
 {
     uint64_t version;
-    struct dsim_table_command_array commands;
+    struct dsim_array_table_command commands;
 };
 
 #define dsim_table_log_static_init(alloc) { \

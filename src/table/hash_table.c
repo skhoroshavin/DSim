@@ -61,7 +61,7 @@ static dsim_table_index dsim_hash_table_find( const struct dsim_table *self, uin
     return result;
 }
 
-static void dsim_hash_table_find_range( const struct dsim_table *self, uint64_t start_id, uint32_t count, struct dsim_table_range_array * result )
+static void dsim_hash_table_find_range( const struct dsim_table *self, uint64_t start_id, uint32_t count, struct dsim_array_table_range * result )
 {
     struct dsim_table_range range =
     {
@@ -86,7 +86,7 @@ static void dsim_hash_table_find_range( const struct dsim_table *self, uint64_t 
                 break;
             }
 
-        dsim_table_range_array_push_back( result, range );
+        dsim_array_table_range_push_back( result, range );
     }
 }
 
@@ -117,13 +117,13 @@ static void dsim_hash_table_remove_range( struct dsim_table *self, uint32_t pos,
 static void dsim_hash_table_remove( struct dsim_table *self, uint64_t start_id, uint32_t count )
 {
     dsim_stack_alloc_save(0);
-    struct dsim_table_range_array range_list = dsim_array_static_init( dsim_stack_alloc(0) );
+    struct dsim_array_table_range range_list = dsim_array_static_init( dsim_stack_alloc(0) );
 
     dsim_hash_table_find_range( self, start_id, count, &range_list );
     for( uint32_t i = 0; i != range_list.count; ++i )
         dsim_hash_table_remove_range( self, range_list.at[i].start_index, range_list.at[i].count );
 
-    dsim_table_range_array_reset( &range_list );
+    dsim_array_table_range_reset( &range_list );
     dsim_stack_alloc_restore(0);
 }
 

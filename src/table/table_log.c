@@ -10,7 +10,7 @@ void dsim_table_log_cmd_push_back( struct dsim_table_log *tl, uint32_t block, ui
         .start = start_id,
         .count = count
     };
-    dsim_table_command_array_push_back( &tl->commands, cmd );
+    dsim_array_table_command_push_back( &tl->commands, cmd );
 }
 
 void dsim_table_log_cmd_remove_fast( struct dsim_table_log *tl, uint32_t block, uint32_t start_index, uint32_t count )
@@ -22,7 +22,7 @@ void dsim_table_log_cmd_remove_fast( struct dsim_table_log *tl, uint32_t block, 
         .start = start_index,
         .count = count
     };
-    dsim_table_command_array_push_back( &tl->commands, cmd );
+    dsim_array_table_command_push_back( &tl->commands, cmd );
 }
 
 void dsim_table_log_shrink( struct dsim_table_log *tl )
@@ -34,5 +34,5 @@ void dsim_table_log_shrink( struct dsim_table_log *tl )
 void dsim_table_log_reset( struct dsim_table_log *tl )
 {
     tl->version = 0;
-    dsim_table_command_array_reset( &tl->commands );
+    dsim_array_table_command_reset( &tl->commands );
 }

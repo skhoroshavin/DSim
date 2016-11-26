@@ -33,7 +33,7 @@ struct dsim_table_operations
     void *           (*data)( struct dsim_table *self, uint32_t block, uint32_t col );
 
     dsim_table_index (*find)( const struct dsim_table *self, uint64_t id );
-    void             (*find_range)( const struct dsim_table *self, uint64_t start_id, uint32_t count, struct dsim_table_range_array * result );
+    void             (*find_range)( const struct dsim_table *self, uint64_t start_id, uint32_t count, struct dsim_array_table_range * result );
 
     void     (*insert)( struct dsim_table *self, uint64_t start_id, uint32_t count );
     void     (*remove)( struct dsim_table *self, uint64_t start_id, uint32_t count );
@@ -66,7 +66,7 @@ inline static void *dsim_table_data( struct dsim_table *table, uint32_t block, u
 
 inline static dsim_table_index dsim_table_find( const struct dsim_table *table, uint64_t id )
 { return table->_ops->find( table, id ); }
-inline static void dsim_table_find_range( const struct dsim_table *table, uint64_t start_id, uint32_t count, struct dsim_table_range_array * result )
+inline static void dsim_table_find_range( const struct dsim_table *table, uint64_t start_id, uint32_t count, struct dsim_array_table_range * result )
 { table->_ops->find_range( table, start_id, count, result ); }
 inline static void dsim_table_insert( struct dsim_table *table, uint64_t start_id, uint32_t count )
 { table->_ops->insert( table, start_id, count ); }

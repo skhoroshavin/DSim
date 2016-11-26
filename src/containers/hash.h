@@ -7,9 +7,9 @@ DSIM_BEGIN_HEADER
 
 struct dsim_hash
 {
-    struct dsim_uint64_array keys;
-    struct dsim_uint32_array _hash;
-    struct dsim_uint32_array _next;
+    struct dsim_array_uint64 keys;
+    struct dsim_array_uint32 _hash;
+    struct dsim_array_uint32 _next;
 };
 
 #define dsim_hash_static_init(alloc) { \
