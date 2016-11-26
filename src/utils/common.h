@@ -42,4 +42,6 @@ DSIM_BEGIN_HEADER
 uint64_t dsim_hash64( uint64_t key );
 uint64_t dsim_next_pow_2( uint64_t value );
 
+#define dsim_fill(data, value, count) do { for( uint32_t i = 0; i < (count); ++i ) (data)[i] = (value); } while(0)
+
 DSIM_END_HEADER

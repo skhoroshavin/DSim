@@ -153,16 +153,6 @@ TEST(array_non_empty, resize_less)
     TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, array.count*sizeof(test_data[0]) );
 }
 
-TEST(array_non_empty, fill)
-{
-    dsim_uint64_array_fill( &array, 0xdeadbeefcafe );
-    TEST_ASSERT_NOT_NULL( array.data );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) );
-    TEST_ASSERT( array.capacity >= count_of(test_data) );
-    for( size_t i = 0; i < array.count; ++i )
-        TEST_ASSERT_EQUAL_HEX64( array.at[i], 0xdeadbeefcafe );
-}
-
 TEST(array_non_empty, push_back)
 {
     dsim_uint64_array_push_back( &array, 42 );
@@ -256,7 +246,6 @@ TEST_GROUP_RUNNER(array_non_empty)
     RUN_TEST_CASE(array_non_empty, reserve_less);
     RUN_TEST_CASE(array_non_empty, resize_more);
     RUN_TEST_CASE(array_non_empty, resize_less);
-    RUN_TEST_CASE(array_non_empty, fill);
     RUN_TEST_CASE(array_non_empty, push_back);
     RUN_TEST_CASE(array_non_empty, push_back_n);
     RUN_TEST_CASE(array_non_empty, pop_back);

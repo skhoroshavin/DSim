@@ -54,7 +54,7 @@ static void _dsim_hash_key_move_n( struct dsim_hash *h, uint32_t dst, uint32_t s
 static void _dsim_hash_rehash( struct dsim_hash *h, uint32_t count )
 {
     dsim_uint32_array_resize( &h->_hash, count );
-    dsim_uint32_array_fill( &h->_hash, DSIM_INVALID_INDEX );
+    dsim_fill( h->_hash.data, DSIM_INVALID_INDEX, count );
 
     for( uint32_t i = 0; i < h->keys.count; ++i )
         _dsim_hash_key_insert( h, i );
@@ -120,14 +120,13 @@ void dsim_hash_push_back_n( struct dsim_hash *h, const uint64_t * keys, uint32_t
     if( h->keys.count + count > h->keys.capacity )
         dsim_hash_reserve( h, dsim_next_pow_2(h->keys.count + count) );
 
+    uint32_t start_pos = h->keys.count;
     dsim_uint64_array_push_back_n( &h->keys, keys, count );
+    dsim_uint32_array_resize( &h->_next, start_pos + count );
+    dsim_fill( h->_next.data + start_pos, DSIM_INVALID_INDEX, count );
 
-    uint32_t start_pos = h->_next.count;
     for( uint32_t i = 0; i < count; ++i )
-    {
-        dsim_uint32_array_push_back( &h->_next, DSIM_INVALID_INDEX );
         _dsim_hash_key_insert( h, start_pos + i );
-    }
 }
 
 void dsim_hash_remove_fast( struct dsim_hash *h, uint32_t pos, uint32_t count )
@@ -145,7 +144,7 @@ void dsim_hash_clear( struct dsim_hash *h )
 {
     dsim_uint64_array_clear( &h->keys );
     dsim_uint32_array_clear( &h->_next );
-    dsim_uint32_array_fill( &h->_hash, DSIM_INVALID_INDEX );
+    dsim_fill( h->_hash.data, DSIM_INVALID_INDEX, h->_hash.count );
 }
 
 void dsim_hash_reset( struct dsim_hash *h )
