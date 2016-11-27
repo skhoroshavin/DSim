@@ -24,6 +24,5 @@ struct dsim_table_block
     /* .columns = */ columns }
 
 void dsim_table_block_resize( struct dsim_table_block *tb, uint32_t count );
-void dsim_table_block_remove( struct dsim_table_block *tb, uint32_t pos, uint32_t count );
 void dsim_table_block_remove_fast( struct dsim_table_block *tb, uint32_t pos, uint32_t count );
 void dsim_table_block_reset( struct dsim_table_block *tb );
