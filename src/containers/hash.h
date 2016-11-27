@@ -19,7 +19,6 @@ struct dsim_hash
 
 uint32_t dsim_hash_find( const struct dsim_hash *h, uint64_t key );
 uint32_t dsim_hash_find_next( const struct dsim_hash *h, uint32_t pos );
-uint32_t dsim_hash_count_of( const struct dsim_hash *h, uint64_t key );
 void dsim_hash_reserve( struct dsim_hash *h, uint32_t count );
 void dsim_hash_push_back( struct dsim_hash *h, uint64_t key );
 void dsim_hash_push_back_n( struct dsim_hash *h, const uint64_t * keys, uint32_t count );

@@ -1,6 +1,5 @@
 
 #include "test_array.h"
-
 #include "test_allocator.h"
 
 static struct dsim_array_uint64 array = dsim_array_static_init(&dsim_test_allocator);
@@ -20,6 +19,23 @@ void TEST_ASSERT_ARRAY_CAPACITY( const struct dsim_array_uint64 *a, uint32_t cap
 {
     TEST_ASSERT_NOT_NULL( a->data );
     TEST_ASSERT( a->capacity >= capacity );
+}
+
+void TEST_ASSERT_ARRAY_REMOVE_ORDERED( const struct dsim_array_uint64 *a, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
+{
+    TEST_ASSERT_ARRAY_CAPACITY( a, old_count );
+    TEST_ASSERT_EQUAL( a->count, old_count - count );
+    TEST_ASSERT_EQUAL_MEMORY( a->data, old_data, pos*sizeof(a->data[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( a->data + pos, old_data + pos + count, (old_count - pos - count)*sizeof(a->data[0]) );
+}
+
+void TEST_ASSERT_ARRAY_REMOVE_UNORDERED( const struct dsim_array_uint64 *a, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
+{
+    TEST_ASSERT_ARRAY_CAPACITY( a, old_count );
+    TEST_ASSERT_EQUAL( a->count, old_count - count );
+    TEST_ASSERT_EQUAL_MEMORY( a->data, old_data, pos*sizeof(a->data[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( a->data + pos, old_data + old_count - count, count*sizeof(a->data[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( a->data + pos + count, old_data + pos + count, (old_count - pos - 2*count)*sizeof(a->data[0]) );
 }
 
 /*
@@ -75,7 +91,7 @@ TEST(array_empty, push_back_n)
 
     TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(data) );
     TEST_ASSERT_EQUAL( array.count, count_of(data) );
-    TEST_ASSERT_EQUAL_MEMORY( array.data,data,sizeof(data) );
+    TEST_ASSERT_EQUAL_MEMORY( array.data, data, sizeof(data) );
 }
 
 TEST(array_empty, clear)
@@ -123,8 +139,6 @@ TEST_TEAR_DOWN(array_non_empty)
 
 TEST(array_non_empty, assert_non_empty)
 {
-    TEST_ASSERT_NOT_NULL( array.data );
-
     TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) );
     TEST_ASSERT_EQUAL( array.count, count_of(test_data) );
     TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, sizeof(test_data) );
@@ -209,31 +223,21 @@ TEST(array_non_empty, remove)
 {
     dsim_array_uint64_remove( &array, 2, 3 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) - 3 );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, 2*sizeof(test_data[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( array.data + 2, test_data + 5, (count_of(test_data) - 5)*sizeof(test_data[0]) );
+    TEST_ASSERT_ARRAY_REMOVE_ORDERED( &array, 2, 3, test_data, count_of(test_data) );
 }
 
 TEST(array_non_empty, remove_fast_unordered)
 {
     dsim_array_uint64_remove_fast( &array, 3, 2 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) - 2 );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, 3*sizeof(test_data[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( array.data + 3, test_data + count_of(test_data) - 2, 2*sizeof(test_data[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( array.data + 5, test_data + 5, (array.count - 5)*sizeof(test_data[0]) );
+    TEST_ASSERT_ARRAY_REMOVE_UNORDERED( &array, 3, 2, test_data, count_of(test_data) );
 }
 
 TEST(array_non_empty, remove_fast_ordered)
 {
     dsim_array_uint64_remove_fast( &array, 2, 4 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) - 4 );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, 2*sizeof(test_data[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( array.data + 2, test_data + 6, (count_of(test_data) - 6)*sizeof(test_data[0]) );
+    TEST_ASSERT_ARRAY_REMOVE_ORDERED( &array, 2, 4, test_data, count_of(test_data) );
 }
 
 TEST(array_non_empty, clear)

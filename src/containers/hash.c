@@ -86,14 +86,6 @@ uint32_t dsim_hash_find_next( const struct dsim_hash *h, uint32_t pos )
     return DSIM_INVALID_INDEX;
 }
 
-uint32_t dsim_hash_count_of( const struct dsim_hash *h, uint64_t key )
-{
-    uint32_t result = 0;
-    for( uint32_t i = dsim_hash_find( h, key ); i != DSIM_INVALID_INDEX; i = dsim_hash_find_next( h, i ) )
-        ++result;
-    return result;
-}
-
 void dsim_hash_reserve( struct dsim_hash *h, uint32_t count )
 {
     if( count <= h->keys.count )
