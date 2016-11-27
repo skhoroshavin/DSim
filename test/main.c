@@ -1,5 +1,5 @@
 
-#include "unity_fixture.h"
+#include <time.h>
 
 #include "containers/test_array.h"
 #include "containers/test_hash.h"
@@ -26,5 +26,6 @@ static void run_all_tests()
 
 int main( int argc, const char * argv[] )
 {
+    srand( time(0) );
     return UnityMain( argc, argv, run_all_tests );
 }

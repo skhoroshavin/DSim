@@ -12,20 +12,25 @@ static struct dsim_hash hash = dsim_hash_static_init(&dsim_test_allocator);
  * Utility
  */
 
+static int _find( uint64_t value, const uint64_t * values, uint32_t count )
+{
+    for( uint32_t i = 0; i < count; ++i )
+        if( value == values[i] )
+            return 1;
+    return 0;
+}
+
 static uint64_t rand_not_in_array( uint64_t max_value, const uint64_t * values, uint32_t count )
 {
-    srand( time(0) );
     while( 1 )
     {
         uint64_t result = rand() % max_value;
-        for( uint32_t i = 0; i < count; ++i )
-            if( result == values[i] )
-                continue;
-        return result;
+        if( !_find(result, values, count) )
+            return result;
     }
 }
 
-static int _less( const void * pa, const void * pb )
+static int _less_uint64( const void * pa, const void * pb )
 {
     uint64_t a = *((uint64_t*)pa);
     uint64_t b = *((uint64_t*)pb);
@@ -38,25 +43,30 @@ void TEST_ASSERT_HASH_CONSISTENT( const struct dsim_hash *h )
 {
     TEST_ASSERT_EQUAL( dsim_hash_find_next( h, DSIM_INVALID_INDEX ), DSIM_INVALID_INDEX );
 
-    uint64_t keys[h->keys.count];
-    memcpy( keys, h->keys.data, h->keys.count*sizeof(uint64_t) );
-    qsort( keys, h->keys.count, sizeof(uint64_t), _less );
+    struct dsim_array_uint64 keys = dsim_array_static_init(&dsim_test_allocator);
+    dsim_array_uint64_push_back_n( &keys, h->keys.data, h->keys.count );
+    qsort( keys.data, keys.count, sizeof(uint64_t), _less_uint64 );
 
     for( uint32_t count, i = 0; i < h->keys.count; i += count )
     {
-        uint64_t key = keys[i];
+        uint64_t key = keys.at[i];
 
         count = 0;
         for( uint32_t j = dsim_hash_find( h, key ); j != DSIM_INVALID_INDEX; j = dsim_hash_find_next( h, j ) )
         {
             TEST_ASSERT_EQUAL( h->keys.at[j], key );
-            TEST_ASSERT_EQUAL( keys[i+count], key );
+            TEST_ASSERT_EQUAL( keys.at[i+count], key );
             ++count;
         }
     }
 
     for( uint32_t i = 0; i < 100; ++i )
-        TEST_ASSERT_EQUAL( dsim_hash_find( h, rand_not_in_array( 50, h->keys.data, h->keys.count ) ), DSIM_INVALID_INDEX );
+    {
+        uint64_t key = rand_not_in_array( 50, keys.data, keys.count );
+        TEST_ASSERT_EQUAL( dsim_hash_find( h, key ), DSIM_INVALID_INDEX );
+    }
+
+    dsim_array_uint64_reset( &keys );
 }
 
 /*
