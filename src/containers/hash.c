@@ -28,7 +28,7 @@ static void _dsim_hash_set_prev( struct dsim_hash *h, uint32_t pos, uint32_t dst
         h->_next.at[prev_i] = dst;
 }
 
-static void _dsim_hash_key_insert( struct dsim_hash *h, uint32_t pos )
+inline static void _dsim_hash_key_insert( struct dsim_hash *h, uint32_t pos )
 {
     uint32_t hash_i = dsim_hash64( h->keys.at[pos] ) % h->_hash.count;
     h->_next.at[pos] = h->_hash.at[hash_i];

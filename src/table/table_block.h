@@ -5,11 +5,13 @@
 
 struct dsim_table_column
 {
+    const char * name;
     uint32_t elem_size;
     struct _dsim_array data;
 };
 
-#define dsim_table_column_static_init(elem_size,alloc) { \
+#define dsim_table_column_static_init(name,elem_size,alloc) { \
+    /* .name = */      name, \
     /* .elem_size = */ elem_size, \
     /* .data = */      dsim_array_static_init(alloc) }
 
