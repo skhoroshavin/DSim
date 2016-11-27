@@ -46,4 +46,12 @@ uint64_t dsim_next_pow_2( uint64_t value );
 
 #define dsim_fill(data, value, count) do { for( uint32_t i = 0; i < (count); ++i ) (data)[i] = (value); } while(0)
 
+#define dsim_find(pos, value, data, count) do { \
+    for( ; pos < (count); ++pos ) \
+        if( (data)[pos] == (value) ) \
+            break; \
+    if( pos == (count) ) \
+        pos = DSIM_INVALID_INDEX; \
+    } while(0)
+
 DSIM_END_HEADER

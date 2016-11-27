@@ -13,11 +13,13 @@ static void _dsim_hash_set_prev( struct dsim_hash *h, uint32_t pos, uint32_t dst
         prev_i = i;
         i = h->_next.at[i];
 
+        // LCOV_EXCL_START
         if( i == DSIM_INVALID_INDEX )
         {
             assert( 0 ); // Should never reach this!
             return;
         }
+        // LCOV_EXCL_STOP
     }
 
     if( prev_i == DSIM_INVALID_INDEX )

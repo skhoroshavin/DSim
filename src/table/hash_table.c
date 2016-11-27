@@ -14,7 +14,7 @@ static uint32_t dsim_hash_table_column_size( const struct dsim_table *self, uint
 {
     const struct dsim_hash_table * t = container_of( self, const struct dsim_hash_table, table );
 
-    assert( col < t->data.col_count );
+    assert( col < t->data.col_count ); // LCOV_EXCL_BR_LINE
     return t->data.columns[col].elem_size;
 }
 
@@ -28,7 +28,7 @@ static uint32_t dsim_hash_table_block_size( const struct dsim_table *self, uint3
 {
     const struct dsim_hash_table * t = container_of( self, const struct dsim_hash_table, table );
 
-    assert( block == 0 );
+    assert( block == 0 ); // LCOV_EXCL_BR_LINE
     return t->ids.keys.count;
 }
 
@@ -36,7 +36,7 @@ static const uint64_t *dsim_hash_table_id_data( const struct dsim_table *self, u
 {
     const struct dsim_hash_table * t = container_of( self, const struct dsim_hash_table, table );
 
-    assert( block == 0 );
+    assert( block == 0 ); // LCOV_EXCL_BR_LINE
     return t->ids.keys.data;
 }
 
@@ -44,8 +44,8 @@ static void *dsim_hash_table_data( struct dsim_table *self, uint32_t block, uint
 {
     struct dsim_hash_table * t = container_of( self, struct dsim_hash_table, table );
 
-    assert( block == 0 );
-    assert( col < t->data.col_count );
+    assert( block == 0 ); // LCOV_EXCL_BR_LINE
+    assert( col < t->data.col_count ); // LCOV_EXCL_BR_LINE
     return t->data.columns[col].data.data;
 }
 

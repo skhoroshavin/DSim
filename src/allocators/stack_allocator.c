@@ -15,8 +15,10 @@ static void * stack_allocate( struct dsim_allocator *self, size_t size )
     if( alloc->data == 0 )
         stack_initialize( alloc );
 
+    // LCOV_EXCL_START
     if( alloc->allocated + size > alloc->capacity )
         return 0;
+    // LCOV_EXCL_STOP
 
     void *data = (uint8_t*)alloc->data + alloc->allocated;
     alloc->allocated += size;
@@ -32,15 +34,17 @@ static void * stack_reallocate( struct dsim_allocator *self, void *data, size_t 
 
     if( (uint8_t*)data + old_size == (uint8_t*)alloc->data + alloc->allocated )
     {
+        // LCOV_EXCL_START
         if( alloc->allocated + new_size - old_size > alloc->capacity )
             return 0;
+        // LCOV_EXCL_STOP
 
         alloc->allocated += new_size - old_size;
         return data;
     }
 
     void *new_data = stack_allocate( self, new_size );
-    if( new_data )
+    if( new_data ) // LCOV_EXCL_BR_LINE
         memcpy( new_data, data, old_size );
     return new_data;
 }

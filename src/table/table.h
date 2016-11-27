@@ -18,7 +18,7 @@ typedef struct dsim_table_range
     uint32_t count;
 } dsim_table_range;
 
-DSIM_DEFINE_ARRAY(dsim_table_range, table_range)
+DSIM_DEFINE_ARRAY(dsim_table_range, table_range) // LCOV_EXCL_BR_LINE
 
 struct dsim_table;
 
