@@ -8,27 +8,35 @@
 
 static struct dsim_hash hash = dsim_hash_static_init(&dsim_test_allocator);
 
+#define SMALL_COUNT 10
+#define LARGE_COUNT 100
+
+static uint64_t test_small[SMALL_COUNT];
+static uint64_t test_large[LARGE_COUNT];
+static uint64_t more_small[SMALL_COUNT];
+static uint64_t more_large[LARGE_COUNT];
+
 /*
  * Utility
  */
-
-static int _find( uint64_t value, const uint64_t * values, uint32_t count )
-{
-    for( uint32_t i = 0; i < count; ++i )
-        if( value == values[i] )
-            return 1;
-    return 0;
-}
 
 static uint64_t rand_not_in_array( uint64_t max_value, const uint64_t * values, uint32_t count )
 {
     while( 1 )
     {
         uint64_t result = rand() % max_value;
-        if( !_find(result, values, count) )
+        uint32_t pos = 0;
+        dsim_find( pos, result, values, count );
+        if( pos == DSIM_INVALID_INDEX )
             return result;
     }
 }
+
+//static void fill_unique_rand( uint64_t max_value, uint64_t * values, uint32_t count )
+//{
+//    for( uint32_t i = 0; i < count; ++i )
+//        values[i] = rand_not_in_array( max_value, values, i );
+//}
 
 static int _less_uint64( const void * pa, const void * pb )
 {
@@ -62,7 +70,7 @@ void TEST_ASSERT_HASH_CONSISTENT( const struct dsim_hash *h )
 
     for( uint32_t i = 0; i < 100; ++i )
     {
-        uint64_t key = rand_not_in_array( 50, keys.data, keys.count );
+        uint64_t key = rand_not_in_array( 100, keys.data, keys.count );
         TEST_ASSERT_EQUAL( dsim_hash_find( h, key ), DSIM_INVALID_INDEX );
     }
 
@@ -112,12 +120,11 @@ TEST(hash_empty, push_back)
 
 TEST(hash_empty, push_back_n)
 {
-    const uint64_t test_keys[] = { 2, 5, 3, 5, 9, 0 };
-    dsim_hash_push_back_n( &hash, test_keys, count_of(test_keys) );
+    dsim_hash_push_back_n( &hash, test_small, count_of(test_small) );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_keys) );
-    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_keys) );
-    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_keys, sizeof(test_keys) );
+    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_small) );
+    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_small) );
+    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_small, sizeof(test_small) );
 
     TEST_ASSERT_HASH_CONSISTENT( &hash );
 }
@@ -154,11 +161,9 @@ TEST_GROUP_RUNNER(hash_empty)
 
 TEST_GROUP(hash_non_empty);
 
-static uint64_t test_data[] = { 5, 3, 7, 52, 0, 12, 3, 623, 23 };
-
 TEST_SETUP(hash_non_empty)
 {
-    dsim_hash_push_back_n( &hash, test_data, count_of(test_data) );
+    dsim_hash_push_back_n( &hash, test_large, count_of(test_large) );
 }
 
 TEST_TEAR_DOWN(hash_non_empty)
@@ -168,29 +173,29 @@ TEST_TEAR_DOWN(hash_non_empty)
 
 TEST(hash_non_empty, assert_non_empty)
 {
-    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_data) );
-    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_data) );
-    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_data, sizeof(test_data) );
+    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_large) );
+    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_large) );
+    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_large, sizeof(test_large) );
     TEST_ASSERT_HASH_CONSISTENT( &hash );
 }
 
 TEST(hash_non_empty, reserve_more)
 {
-    dsim_hash_reserve( &hash, count_of(test_data) + 4 );
+    dsim_hash_reserve( &hash, count_of(test_large) + 4 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_data) + 4 );
-    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_data) );
-    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_data, sizeof(test_data) );
+    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_large) + 4 );
+    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_large) );
+    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_large, sizeof(test_large) );
     TEST_ASSERT_HASH_CONSISTENT( &hash );
 }
 
 TEST(hash_non_empty, reserve_less)
 {
-    dsim_hash_reserve( &hash, count_of(test_data) - 4 );
+    dsim_hash_reserve( &hash, count_of(test_large) - 4 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_data) );
-    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_data) );
-    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_data, sizeof(test_data) );
+    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_large) );
+    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_large) );
+    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_large, sizeof(test_large) );
     TEST_ASSERT_HASH_CONSISTENT( &hash );
 }
 
@@ -198,38 +203,52 @@ TEST(hash_non_empty, push_back)
 {
     dsim_hash_push_back( &hash, 42 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_data) + 1 );
-    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_data) + 1 );
-    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_data, sizeof(test_data) );
-    TEST_ASSERT_EQUAL( hash.keys.at[count_of(test_data)], 42 );
+    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_large) + 1 );
+    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_large) + 1 );
+    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_large, sizeof(test_large) );
+    TEST_ASSERT_EQUAL( hash.keys.at[count_of(test_large)], 42 );
     TEST_ASSERT_HASH_CONSISTENT( &hash );
 }
 
-TEST(hash_non_empty, push_back_n)
+TEST(hash_non_empty, push_back_n_small)
 {
-    const uint64_t more_data[] = { 65, 0, 123, 87, 1, 12, 45, 62, 76, 4, 2 };
-    dsim_hash_push_back_n( &hash, more_data, count_of(more_data) );
+    dsim_hash_push_back_n( &hash, more_small, count_of(more_small) );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_data) + count_of(more_data) );
-    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_data) + count_of(more_data) );
-    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_data, sizeof(test_data) );
-    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data + count_of(test_data), more_data, sizeof(more_data) );
+    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_large) + count_of(more_small) );
+    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_large) + count_of(more_small) );
+    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_large, sizeof(test_large) );
+    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data + count_of(test_large), more_small, sizeof(more_small) );
+    TEST_ASSERT_HASH_CONSISTENT( &hash );
+}
+
+TEST(hash_non_empty, push_back_n_large)
+{
+    dsim_hash_push_back_n( &hash, more_large, count_of(more_large) );
+
+    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_large) + count_of(more_large) );
+    TEST_ASSERT_EQUAL( hash.keys.count, count_of(test_large) + count_of(more_large) );
+    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data, test_large, sizeof(test_large) );
+    TEST_ASSERT_EQUAL_MEMORY( hash.keys.data + count_of(test_large), more_large, sizeof(more_large) );
     TEST_ASSERT_HASH_CONSISTENT( &hash );
 }
 
 TEST(hash_non_empty, remove_fast_unordered)
 {
-    dsim_hash_remove_fast( &hash, 3, 2 );
+    uint32_t pos = hash.keys.count / 3;
+    uint32_t count = hash.keys.count / 6;
+    dsim_hash_remove_fast( &hash, pos, count );
 
-    TEST_ASSERT_ARRAY_REMOVE_UNORDERED( &hash.keys, 3, 2, test_data, count_of(test_data) );
+    TEST_ASSERT_ARRAY_REMOVE_UNORDERED( &hash.keys, pos, count, test_large, count_of(test_large) );
     TEST_ASSERT_HASH_CONSISTENT( &hash );
 }
 
 TEST(hash_non_empty, remove_fast_ordered)
 {
-    dsim_hash_remove_fast( &hash, 2, 4 );
+    uint32_t pos = hash.keys.count / 3;
+    uint32_t count = hash.keys.count / 2;
+    dsim_hash_remove_fast( &hash, pos, count );
 
-    TEST_ASSERT_ARRAY_REMOVE_ORDERED( &hash.keys, 2, 4, test_data, count_of(test_data) );
+    TEST_ASSERT_ARRAY_REMOVE_ORDERED( &hash.keys, pos, count, test_large, count_of(test_large) );
     TEST_ASSERT_HASH_CONSISTENT( &hash );
 }
 
@@ -237,7 +256,7 @@ TEST(hash_non_empty, clear)
 {
     dsim_hash_clear( &hash );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_data) );
+    TEST_ASSERT_ARRAY_CAPACITY( &hash.keys, count_of(test_large) );
     TEST_ASSERT_EQUAL( hash.keys.count, 0 );
     TEST_ASSERT_HASH_CONSISTENT( &hash );
 }
@@ -256,7 +275,8 @@ TEST_GROUP_RUNNER(hash_non_empty)
     RUN_TEST_CASE(hash_non_empty, reserve_more);
     RUN_TEST_CASE(hash_non_empty, reserve_less);
     RUN_TEST_CASE(hash_non_empty, push_back);
-    RUN_TEST_CASE(hash_non_empty, push_back_n);
+    RUN_TEST_CASE(hash_non_empty, push_back_n_small);
+    RUN_TEST_CASE(hash_non_empty, push_back_n_large);
     RUN_TEST_CASE(hash_non_empty, remove_fast_unordered);
     RUN_TEST_CASE(hash_non_empty, remove_fast_ordered);
     RUN_TEST_CASE(hash_non_empty, clear);
@@ -265,6 +285,11 @@ TEST_GROUP_RUNNER(hash_non_empty)
 
 void run_test_hash()
 {
+    dsim_fill( test_small, rand() % 10, count_of(test_small) );
+    dsim_fill( test_large, rand() % 10, count_of(test_large) );
+    dsim_fill( more_small, rand() % 10, count_of(more_small) );
+    dsim_fill( more_large, rand() % 10, count_of(more_large) );
+
     RUN_TEST_GROUP(hash_empty);
     RUN_TEST_GROUP(hash_non_empty);
 }

@@ -125,7 +125,8 @@ void dsim_hash_push_back_n( struct dsim_hash *h, const uint64_t * keys, uint32_t
 
 void dsim_hash_remove_fast( struct dsim_hash *h, uint32_t pos, uint32_t count )
 {
-    if( h->keys.count - pos - count < count )
+    uint32_t left_to_end = h->keys.count - pos - count;
+    if( left_to_end < count )
         _dsim_hash_key_move_n( h, pos, pos + count, count );
     else
         _dsim_hash_key_move_n( h, pos, h->keys.count - count, count );

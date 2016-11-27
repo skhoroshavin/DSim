@@ -26,7 +26,8 @@ void TEST_ASSERT_ARRAY_REMOVE_ORDERED( const struct dsim_array_uint64 *a, uint32
     TEST_ASSERT_ARRAY_CAPACITY( a, old_count );
     TEST_ASSERT_EQUAL( a->count, old_count - count );
     TEST_ASSERT_EQUAL_MEMORY( a->data, old_data, pos*sizeof(a->data[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( a->data + pos, old_data + pos + count, (old_count - pos - count)*sizeof(a->data[0]) );
+    if( old_count > pos + count )
+        TEST_ASSERT_EQUAL_MEMORY( a->data + pos, old_data + pos + count, (old_count - pos - count)*sizeof(a->data[0]) );
 }
 
 void TEST_ASSERT_ARRAY_REMOVE_UNORDERED( const struct dsim_array_uint64 *a, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
@@ -226,6 +227,13 @@ TEST(array_non_empty, remove)
     TEST_ASSERT_ARRAY_REMOVE_ORDERED( &array, 2, 3, test_data, count_of(test_data) );
 }
 
+TEST(array_non_empty, remove_from_end)
+{
+    dsim_array_uint64_remove( &array, array.count-4, 4 );
+
+    TEST_ASSERT_ARRAY_REMOVE_ORDERED( &array, array.count, 4, test_data, count_of(test_data) );
+}
+
 TEST(array_non_empty, remove_fast_unordered)
 {
     dsim_array_uint64_remove_fast( &array, 3, 2 );
@@ -267,6 +275,7 @@ TEST_GROUP_RUNNER(array_non_empty)
     RUN_TEST_CASE(array_non_empty, pop_back);
     RUN_TEST_CASE(array_non_empty, pop_back_n);
     RUN_TEST_CASE(array_non_empty, remove);
+    RUN_TEST_CASE(array_non_empty, remove_from_end);
     RUN_TEST_CASE(array_non_empty, remove_fast_unordered);
     RUN_TEST_CASE(array_non_empty, remove_fast_ordered);
     RUN_TEST_CASE(array_non_empty, clear);
