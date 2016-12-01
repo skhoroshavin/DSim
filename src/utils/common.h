@@ -29,13 +29,8 @@ DSIM_BEGIN_HEADER
 #define container_of(ptr,type,member) ((type*)((char*)ptr - offsetof(type,member)))
 #endif // container_of
 
-#ifndef max
-#define max(a,b) ((a > b) ? a : b)
-#endif // max
-
-#ifndef min
-#define min(a,b) ((a < b) ? a : b)
-#endif // min
+inline static size_t min( size_t a, size_t b ) { return a < b ? a : b; }
+inline static size_t max( size_t a, size_t b ) { return a > b ? a : b; }
 
 #define DSIM_INVALID_INDEX ((uint32_t)-1)
 
