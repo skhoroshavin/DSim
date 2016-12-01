@@ -2,10 +2,25 @@ project(dsim)
 cmake_minimum_required(VERSION 2.8)
 
 ############################################################
+# Options
+############################################################
+
+option(COVERAGE off)
+
+############################################################
+# General config
+############################################################
+
+add_definitions(-Wall -Wextra)
+
+if((CMAKE_BUILD_TYPE MATCHES Debug) AND COVERAGE)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage -DNDEBUG")
+endif((CMAKE_BUILD_TYPE MATCHES Debug) AND COVERAGE)
+
+############################################################
 # dsim
 ############################################################
 
-add_definitions(-std=c99 -Wall -Wextra)
 include_directories(src)
 
 aux_source_directory(src/allocators SRC_LIST)
@@ -15,10 +30,6 @@ aux_source_directory(src/utils SRC_LIST)
 
 add_library(dsim SHARED ${SRC_LIST})
 link_directories(${PROJECT_BINARY_DIR})
-
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-    set_target_properties(dsim PROPERTIES COMPILE_FLAGS --coverage LINK_FLAGS --coverage)
-endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 ############################################################
 # Tests
@@ -45,6 +56,7 @@ add_test(dsim ${PROJECT_BINARY_DIR}/test_dsim)
 ############################################################
 
 add_custom_target(coverage
+    COMMAND find CMakeFiles/dsim.dir/ -name *.gcda -type f -delete
     COMMAND test_dsim
     COMMAND lcov --capture --directory CMakeFiles/dsim.dir/ --output-file coverage.info
     COMMAND genhtml coverage.info --output-directory coverage
