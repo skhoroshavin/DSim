@@ -28,6 +28,6 @@ Help with porting to as many platforms as possible is very welcome.
 
 ## Credits
 
-Hash container inspired by hash from <a href="https://bitbucket.org/bitsquid/foundation">Bitsquid foundation</a> library.
-Tests written using <a href="http://www.throwtheswitch.org/unity">Unity</a> framework.
+- Hash container inspired by hash from <a href="https://bitbucket.org/bitsquid/foundation">Bitsquid foundation</a> library.
+- Tests written using <a href="http://www.throwtheswitch.org/unity">Unity</a> framework.
 
