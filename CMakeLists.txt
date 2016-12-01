@@ -2,20 +2,13 @@ project(dsim)
 cmake_minimum_required(VERSION 2.8)
 
 ############################################################
-# Options
-############################################################
-
-option(COVERAGE off)
-
-############################################################
 # General config
 ############################################################
 
 add_definitions(-Wall -Wextra)
 
-if((CMAKE_BUILD_TYPE MATCHES Debug) AND COVERAGE)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage -DNDEBUG")
-endif((CMAKE_BUILD_TYPE MATCHES Debug) AND COVERAGE)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c99")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
 
 ############################################################
 # dsim
@@ -71,7 +64,8 @@ if(DSIM_BUILD_SAMPLE)
     aux_source_directory(sample SAMPLE_LIST)
     add_executable(sample ${SAMPLE_LIST})
     add_custom_command(TARGET sample POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/sample/*.lua ${PROJECT_BINARY_DIR})
+        COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/sample/*.lua ${PROJECT_BINARY_DIR}
+        DEPENDS dsim)
     target_link_libraries(sample -ldsim -llua)
 
 endif(DSIM_BUILD_SAMPLE)
