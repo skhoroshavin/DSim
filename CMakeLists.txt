@@ -28,8 +28,6 @@ link_directories(${PROJECT_BINARY_DIR})
 # Tests
 ############################################################
 
-enable_testing()
-
 include_directories(test)
 aux_source_directory(test TEST_LIST)
 
@@ -42,22 +40,21 @@ add_executable(test_dsim ${TEST_LIST})
 add_dependencies(test_dsim dsim)
 target_link_libraries(test_dsim -ldsim)
 
-add_test(dsim ${PROJECT_BINARY_DIR}/test_dsim)
-
-############################################################
-# Coverage
-############################################################
-
-add_custom_target(coverage
+add_custom_target(test
     COMMAND find CMakeFiles/dsim.dir/ -name *.gcda -type f -delete
     COMMAND test_dsim
+    DEPENDS test_dsim)
+
+add_custom_target(coverage
     COMMAND lcov --capture --directory CMakeFiles/dsim.dir/ --output-file coverage.info
     COMMAND genhtml coverage.info --output-directory coverage
-    DEPENDS test_dsim)
+    DEPENDS test)
 
 ############################################################
 # Sample
 ############################################################
+
+OPTION(DSIM_BUILD_SAMPLE OFF)
 
 if(DSIM_BUILD_SAMPLE)
 
