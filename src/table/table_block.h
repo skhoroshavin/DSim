@@ -2,17 +2,20 @@
 #pragma once
 
 #include "containers/array.h"
+#include "reflection.h"
 
 struct dsim_table_column
 {
     const char * name;
-    uint32_t elem_size;
+    enum dsim_type type;
+    uint32_t size;
     struct _dsim_array data;
 };
 
-#define dsim_table_column_static_init(name,elem_size,alloc) { \
+#define dsim_table_column_static_init(name,type,size,alloc) { \
     /* .name = */      name, \
-    /* .elem_size = */ elem_size, \
+    /* .type = */      type, \
+    /* .size = */      size, \
     /* .data = */      dsim_array_static_init(alloc) }
 
 struct dsim_table_block

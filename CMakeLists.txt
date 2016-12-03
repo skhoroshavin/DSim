@@ -60,9 +60,10 @@ if(DSIM_BUILD_SAMPLE)
 
     aux_source_directory(sample SAMPLE_LIST)
     add_executable(sample ${SAMPLE_LIST})
+    add_dependencies(sample dsim)
+    include_directories(/usr/include/luajit-2.0)
     add_custom_command(TARGET sample POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/sample/*.lua ${PROJECT_BINARY_DIR}
-        DEPENDS dsim)
-    target_link_libraries(sample -ldsim -llua)
+        COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/sample/*.lua ${PROJECT_BINARY_DIR})
+    target_link_libraries(sample -ldsim -lluajit-5.1)
 
 endif(DSIM_BUILD_SAMPLE)

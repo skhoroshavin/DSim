@@ -2,6 +2,7 @@
 #pragma once
 
 #include "table_log.h"
+#include "reflection.h"
 
 DSIM_BEGIN_HEADER
 
@@ -24,8 +25,11 @@ struct dsim_table;
 
 struct dsim_table_operations
 {
-    uint32_t (*column_count)( const struct dsim_table *self );
-    uint32_t (*column_size)( const struct dsim_table *self, uint32_t col );
+    uint32_t       (*column_count)( const struct dsim_table *self );
+    uint32_t       (*column_size)( const struct dsim_table *self, uint32_t col );
+    const char    *(*column_name)( const struct dsim_table *self, uint32_t col );
+    enum dsim_type (*column_type)( const struct dsim_table *self, uint32_t col );
+
     uint32_t (*block_count)( const struct dsim_table *self );
     uint32_t (*block_size)( const struct dsim_table *self, uint32_t block );
 
@@ -54,6 +58,11 @@ inline static uint32_t dsim_table_column_count( const struct dsim_table *table )
 { return table->_ops->column_count( table ); }
 inline static uint32_t dsim_table_column_size( const struct dsim_table *table, uint32_t col )
 { return table->_ops->column_size( table, col ); }
+inline static const char * dsim_table_column_name( const struct dsim_table *table, uint32_t col )
+{ return table->_ops->column_name( table, col ); }
+inline static enum dsim_type dsim_table_column_type( const struct dsim_table *table, uint32_t col )
+{ return table->_ops->column_type( table, col ); }
+
 inline static uint32_t dsim_table_block_count( const struct dsim_table *table )
 { return table->_ops->block_count( table ); }
 inline static uint32_t dsim_table_block_size( const struct dsim_table *table, uint32_t block )

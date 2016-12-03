@@ -6,9 +6,9 @@
 #include "table/hash_table.h"
 
 static struct dsim_table_column table_columns[] = {
-    dsim_table_column_static_init( "test_int",   sizeof(uint64_t), &dsim_test_allocator ),
-    dsim_table_column_static_init( "test_float", sizeof(float),    &dsim_test_allocator ),
-    dsim_table_column_static_init( "test_blob",  128,              &dsim_test_allocator )
+    dsim_table_column_static_init( "test_int",   DSIM_TYPE_INT,    sizeof(uint64_t), &dsim_test_allocator ),
+    dsim_table_column_static_init( "test_float", DSIM_TYPE_FLOAT,  sizeof(float),    &dsim_test_allocator ),
+    dsim_table_column_static_init( "test_blob",  DSIM_TYPE_STRUCT, 128,              &dsim_test_allocator )
 };
 
 static struct dsim_hash_table hash_table = dsim_hash_table_static_init(
@@ -21,7 +21,7 @@ static void test_hash_table_scheme()
 {
     TEST_ASSERT_EQUAL( dsim_table_column_count( table ), count_of(table_columns) );
     for( uint32_t i = 0; i < dsim_table_column_count( table ); ++i )
-        TEST_ASSERT_EQUAL( dsim_table_column_size( table, i ), table_columns[i].elem_size );
+        TEST_ASSERT_EQUAL( dsim_table_column_size( table, i ), table_columns[i].size );
 
     TEST_ASSERT_EQUAL( dsim_table_block_count( table), 1 );
 }
