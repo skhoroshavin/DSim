@@ -40,7 +40,7 @@ add_executable(test_dsim ${TEST_LIST})
 add_dependencies(test_dsim dsim)
 target_link_libraries(test_dsim -ldsim)
 
-add_custom_target(test
+add_custom_target(tests
     COMMAND find CMakeFiles/dsim.dir/ -name *.gcda -type f -delete
     COMMAND test_dsim
     DEPENDS test_dsim)
@@ -48,7 +48,7 @@ add_custom_target(test
 add_custom_target(coverage
     COMMAND lcov --capture --directory CMakeFiles/dsim.dir/ --output-file coverage.info
     COMMAND genhtml coverage.info --output-directory coverage
-    DEPENDS test)
+    DEPENDS tests)
 
 ############################################################
 # Sample
@@ -58,12 +58,23 @@ OPTION(DSIM_BUILD_SAMPLE OFF)
 
 if(DSIM_BUILD_SAMPLE)
 
+    set(SAMPLE_FILES
+        sample/config.fbs
+        sample/sample.lua
+        sample/sample.json)
+
+    add_custom_target(sample_prepare
+        COMMAND flatcc -a --json-parser config.fbs
+        COMMAND cmake -E copy *.lua ${PROJECT_BINARY_DIR}
+        COMMAND cmake -E copy *.json ${PROJECT_BINARY_DIR}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/sample
+        SOURCES ${SAMPLE_FILES})
+    add_dependencies(sample_prepare dsim)
+
     aux_source_directory(sample SAMPLE_LIST)
     add_executable(sample ${SAMPLE_LIST})
-    add_dependencies(sample dsim)
+    add_dependencies(sample sample_prepare)
     include_directories(/usr/include/luajit-2.0)
-    add_custom_command(TARGET sample POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/sample/*.lua ${PROJECT_BINARY_DIR})
-    target_link_libraries(sample -ldsim -lluajit-5.1)
+    target_link_libraries(sample -ldsim -lluajit-5.1 -lflatccrt)
 
 endif(DSIM_BUILD_SAMPLE)

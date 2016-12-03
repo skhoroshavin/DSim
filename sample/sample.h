@@ -5,6 +5,10 @@
 
 #include "dsim_lua.h"
 
+#include "config_reader.h"
+#include "config_json_parser.h"
+
+
 #include <stdio.h>
 #include <memory.h>
 

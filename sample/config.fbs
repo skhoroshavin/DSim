@@ -1,0 +1,29 @@
+
+namespace dsimx;
+
+enum type : ubyte
+{
+    INT,
+    FLOAT,
+    STRUCT
+}
+
+table column
+{
+    name: string (key);
+    size: ubyte;
+    type: type;
+}
+
+table schema
+{
+    name: string (key);
+    columns: [column];
+}
+
+table config
+{
+    schemas: [schema];
+}
+
+root_type config;

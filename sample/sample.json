@@ -1,0 +1,19 @@
+{
+    schemas: [
+        {
+            name: "wire",
+            columns: [
+                { name: "state", type: INT, size: 1 }
+            ]
+        },
+
+        {
+            name: "logic",
+            columns: [
+                { name: "input_1", type: INT, size: 8 },
+                { name: "input_2", type: INT, size: 8 },
+                { name: "output",  type: INT, size: 8 },
+            ]
+        }
+    ]
+}

@@ -9,18 +9,8 @@ function process()
     end
 end
 
-function dump()
-    local count = wires:count()
-    for i = 1,count do
-        local id = wires:get_id(i)
-        print( wires:state(id) )
-    end
-    print( "<<<<<<<<<<" )
-end
-
 wires:set_state( 1, 1 )
 
-for i = 1,3 do
-    dump()
+for i = 1,10 do
     process()
 end
