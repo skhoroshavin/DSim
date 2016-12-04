@@ -1,18 +1,40 @@
 
-namespace dsimx;
+namespace dsim;
 
-enum type : ubyte
+table numeric_type
 {
-    INT,
-    FLOAT,
-    STRUCT
+    is_float: bool = false;
+}
+
+table struct_field
+{
+    name: string (key);
+    type: string;
+    offset: uint;
+}
+
+table struct_type
+{
+    fields: [struct_field];
+}
+
+union any_type
+{
+    numeric_type,
+    struct_type
+}
+
+table type
+{
+    name: string (key);
+    size: ubyte = 4;
+    data: any_type;
 }
 
 table column
 {
     name: string (key);
-    size: ubyte;
-    type: type;
+    type: string;
 }
 
 table schema
@@ -23,6 +45,7 @@ table schema
 
 table config
 {
+    types: [type];
     schemas: [schema];
 }
 

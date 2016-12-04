@@ -1,18 +1,28 @@
 {
+    types: [
+        { name: "uint8",  size: 1, data_type: numeric_type, data: { is_float: 0 } },
+        { name: "uint16", size: 2, data_type: numeric_type, data: { is_float: 0 } },
+        { name: "uint32", size: 4, data_type: numeric_type, data: { is_float: 0 } },
+        { name: "uint64", size: 8, data_type: numeric_type, data: { is_float: 0 } },
+
+        { name: "float",  size: 4, data_type: numeric_type, data: { is_float: 1 } },
+        { name: "double", size: 8, data_type: numeric_type, data: { is_float: 1 } },
+    ],
+
     schemas: [
         {
             name: "wire",
             columns: [
-                { name: "state", type: INT, size: 1 }
+                { name: "state", type: "uint8"  }
             ]
         },
 
         {
             name: "logic",
             columns: [
-                { name: "input_1", type: INT, size: 8 },
-                { name: "input_2", type: INT, size: 8 },
-                { name: "output",  type: INT, size: 8 },
+                { name: "input_1", type: "uint64" },
+                { name: "input_2", type: "uint64"  },
+                { name: "output",  type: "uint64"  },
             ]
         }
     ]

@@ -47,23 +47,22 @@ void test()
     void * buf = dsim_load_config( "sample.json" );
     if( !buf ) return;
 
-    dsimx_config_table_t config = dsimx_config_as_root( buf );
-    dsimx_schema_vec_t schemas = dsimx_config_schemas( config );
-    int scount = dsimx_schema_vec_len( schemas );
+    dsim_config_table_t config = dsim_config_as_root( buf );
+    dsim_schema_vec_t schemas = dsim_config_schemas( config );
+    int scount = dsim_schema_vec_len( schemas );
     for( int i = 0; i != scount; ++i )
     {
-        dsimx_schema_table_t schema = dsimx_schema_vec_at( schemas, i );
-        printf( "%s\n", dsimx_schema_name( schema) );
+        dsim_schema_table_t schema = dsim_schema_vec_at( schemas, i );
+        printf( "%s\n", dsim_schema_name( schema) );
 
-        dsimx_column_vec_t columns = dsimx_schema_columns( schema );
-        int ccount = dsimx_column_vec_len( columns );
+        dsim_column_vec_t columns = dsim_schema_columns( schema );
+        int ccount = dsim_column_vec_len( columns );
         for( int j = 0; j != ccount; ++j )
         {
-            dsimx_column_table_t column = dsimx_column_vec_at( columns, j );
-            printf( "  %s: %s size %d\n",
-                    dsimx_column_name( column ),
-                    dsimx_type_name( dsimx_column_type( column ) ),
-                    dsimx_column_size( column ) );
+            dsim_column_table_t column = dsim_column_vec_at( columns, j );
+            printf( "  %s: %s\n",
+                    dsim_column_name( column ),
+                    dsim_column_type( column ) );
         }
         printf( "\n" );
     }

@@ -19,122 +19,250 @@
 #endif
 
 
-typedef const struct dsimx_column_table *dsimx_column_table_t;
-typedef const flatbuffers_uoffset_t *dsimx_column_vec_t;
-typedef flatbuffers_uoffset_t *dsimx_column_mutable_vec_t;
-typedef const struct dsimx_schema_table *dsimx_schema_table_t;
-typedef const flatbuffers_uoffset_t *dsimx_schema_vec_t;
-typedef flatbuffers_uoffset_t *dsimx_schema_mutable_vec_t;
-typedef const struct dsimx_config_table *dsimx_config_table_t;
-typedef const flatbuffers_uoffset_t *dsimx_config_vec_t;
-typedef flatbuffers_uoffset_t *dsimx_config_mutable_vec_t;
+typedef const struct dsim_numeric_type_table *dsim_numeric_type_table_t;
+typedef const flatbuffers_uoffset_t *dsim_numeric_type_vec_t;
+typedef flatbuffers_uoffset_t *dsim_numeric_type_mutable_vec_t;
+typedef const struct dsim_struct_field_table *dsim_struct_field_table_t;
+typedef const flatbuffers_uoffset_t *dsim_struct_field_vec_t;
+typedef flatbuffers_uoffset_t *dsim_struct_field_mutable_vec_t;
+typedef const struct dsim_struct_type_table *dsim_struct_type_table_t;
+typedef const flatbuffers_uoffset_t *dsim_struct_type_vec_t;
+typedef flatbuffers_uoffset_t *dsim_struct_type_mutable_vec_t;
+typedef const struct dsim_type_table *dsim_type_table_t;
+typedef const flatbuffers_uoffset_t *dsim_type_vec_t;
+typedef flatbuffers_uoffset_t *dsim_type_mutable_vec_t;
+typedef const struct dsim_column_table *dsim_column_table_t;
+typedef const flatbuffers_uoffset_t *dsim_column_vec_t;
+typedef flatbuffers_uoffset_t *dsim_column_mutable_vec_t;
+typedef const struct dsim_schema_table *dsim_schema_table_t;
+typedef const flatbuffers_uoffset_t *dsim_schema_vec_t;
+typedef flatbuffers_uoffset_t *dsim_schema_mutable_vec_t;
+typedef const struct dsim_config_table *dsim_config_table_t;
+typedef const flatbuffers_uoffset_t *dsim_config_vec_t;
+typedef flatbuffers_uoffset_t *dsim_config_mutable_vec_t;
 
-typedef uint8_t dsimx_type_enum_t;
-__flatbuffers_define_integer_type(dsimx_type, dsimx_type_enum_t, 8)
-#define dsimx_type_INT ((dsimx_type_enum_t)0U)
-#define dsimx_type_FLOAT ((dsimx_type_enum_t)1U)
-#define dsimx_type_STRUCT ((dsimx_type_enum_t)2U)
 
-static inline const char *dsimx_type_name(dsimx_type_enum_t value)
+
+struct dsim_numeric_type_table { uint8_t unused__; };
+
+#ifndef dsim_numeric_type_identifier
+#define dsim_numeric_type_identifier flatbuffers_identifier
+#endif
+#define dsim_numeric_type_type_hash ((flatbuffers_thash_t)0xa4768410)
+#define dsim_numeric_type_type_identifier "\x10\x84\x76\xa4"
+static inline size_t dsim_numeric_type_vec_len(dsim_numeric_type_vec_t vec)
+__flatbuffers_vec_len(vec)
+static inline dsim_numeric_type_table_t dsim_numeric_type_vec_at(dsim_numeric_type_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_numeric_type_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_numeric_type)
+
+static inline flatbuffers_bool_t dsim_numeric_type_is_float(dsim_numeric_type_table_t t)
+__flatbuffers_scalar_field(flatbuffers_bool, 0, 0, t)
+static inline int dsim_numeric_type_is_float_is_present(dsim_numeric_type_table_t t)
+__flatbuffers_field_present(0, t)
+
+
+struct dsim_struct_field_table { uint8_t unused__; };
+
+#ifndef dsim_struct_field_identifier
+#define dsim_struct_field_identifier flatbuffers_identifier
+#endif
+#define dsim_struct_field_type_hash ((flatbuffers_thash_t)0xd262dfba)
+#define dsim_struct_field_type_identifier "\xba\xdf\x62\xd2"
+static inline size_t dsim_struct_field_vec_len(dsim_struct_field_vec_t vec)
+__flatbuffers_vec_len(vec)
+static inline dsim_struct_field_table_t dsim_struct_field_vec_at(dsim_struct_field_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_struct_field_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_struct_field)
+
+static inline flatbuffers_string_t dsim_struct_field_name(dsim_struct_field_table_t t)
+__flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
+/* Note: find only works on vectors sorted by this field. */
+static inline size_t dsim_struct_field_vec_find_by_name(dsim_struct_field_vec_t vec, const char *s)
+__flatbuffers_find_by_string_field(dsim_struct_field_name, vec, dsim_struct_field_vec_at, dsim_struct_field_vec_len, s)
+static inline size_t dsim_struct_field_vec_find_n_by_name(dsim_struct_field_vec_t vec, const char *s, int n)
+__flatbuffers_find_by_string_n_field(dsim_struct_field_name, vec, dsim_struct_field_vec_at, dsim_struct_field_vec_len, s, n)
+__flatbuffers_define_sort_by_string_field(dsim_struct_field, name)
+#define dsim_struct_field_vec_find dsim_struct_field_vec_find_by_name
+#define dsim_struct_field_vec_find_n dsim_struct_field_vec_find_n_by_name
+#define dsim_struct_field_vec_sort dsim_struct_field_vec_sort_by_name
+static inline int dsim_struct_field_name_is_present(dsim_struct_field_table_t t)
+__flatbuffers_field_present(0, t)
+
+static inline flatbuffers_string_t dsim_struct_field_type(dsim_struct_field_table_t t)
+__flatbuffers_vector_field(flatbuffers_string_t, 1, t, 0)
+static inline int dsim_struct_field_type_is_present(dsim_struct_field_table_t t)
+__flatbuffers_field_present(1, t)
+
+static inline uint32_t dsim_struct_field_offset(dsim_struct_field_table_t t)
+__flatbuffers_scalar_field(flatbuffers_uint32, 2, 0, t)
+static inline int dsim_struct_field_offset_is_present(dsim_struct_field_table_t t)
+__flatbuffers_field_present(2, t)
+
+
+struct dsim_struct_type_table { uint8_t unused__; };
+
+#ifndef dsim_struct_type_identifier
+#define dsim_struct_type_identifier flatbuffers_identifier
+#endif
+#define dsim_struct_type_type_hash ((flatbuffers_thash_t)0xa36a8ace)
+#define dsim_struct_type_type_identifier "\xce\x8a\x6a\xa3"
+static inline size_t dsim_struct_type_vec_len(dsim_struct_type_vec_t vec)
+__flatbuffers_vec_len(vec)
+static inline dsim_struct_type_table_t dsim_struct_type_vec_at(dsim_struct_type_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_struct_type_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_struct_type)
+
+static inline dsim_struct_field_vec_t dsim_struct_type_fields(dsim_struct_type_table_t t)
+__flatbuffers_vector_field(dsim_struct_field_vec_t, 0, t, 0)
+static inline int dsim_struct_type_fields_is_present(dsim_struct_type_table_t t)
+__flatbuffers_field_present(0, t)
+
+typedef uint8_t dsim_any_type_union_type_t;
+__flatbuffers_define_integer_type(dsim_any_type, dsim_any_type_union_type_t, 8)
+#define dsim_any_type_NONE ((dsim_any_type_union_type_t)0U)
+#define dsim_any_type_numeric_type ((dsim_any_type_union_type_t)1U)
+#define dsim_any_type_struct_type ((dsim_any_type_union_type_t)2U)
+
+static inline const char *dsim_any_type_type_name(dsim_any_type_union_type_t type)
 {
-    switch (value) {
-    case dsimx_type_INT: return "INT";
-    case dsimx_type_FLOAT: return "FLOAT";
-    case dsimx_type_STRUCT: return "STRUCT";
+    switch (type) {
+    case dsim_any_type_NONE: return "NONE";
+    case dsim_any_type_numeric_type: return "numeric_type";
+    case dsim_any_type_struct_type: return "struct_type";
     default: return "";
     }
 }
 
 
+struct dsim_type_table { uint8_t unused__; };
 
-struct dsimx_column_table { uint8_t unused__; };
-
-#ifndef dsimx_column_identifier
-#define dsimx_column_identifier flatbuffers_identifier
+#ifndef dsim_type_identifier
+#define dsim_type_identifier flatbuffers_identifier
 #endif
-#define dsimx_column_type_hash ((flatbuffers_thash_t)0x98d399fa)
-#define dsimx_column_type_identifier "\xfa\x99\xd3\x98"
-static inline size_t dsimx_column_vec_len(dsimx_column_vec_t vec)
+#define dsim_type_type_hash ((flatbuffers_thash_t)0x8ae1061c)
+#define dsim_type_type_identifier "\x1c\x06\xe1\x8a"
+static inline size_t dsim_type_vec_len(dsim_type_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline dsimx_column_table_t dsimx_column_vec_at(dsimx_column_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(dsimx_column_table_t, vec, i, 0)
-__flatbuffers_table_as_root(dsimx_column)
+static inline dsim_type_table_t dsim_type_vec_at(dsim_type_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_type_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_type)
 
-static inline flatbuffers_string_t dsimx_column_name(dsimx_column_table_t t)
+static inline flatbuffers_string_t dsim_type_name(dsim_type_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
 /* Note: find only works on vectors sorted by this field. */
-static inline size_t dsimx_column_vec_find_by_name(dsimx_column_vec_t vec, const char *s)
-__flatbuffers_find_by_string_field(dsimx_column_name, vec, dsimx_column_vec_at, dsimx_column_vec_len, s)
-static inline size_t dsimx_column_vec_find_n_by_name(dsimx_column_vec_t vec, const char *s, int n)
-__flatbuffers_find_by_string_n_field(dsimx_column_name, vec, dsimx_column_vec_at, dsimx_column_vec_len, s, n)
-__flatbuffers_define_sort_by_string_field(dsimx_column, name)
-#define dsimx_column_vec_find dsimx_column_vec_find_by_name
-#define dsimx_column_vec_find_n dsimx_column_vec_find_n_by_name
-#define dsimx_column_vec_sort dsimx_column_vec_sort_by_name
-static inline int dsimx_column_name_is_present(dsimx_column_table_t t)
+static inline size_t dsim_type_vec_find_by_name(dsim_type_vec_t vec, const char *s)
+__flatbuffers_find_by_string_field(dsim_type_name, vec, dsim_type_vec_at, dsim_type_vec_len, s)
+static inline size_t dsim_type_vec_find_n_by_name(dsim_type_vec_t vec, const char *s, int n)
+__flatbuffers_find_by_string_n_field(dsim_type_name, vec, dsim_type_vec_at, dsim_type_vec_len, s, n)
+__flatbuffers_define_sort_by_string_field(dsim_type, name)
+#define dsim_type_vec_find dsim_type_vec_find_by_name
+#define dsim_type_vec_find_n dsim_type_vec_find_n_by_name
+#define dsim_type_vec_sort dsim_type_vec_sort_by_name
+static inline int dsim_type_name_is_present(dsim_type_table_t t)
 __flatbuffers_field_present(0, t)
 
-static inline uint8_t dsimx_column_size(dsimx_column_table_t t)
-__flatbuffers_scalar_field(flatbuffers_uint8, 1, 0, t)
-static inline int dsimx_column_size_is_present(dsimx_column_table_t t)
+static inline uint8_t dsim_type_size(dsim_type_table_t t)
+__flatbuffers_scalar_field(flatbuffers_uint8, 1, 4, t)
+static inline int dsim_type_size_is_present(dsim_type_table_t t)
 __flatbuffers_field_present(1, t)
 
-static inline dsimx_type_enum_t dsimx_column_type(dsimx_column_table_t t)
-__flatbuffers_scalar_field(dsimx_type, 2, 0, t)
-static inline int dsimx_column_type_is_present(dsimx_column_table_t t)
+static inline dsim_any_type_union_type_t dsim_type_data_type(dsim_type_table_t t)
+__flatbuffers_scalar_field(dsim_any_type, 2, 0, t)
+static inline flatbuffers_generic_table_t dsim_type_data(dsim_type_table_t t)
+__flatbuffers_table_field(flatbuffers_generic_table_t, 3, t, 0)
+static inline int dsim_type_data_is_present(dsim_type_table_t t)
 __flatbuffers_field_present(2, t)
 
 
-struct dsimx_schema_table { uint8_t unused__; };
+struct dsim_column_table { uint8_t unused__; };
 
-#ifndef dsimx_schema_identifier
-#define dsimx_schema_identifier flatbuffers_identifier
+#ifndef dsim_column_identifier
+#define dsim_column_identifier flatbuffers_identifier
 #endif
-#define dsimx_schema_type_hash ((flatbuffers_thash_t)0x8446ae2b)
-#define dsimx_schema_type_identifier "\x2b\xae\x46\x84"
-static inline size_t dsimx_schema_vec_len(dsimx_schema_vec_t vec)
+#define dsim_column_type_hash ((flatbuffers_thash_t)0x226da746)
+#define dsim_column_type_identifier "\x46\xa7\x6d\x22"
+static inline size_t dsim_column_vec_len(dsim_column_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline dsimx_schema_table_t dsimx_schema_vec_at(dsimx_schema_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(dsimx_schema_table_t, vec, i, 0)
-__flatbuffers_table_as_root(dsimx_schema)
+static inline dsim_column_table_t dsim_column_vec_at(dsim_column_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_column_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_column)
 
-static inline flatbuffers_string_t dsimx_schema_name(dsimx_schema_table_t t)
+static inline flatbuffers_string_t dsim_column_name(dsim_column_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
 /* Note: find only works on vectors sorted by this field. */
-static inline size_t dsimx_schema_vec_find_by_name(dsimx_schema_vec_t vec, const char *s)
-__flatbuffers_find_by_string_field(dsimx_schema_name, vec, dsimx_schema_vec_at, dsimx_schema_vec_len, s)
-static inline size_t dsimx_schema_vec_find_n_by_name(dsimx_schema_vec_t vec, const char *s, int n)
-__flatbuffers_find_by_string_n_field(dsimx_schema_name, vec, dsimx_schema_vec_at, dsimx_schema_vec_len, s, n)
-__flatbuffers_define_sort_by_string_field(dsimx_schema, name)
-#define dsimx_schema_vec_find dsimx_schema_vec_find_by_name
-#define dsimx_schema_vec_find_n dsimx_schema_vec_find_n_by_name
-#define dsimx_schema_vec_sort dsimx_schema_vec_sort_by_name
-static inline int dsimx_schema_name_is_present(dsimx_schema_table_t t)
+static inline size_t dsim_column_vec_find_by_name(dsim_column_vec_t vec, const char *s)
+__flatbuffers_find_by_string_field(dsim_column_name, vec, dsim_column_vec_at, dsim_column_vec_len, s)
+static inline size_t dsim_column_vec_find_n_by_name(dsim_column_vec_t vec, const char *s, int n)
+__flatbuffers_find_by_string_n_field(dsim_column_name, vec, dsim_column_vec_at, dsim_column_vec_len, s, n)
+__flatbuffers_define_sort_by_string_field(dsim_column, name)
+#define dsim_column_vec_find dsim_column_vec_find_by_name
+#define dsim_column_vec_find_n dsim_column_vec_find_n_by_name
+#define dsim_column_vec_sort dsim_column_vec_sort_by_name
+static inline int dsim_column_name_is_present(dsim_column_table_t t)
 __flatbuffers_field_present(0, t)
 
-static inline dsimx_column_vec_t dsimx_schema_columns(dsimx_schema_table_t t)
-__flatbuffers_vector_field(dsimx_column_vec_t, 1, t, 0)
-static inline int dsimx_schema_columns_is_present(dsimx_schema_table_t t)
+static inline flatbuffers_string_t dsim_column_type(dsim_column_table_t t)
+__flatbuffers_vector_field(flatbuffers_string_t, 1, t, 0)
+static inline int dsim_column_type_is_present(dsim_column_table_t t)
 __flatbuffers_field_present(1, t)
 
 
-struct dsimx_config_table { uint8_t unused__; };
+struct dsim_schema_table { uint8_t unused__; };
 
-#ifndef dsimx_config_identifier
-#define dsimx_config_identifier flatbuffers_identifier
+#ifndef dsim_schema_identifier
+#define dsim_schema_identifier flatbuffers_identifier
 #endif
-#define dsimx_config_type_hash ((flatbuffers_thash_t)0x1d55abbe)
-#define dsimx_config_type_identifier "\xbe\xab\x55\x1d"
-static inline size_t dsimx_config_vec_len(dsimx_config_vec_t vec)
+#define dsim_schema_type_hash ((flatbuffers_thash_t)0x7dd691ef)
+#define dsim_schema_type_identifier "\xef\x91\xd6\x7d"
+static inline size_t dsim_schema_vec_len(dsim_schema_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline dsimx_config_table_t dsimx_config_vec_at(dsimx_config_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(dsimx_config_table_t, vec, i, 0)
-__flatbuffers_table_as_root(dsimx_config)
+static inline dsim_schema_table_t dsim_schema_vec_at(dsim_schema_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_schema_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_schema)
 
-static inline dsimx_schema_vec_t dsimx_config_schemas(dsimx_config_table_t t)
-__flatbuffers_vector_field(dsimx_schema_vec_t, 0, t, 0)
-static inline int dsimx_config_schemas_is_present(dsimx_config_table_t t)
+static inline flatbuffers_string_t dsim_schema_name(dsim_schema_table_t t)
+__flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
+/* Note: find only works on vectors sorted by this field. */
+static inline size_t dsim_schema_vec_find_by_name(dsim_schema_vec_t vec, const char *s)
+__flatbuffers_find_by_string_field(dsim_schema_name, vec, dsim_schema_vec_at, dsim_schema_vec_len, s)
+static inline size_t dsim_schema_vec_find_n_by_name(dsim_schema_vec_t vec, const char *s, int n)
+__flatbuffers_find_by_string_n_field(dsim_schema_name, vec, dsim_schema_vec_at, dsim_schema_vec_len, s, n)
+__flatbuffers_define_sort_by_string_field(dsim_schema, name)
+#define dsim_schema_vec_find dsim_schema_vec_find_by_name
+#define dsim_schema_vec_find_n dsim_schema_vec_find_n_by_name
+#define dsim_schema_vec_sort dsim_schema_vec_sort_by_name
+static inline int dsim_schema_name_is_present(dsim_schema_table_t t)
 __flatbuffers_field_present(0, t)
+
+static inline dsim_column_vec_t dsim_schema_columns(dsim_schema_table_t t)
+__flatbuffers_vector_field(dsim_column_vec_t, 1, t, 0)
+static inline int dsim_schema_columns_is_present(dsim_schema_table_t t)
+__flatbuffers_field_present(1, t)
+
+
+struct dsim_config_table { uint8_t unused__; };
+
+#ifndef dsim_config_identifier
+#define dsim_config_identifier flatbuffers_identifier
+#endif
+#define dsim_config_type_hash ((flatbuffers_thash_t)0xe73413b2)
+#define dsim_config_type_identifier "\xb2\x13\x34\xe7"
+static inline size_t dsim_config_vec_len(dsim_config_vec_t vec)
+__flatbuffers_vec_len(vec)
+static inline dsim_config_table_t dsim_config_vec_at(dsim_config_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_config_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_config)
+
+static inline dsim_type_vec_t dsim_config_types(dsim_config_table_t t)
+__flatbuffers_vector_field(dsim_type_vec_t, 0, t, 0)
+static inline int dsim_config_types_is_present(dsim_config_table_t t)
+__flatbuffers_field_present(0, t)
+
+static inline dsim_schema_vec_t dsim_config_schemas(dsim_config_table_t t)
+__flatbuffers_vector_field(dsim_schema_vec_t, 1, t, 0)
+static inline int dsim_config_schemas_is_present(dsim_config_table_t t)
+__flatbuffers_field_present(1, t)
 
 
 #include "flatcc/portable/pdiagnostic_pop.h"
