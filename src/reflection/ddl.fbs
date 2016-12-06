@@ -1,0 +1,78 @@
+
+namespace dsim;
+
+/************************************************************************\
+ * Type definitions                                                     *
+\************************************************************************/
+
+table numeric_type
+{
+    is_float: bool = false;
+}
+
+table struct_field
+{
+    name: string;
+    type: string;
+    offset: uint;
+}
+
+table struct_type
+{
+    fields: [struct_field];
+}
+
+table enum_type
+{
+    values: [string];
+}
+
+table reference_type
+{
+    target: string;
+}
+
+union any_type
+{
+    numeric_type,
+    struct_type,
+    enum_type,
+    reference_type
+}
+
+table type
+{
+    name:  string;
+    ctype: string;
+    size:  ubyte;
+    align: ubyte;
+    data:  any_type;
+}
+
+/************************************************************************\
+ * Layout definitions                                                   *
+\************************************************************************/
+
+table column
+{
+    name: string;
+    type: string;
+}
+
+table layout
+{
+    name: string;
+    columns: [column];
+}
+
+/************************************************************************\
+ * DDL root                                                             *
+\************************************************************************/
+
+table ddl
+{
+    types:   [type];
+    layouts: [layout];
+}
+
+root_type ddl;

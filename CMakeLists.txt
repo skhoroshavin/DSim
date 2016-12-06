@@ -51,6 +51,21 @@ add_custom_target(coverage
     DEPENDS tests)
 
 ############################################################
+# Tools
+############################################################
+
+OPTION(DSIM_BUILD_TOOLS OFF)
+
+if(DSIM_BUILD_TOOLS)
+
+    aux_source_directory(tools/ddlc DDLC_LIST)
+    add_executable(ddlc ${DDLC_LIST})
+    add_dependencies(ddlc dsim)
+    target_link_libraries(ddlc -ldsim -lflatccrt)
+
+endif(DSIM_BUILD_TOOLS)
+
+############################################################
 # Sample
 ############################################################
 
@@ -59,17 +74,15 @@ OPTION(DSIM_BUILD_SAMPLE OFF)
 if(DSIM_BUILD_SAMPLE)
 
     set(SAMPLE_FILES
-        sample/config.fbs
         sample/sample.lua
         sample/sample.json)
 
     add_custom_target(sample_prepare
-        COMMAND flatcc -a --json-parser config.fbs
+        ddlc sample.json
         COMMAND cmake -E copy *.lua ${PROJECT_BINARY_DIR}
-        COMMAND cmake -E copy *.json ${PROJECT_BINARY_DIR}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/sample
         SOURCES ${SAMPLE_FILES})
-    add_dependencies(sample_prepare dsim)
+    add_dependencies(sample_prepare ddlc)
 
     aux_source_directory(sample SAMPLE_LIST)
     add_executable(sample ${SAMPLE_LIST})

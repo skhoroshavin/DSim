@@ -17,66 +17,10 @@ inline static uint64_t * tbl_logic_input_1() { return (uint64_t*)dsim_table_data
 inline static uint64_t * tbl_logic_input_2() { return (uint64_t*)dsim_table_data( tbl_logic, 0, 1 ); }
 inline static uint64_t * tbl_logic_output()  { return (uint64_t*)dsim_table_data( tbl_logic, 0, 2 ); }
 
-void * dsim_load_config( const char * filename )
-{
-    FILE * f = fopen( filename, "r" );
-    char json_buf[4096];
-    size_t json_size = fread( json_buf, 1, sizeof(json_buf), f );
-    fclose( f );
-
-    struct flatcc_builder builder;
-    flatcc_builder_init( &builder );
-
-    struct flatcc_json_parser_ctx ctx;
-
-    int err = config_parse_json( &builder, &ctx, json_buf, json_size, 0 );
-    if( err )
-    {
-        printf( "Line %d: %s\n", ctx.line, flatcc_json_parser_error_string(err) );
-        flatcc_builder_clear( &builder );
-        return 0;
-    }
-
-    void *buf = flatcc_builder_finalize_buffer( &builder, 0 );
-    flatcc_builder_clear( &builder );
-    return buf;
-}
-
-void test()
-{
-    void * buf = dsim_load_config( "sample.json" );
-    if( !buf ) return;
-
-    dsim_config_table_t config = dsim_config_as_root( buf );
-    dsim_schema_vec_t schemas = dsim_config_schemas( config );
-    int scount = dsim_schema_vec_len( schemas );
-    for( int i = 0; i != scount; ++i )
-    {
-        dsim_schema_table_t schema = dsim_schema_vec_at( schemas, i );
-        printf( "%s\n", dsim_schema_name( schema) );
-
-        dsim_column_vec_t columns = dsim_schema_columns( schema );
-        int ccount = dsim_column_vec_len( columns );
-        for( int j = 0; j != ccount; ++j )
-        {
-            dsim_column_table_t column = dsim_column_vec_at( columns, j );
-            printf( "  %s: %s\n",
-                    dsim_column_name( column ),
-                    dsim_column_type( column ) );
-        }
-        printf( "\n" );
-    }
-
-    free( buf );
-}
-
-
 int main( int argc, const char * argv[] )
 {
     dsim_unused(argc);
     dsim_unused(argv);
-
-    test();
 
     lua_State * l = luaL_newstate();
     luaopen_base( l );
