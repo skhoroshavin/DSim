@@ -4,6 +4,7 @@
 #include "reflection/ddl_json_parser.h"
 
 #include "containers/array.h"
+#include "ddl_types.h"
 
 #include <stdio.h>
 
@@ -27,24 +28,90 @@ static void * load_json_ddl( const char * filename )
     struct dsim_array_uint8 json = dsim_array_static_init( &dsim_default_allocator );
     read_file( filename, &json );
 
-    struct flatcc_builder builder;
-    flatcc_builder_init( &builder );
+    struct flatcc_builder b;
+    flatcc_builder_init( &b );
 
-    struct flatcc_json_parser_ctx ctx;
+    struct flatcc_json_parser_ctx parser;
     void *buf = 0;
 
-    int err = ddl_parse_json( &builder, &ctx, (const char*)json.data, json.count, 0 );
+    int err = ddl_parse_json( &b, &parser, (const char*)json.data, json.count, 0 );
     if( err )
     {
-        printf( "Line %d: %s\n", ctx.line, flatcc_json_parser_error_string(err) );
+        printf( "Line %d: %s\n", parser.line, flatcc_json_parser_error_string(err) );
         goto finally;
     }
 
-    buf = flatcc_builder_finalize_buffer( &builder, 0 );
+    buf = flatcc_builder_finalize_buffer( &b, 0 );
 
 finally:
-    flatcc_builder_clear( &builder );
+    flatcc_builder_clear( &b );
     dsim_array_uint8_reset( &json );
+    return buf;
+}
+
+static void rebuild_ddl( dsim_ddl_table_t ddl )
+{
+    unsigned prev_count = -1;
+    unsigned fail_count;
+    do
+    {
+        fail_count = 0;
+
+        dsim_type_vec_t types = dsim_ddl_types( ddl );
+        for( size_t i = 0; i != dsim_type_vec_len(types); ++i )
+        {
+            dsim_type_table_t type = dsim_type_vec_at(types, i);
+            if( !dsim_can_rebuild_type(type) )
+            {
+                ++fail_count;
+                continue;
+            }
+
+            struct flatcc_builder b;
+            flatcc_builder_init( &b );
+
+            dsim_type_start_as_root( &b );
+            dsim_rebuild_type( &b, type );
+            dsim_type_end_as_root( &b );
+
+            void *buf = flatcc_builder_finalize_buffer( &b, 0 );
+            flatcc_builder_clear( &b );
+
+            dsim_type_table_t new_type = dsim_type_as_root(buf);
+            dsim_register_type( new_type );
+        }
+
+        if( fail_count && (fail_count == prev_count) )
+            return;
+    }
+    while( 0 );
+}
+
+static void * clone_ddl( dsim_ddl_table_t ddl, size_t * size_out )
+{
+    struct flatcc_builder b;
+    flatcc_builder_init( &b );
+    void *buf = 0;
+
+    dsim_ddl_start_as_root( &b );
+
+    dsim_ddl_types_start( &b );
+    dsim_type_vec_t types = dsim_ddl_types( ddl );
+    for( size_t i = 0; i != dsim_type_vec_len(types); ++i )
+    {
+        dsim_type_table_t type = dsim_type_vec_at(types, i);
+        if( !dsim_can_rebuild_type(type) )
+            continue;
+
+        dsim_ddl_types_push_start( &b );
+        dsim_rebuild_type( &b, type );
+        dsim_ddl_types_push_end( &b );
+    }
+    dsim_ddl_types_end( &b );
+
+    dsim_ddl_end_as_root( &b );
+
+    buf = flatcc_builder_finalize_buffer( &b, size_out );
     return buf;
 }
 
@@ -55,8 +122,9 @@ static void dump_ddl( dsim_ddl_table_t ddl )
     for( size_t i = 0; i != dsim_type_vec_len(types); ++i )
     {
         dsim_type_table_t type = dsim_type_vec_at(types, i);
-        printf( "  %s, %s, size %d, align %d\n",
+        printf( "  %s, %s, %s, size %d, align %d\n",
                 dsim_type_name(type),
+                dsim_type_ctype(type),
                 dsim_any_type_type_name( dsim_type_data_type(type) ),
                 dsim_type_size(type),
                 dsim_type_align(type) );
@@ -123,10 +191,17 @@ static void dump_ddl( dsim_ddl_table_t ddl )
 int main( int argc, char * argv[] )
 {
     void * data = load_json_ddl( argv[1] );
-
     dsim_ddl_table_t ddl = dsim_ddl_as_root( data );
+
+    rebuild_ddl( ddl );
+
+    size_t new_size;
+    void * new_data = clone_ddl( ddl, &new_size );
+
+    ddl = dsim_ddl_as_root( new_data );
     dump_ddl( ddl );
 
+    free( new_data );
     free( data );
 
     return 0;

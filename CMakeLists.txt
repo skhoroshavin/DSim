@@ -78,7 +78,7 @@ if(DSIM_BUILD_SAMPLE)
         sample/sample.json)
 
     add_custom_target(sample_prepare
-        ddlc sample.json
+        #COMMAND ddlc sample.json
         COMMAND cmake -E copy *.lua ${PROJECT_BINARY_DIR}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/sample
         SOURCES ${SAMPLE_FILES})
