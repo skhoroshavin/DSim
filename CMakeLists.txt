@@ -9,6 +9,7 @@ add_definitions(-Wall -Wextra)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c99")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
+include_directories(3rdparty/flatcc/include)
 
 ############################################################
 # dsim
