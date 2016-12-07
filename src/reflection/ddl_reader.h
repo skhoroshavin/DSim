@@ -285,15 +285,20 @@ static inline dsim_ddl_table_t dsim_ddl_vec_at(dsim_ddl_vec_t vec, size_t i)
 __flatbuffers_offset_vec_at(dsim_ddl_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl)
 
-static inline dsim_type_vec_t dsim_ddl_types(dsim_ddl_table_t t)
-__flatbuffers_vector_field(dsim_type_vec_t, 0, t, 0)
-static inline int dsim_ddl_types_is_present(dsim_ddl_table_t t)
+static inline flatbuffers_string_t dsim_ddl_name(dsim_ddl_table_t t)
+__flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
+static inline int dsim_ddl_name_is_present(dsim_ddl_table_t t)
 __flatbuffers_field_present(0, t)
 
-static inline dsim_layout_vec_t dsim_ddl_layouts(dsim_ddl_table_t t)
-__flatbuffers_vector_field(dsim_layout_vec_t, 1, t, 0)
-static inline int dsim_ddl_layouts_is_present(dsim_ddl_table_t t)
+static inline dsim_type_vec_t dsim_ddl_types(dsim_ddl_table_t t)
+__flatbuffers_vector_field(dsim_type_vec_t, 1, t, 0)
+static inline int dsim_ddl_types_is_present(dsim_ddl_table_t t)
 __flatbuffers_field_present(1, t)
+
+static inline dsim_layout_vec_t dsim_ddl_layouts(dsim_ddl_table_t t)
+__flatbuffers_vector_field(dsim_layout_vec_t, 2, t, 0)
+static inline int dsim_ddl_layouts_is_present(dsim_ddl_table_t t)
+__flatbuffers_field_present(2, t)
 
 
 #include "flatcc/portable/pdiagnostic_pop.h"

@@ -37,7 +37,7 @@ __flatbuffers_build_table(flatbuffers_, dsim_column, 2)
 static const flatbuffers_voffset_t __dsim_layout_required[] = {0 };
 __flatbuffers_build_table(flatbuffers_, dsim_layout, 2)
 static const flatbuffers_voffset_t __dsim_ddl_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_ddl, 2)
+__flatbuffers_build_table(flatbuffers_, dsim_ddl, 3)
 #define __dsim_numeric_type_formal_args , flatbuffers_bool_t v0
 #define __dsim_numeric_type_call_args , v0
 static inline dsim_numeric_type_ref_t dsim_numeric_type_create(flatbuffers_builder_t *B __dsim_numeric_type_formal_args);
@@ -64,8 +64,8 @@ static inline dsim_column_ref_t dsim_column_create(flatbuffers_builder_t *B __ds
 #define __dsim_layout_formal_args , flatbuffers_string_ref_t v0, dsim_column_vec_ref_t v1
 #define __dsim_layout_call_args , v0, v1
 static inline dsim_layout_ref_t dsim_layout_create(flatbuffers_builder_t *B __dsim_layout_formal_args);
-#define __dsim_ddl_formal_args , dsim_type_vec_ref_t v0, dsim_layout_vec_ref_t v1
-#define __dsim_ddl_call_args , v0, v1
+#define __dsim_ddl_formal_args , flatbuffers_string_ref_t v0, dsim_type_vec_ref_t v1, dsim_layout_vec_ref_t v2
+#define __dsim_ddl_call_args , v0, v1, v2
 static inline dsim_ddl_ref_t dsim_ddl_create(flatbuffers_builder_t *B __dsim_ddl_formal_args);
 
 struct dsim_any_type_union_ref {
@@ -208,14 +208,16 @@ static inline dsim_layout_ref_t dsim_layout_create(flatbuffers_builder_t *B __ds
 }
 __flatbuffers_build_table_prolog(flatbuffers_, dsim_layout, dsim_layout_identifier, dsim_layout_type_identifier)
 
-__flatbuffers_build_table_vector_field(0, flatbuffers_, dsim_ddl_types, dsim_type)
-__flatbuffers_build_table_vector_field(1, flatbuffers_, dsim_ddl_layouts, dsim_layout)
+__flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_name)
+__flatbuffers_build_table_vector_field(1, flatbuffers_, dsim_ddl_types, dsim_type)
+__flatbuffers_build_table_vector_field(2, flatbuffers_, dsim_ddl_layouts, dsim_layout)
 
 static inline dsim_ddl_ref_t dsim_ddl_create(flatbuffers_builder_t *B __dsim_ddl_formal_args)
 {
     if (dsim_ddl_start(B)
-        || dsim_ddl_types_add(B, v0)
-        || dsim_ddl_layouts_add(B, v1)) {
+        || dsim_ddl_name_add(B, v0)
+        || dsim_ddl_types_add(B, v1)
+        || dsim_ddl_layouts_add(B, v2)) {
         return 0;
     }
     return dsim_ddl_end(B);

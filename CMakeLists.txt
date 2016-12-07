@@ -18,6 +18,7 @@ include_directories(src)
 
 aux_source_directory(src/allocators SRC_LIST)
 aux_source_directory(src/containers SRC_LIST)
+aux_source_directory(src/reflection SRC_LIST)
 aux_source_directory(src/table SRC_LIST)
 aux_source_directory(src/utils SRC_LIST)
 
@@ -33,6 +34,7 @@ aux_source_directory(test TEST_LIST)
 
 aux_source_directory(test/allocators TEST_LIST)
 aux_source_directory(test/containers TEST_LIST)
+aux_source_directory(test/reflection TEST_LIST)
 aux_source_directory(test/table TEST_LIST)
 aux_source_directory(test/utils TEST_LIST)
 
@@ -75,11 +77,12 @@ if(DSIM_BUILD_SAMPLE)
 
     set(SAMPLE_FILES
         sample/sample.lua
-        sample/sample.json)
+        sample/sample.ddl)
 
     add_custom_target(sample_prepare
-        #COMMAND ddlc sample.json
+        COMMAND ddlc sample.ddl
         COMMAND cmake -E copy *.lua ${PROJECT_BINARY_DIR}
+        COMMAND cmake -E copy *.bin ${PROJECT_BINARY_DIR}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/sample
         SOURCES ${SAMPLE_FILES})
     add_dependencies(sample_prepare ddlc)

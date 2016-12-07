@@ -1,4 +1,6 @@
 {
+    name: "sample",
+
     types: [
         { name: "uint8",  ctype: "uint8_t",  size: 1, data_type: numeric_type, data: { is_float: 0 } },
         { name: "uint16", ctype: "uint16_t", size: 2, data_type: numeric_type, data: { is_float: 0 } },
@@ -27,7 +29,7 @@
             }
         },
 
-        { name: "vec4", data_type: struct_type,
+        { name: "vec4", align: 16, data_type: struct_type,
             data: {
                 fields: [
                     { name: "x", type: "float" },

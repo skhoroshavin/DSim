@@ -71,6 +71,7 @@ table layout
 
 table ddl
 {
+    name:    string;
     types:   [type];
     layouts: [layout];
 }

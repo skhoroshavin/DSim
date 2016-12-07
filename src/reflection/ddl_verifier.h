@@ -258,8 +258,9 @@ static inline int dsim_layout_verify_as_root_with_type_hash(const void *buf, siz
 static int __dsim_ddl_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
-    if ((ret = flatcc_verify_table_vector_field(td, 0, 0, &__dsim_type_table_verifier) /* types */)) return ret;
-    if ((ret = flatcc_verify_table_vector_field(td, 1, 0, &__dsim_layout_table_verifier) /* layouts */)) return ret;
+    if ((ret = flatcc_verify_string_field(td, 0, 0) /* name */)) return ret;
+    if ((ret = flatcc_verify_table_vector_field(td, 1, 0, &__dsim_type_table_verifier) /* types */)) return ret;
+    if ((ret = flatcc_verify_table_vector_field(td, 2, 0, &__dsim_layout_table_verifier) /* layouts */)) return ret;
     return flatcc_verify_ok;
 }
 
