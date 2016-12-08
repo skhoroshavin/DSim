@@ -7,85 +7,19 @@
 #include "containers/string.h"
 #include "reflection/ddl_registry.h"
 #include "utils/file.h"
-#include "ddl_types.h"
+#include "ddl_json.h"
 
 #include <stdio.h>
 
 static struct dsim_array_ptr buffers = dsim_array_static_init(&dsim_default_allocator);
 
-static void * load_json_ddl( const char * filename )
+static void * load_json_ddl( const char * filename, size_t * size_out )
 {
-    struct dsim_array_uint8 json = dsim_array_static_init( &dsim_default_allocator );
+    struct dsim_array_char json = dsim_array_static_init( &dsim_default_allocator );
     dsim_read_file( filename, &json );
 
-    struct flatcc_builder b;
-    flatcc_builder_init( &b );
-
-    struct flatcc_json_parser_ctx parser;
-    void *buf = 0;
-
-    int err = ddl_parse_json( &b, &parser, (const char*)json.data, json.count, 0 );
-    if( err )
-    {
-        printf( "Line %d: %s\n", parser.line, flatcc_json_parser_error_string(err) );
-        goto finally;
-    }
-
-    buf = flatcc_builder_finalize_buffer( &b, 0 );
-
-finally:
-    flatcc_builder_clear( &b );
-    dsim_array_uint8_reset( &json );
-    return buf;
-}
-
-static void rebuild_ddl( dsim_ddl_table_t ddl )
-{
-    dsim_type_vec_t types = dsim_ddl_types( ddl );
-    for( size_t i = 0; i != dsim_type_vec_len(types); ++i )
-    {
-        struct flatcc_builder b;
-        flatcc_builder_init( &b );
-
-        dsim_type_start_as_root( &b );
-        dsim_rebuild_type( &b, dsim_type_vec_at(types, i) );
-        dsim_type_end_as_root( &b );
-
-        void *buf = flatcc_builder_finalize_buffer( &b, 0 );
-        flatcc_builder_clear( &b );
-        dsim_array_ptr_push_back( &buffers, buf );
-
-        dsim_type_table_t new_type = dsim_type_as_root(buf);
-        dsim_register_type( new_type );
-    }
-}
-
-static void * clone_ddl( dsim_ddl_table_t ddl, size_t * size_out )
-{
-    struct flatcc_builder b;
-    flatcc_builder_init( &b );
-    void *buf = 0;
-
-    dsim_ddl_start_as_root( &b );
-
-    dsim_ddl_name_clone( &b, dsim_ddl_name(ddl) );
-
-    dsim_ddl_types_start( &b );
-    dsim_type_vec_t types = dsim_ddl_types( ddl );
-    for( size_t i = 0; i != dsim_type_vec_len(types); ++i )
-    {
-        dsim_type_table_t type = dsim_type_vec_at(types, i);
-
-        dsim_ddl_types_push_start( &b );
-        dsim_rebuild_type( &b, type );
-        dsim_ddl_types_push_end( &b );
-    }
-    dsim_ddl_types_end( &b );
-
-    dsim_ddl_end_as_root( &b );
-
-    buf = flatcc_builder_finalize_buffer( &b, size_out );
-    flatcc_builder_clear( &b );
+    void *buf = dsim_ddl_compile_json( json.data, json.count, size_out );
+    dsim_array_char_reset( &json );
     return buf;
 }
 
@@ -108,14 +42,9 @@ static void dump_c_array( FILE * f, const char * data, size_t size )
 
 int main( int argc, char * argv[] )
 {
-    void * data = load_json_ddl( argv[1] );
+    size_t size;
+    void * data = load_json_ddl( argv[1], &size );
     dsim_ddl_table_t ddl = dsim_ddl_as_root( data );
-
-    rebuild_ddl( ddl );
-
-    size_t new_size;
-    char *new_data = (char*)clone_ddl( ddl, &new_size );
-    ddl = dsim_ddl_as_root( new_data );
 
     struct dsim_string bin_name = dsim_string_static_init(&dsim_default_allocator);
     dsim_string_append( &bin_name, argv[1] );
@@ -130,12 +59,14 @@ int main( int argc, char * argv[] )
     dsim_string_append( &c_name, ".c" );
 
     FILE * f = fopen( bin_name.data, "w" );
-    fwrite( new_data, 1, new_size, f );
+    fwrite( data, 1, size, f );
     fclose( f );
 
     f = fopen( h_name.data, "w" );
     fprintf( f, "\n" );
     fprintf( f, "#pragma once\n" );
+    fprintf( f, "\n" );
+    fprintf( f, "#include \"table/table.h\"\n" );
     fprintf( f, "\n" );
 
     dsim_type_vec_t types = dsim_ddl_types( ddl );
@@ -182,9 +113,38 @@ int main( int argc, char * argv[] )
 
             break;
         }
+        case dsim_any_type_reference_type:
+        {
+            //dsim_reference_type_table_t rtype = (dsim_reference_type_table_t)dsim_type_data(type);
+
+            fprintf( f, "typedef struct %s { uint64_t id; } %s;\n", dsim_type_name(type), dsim_type_name(type) );
+            fprintf( f, "\n" );
+
+            break;
+        }
         }
     }
 
+    dsim_layout_vec_t layouts = dsim_ddl_layouts( ddl );
+    for( size_t i = 0; i != dsim_layout_vec_len(layouts); ++i )
+    {
+        dsim_layout_table_t layout = dsim_layout_vec_at(layouts, i);
+
+        const char * name = dsim_layout_name(layout);
+        dsim_column_vec_t columns = dsim_layout_columns(layout);
+        for( size_t j = 0; j != dsim_column_vec_len(columns); ++j )
+        {
+            dsim_column_table_t column = dsim_column_vec_at(columns, j);
+            dsim_type_table_t type = dsim_types_scan_by_name( types, dsim_column_type(column) );
+
+            const char * ctype = dsim_type_ctype(type);
+            if( !ctype ) ctype = dsim_type_name(type);
+
+            fprintf( f, "inline static %s * %s_%s_data( struct dsim_table * t, uint32_t block ) { return (%s*)dsim_table_data( t, block, %zd ); }\n",
+                     ctype, name, dsim_column_name(column), ctype, j );
+        }
+        fprintf( f, "\n" );
+    }
 
     fprintf( f, "void dsim_ddl_register_%s();\n", dsim_ddl_name(ddl) );
     fprintf( f, "\n" );
@@ -196,7 +156,7 @@ int main( int argc, char * argv[] )
     fprintf( f, "#include \"%s\"\n", h_name.data );
     fprintf( f, "\n" );
     fprintf( f, "static const char dsim_ddl_%s_data[] = {\n", dsim_ddl_name(ddl) );
-    dump_c_array( f, new_data, new_size );
+    dump_c_array( f, data, size );
     fprintf( f, "};\n" );
     fprintf( f, "\n" );
     fprintf( f, "void dsim_ddl_register_%s()\n", dsim_ddl_name(ddl) );
@@ -209,7 +169,6 @@ int main( int argc, char * argv[] )
     dsim_string_reset( &h_name );
     dsim_string_reset( &c_name );
 
-    free( new_data );
     free( data );
 
     dsim_ddl_registry_reset();

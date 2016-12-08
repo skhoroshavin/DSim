@@ -57,10 +57,12 @@ void _dsim_array_reset( struct _dsim_array *a, uint32_t elem_size );
     inline static void dsim_array_##short_type##_reset( struct dsim_array_##short_type *a ) \
     { _dsim_array_reset( (struct _dsim_array*)a, sizeof(type) ); } \
 
-DSIM_DEFINE_ARRAY(uint8_t,  uint8)   // LCOV_EXCL_BR_LINE
-DSIM_DEFINE_ARRAY(uint16_t, uint16)  // LCOV_EXCL_BR_LINE
-DSIM_DEFINE_ARRAY(uint32_t, uint32)  // LCOV_EXCL_BR_LINE
-DSIM_DEFINE_ARRAY(uint64_t, uint64)  // LCOV_EXCL_BR_LINE
-DSIM_DEFINE_ARRAY(void*,    ptr)     // LCOV_EXCL_BR_LINE
+DSIM_DEFINE_ARRAY(char,        char)    // LCOV_EXCL_BR_LINE
+DSIM_DEFINE_ARRAY(uint8_t,     uint8)   // LCOV_EXCL_BR_LINE
+DSIM_DEFINE_ARRAY(uint16_t,    uint16)  // LCOV_EXCL_BR_LINE
+DSIM_DEFINE_ARRAY(uint32_t,    uint32)  // LCOV_EXCL_BR_LINE
+DSIM_DEFINE_ARRAY(uint64_t,    uint64)  // LCOV_EXCL_BR_LINE
+DSIM_DEFINE_ARRAY(void*,       ptr)     // LCOV_EXCL_BR_LINE
+DSIM_DEFINE_ARRAY(const void*, cptr)     // LCOV_EXCL_BR_LINE
 
 DSIM_END_HEADER
