@@ -2,7 +2,9 @@
 #include "sample.h"
 #include "sample.ddl.h"
 #include "reflection/ddl_registry.h"
+
 #include "utils/file.h"
+#include "utils/log.h"
 
 BEGIN_TABLE(wires)
     dsim_table_column_static_init( "state", DSIM_TYPE_INT, sizeof(uint8_t), &dsim_default_allocator ),
@@ -97,6 +99,8 @@ int main( int argc, const char * argv[] )
 {
     dsim_unused(argc);
     dsim_unused(argv);
+
+    dsim_ddl_registry_init();
 
     dump_ddl( dsim_ddl_as_root(dsim_ddl_sample_data) );
     dsim_ddl_register_sample();

@@ -1,5 +1,6 @@
 
 #include "hash.h"
+#include "utils/log.h"
 #include <memory.h>
 
 static void _dsim_hash_set_prev( struct dsim_hash *h, uint32_t pos, uint32_t dst )
@@ -16,7 +17,7 @@ static void _dsim_hash_set_prev( struct dsim_hash *h, uint32_t pos, uint32_t dst
         // LCOV_EXCL_START
         if( i == DSIM_INVALID_INDEX )
         {
-            assert( 0 ); // Should never reach this!
+            dsim_fatal( "_dsim_hash_set_prev internal error" );
             return;
         }
         // LCOV_EXCL_STOP

@@ -139,6 +139,55 @@ int main( int argc, char * argv[] )
     fprintf( f, "\n" );
     fprintf( f, "extern const char dsim_ddl_%s_data[];\n", dsim_ddl_name(ddl) );
     fprintf( f, "\n" );
+
+    dsim_type_vec_t types = dsim_ddl_types( ddl );
+    for( size_t i = 0; i != dsim_type_vec_len(types); ++i )
+    {
+        dsim_type_table_t type = dsim_type_vec_at(types, i);
+        if( dsim_type_ctype_is_present(type) )
+            continue;
+
+        switch( dsim_type_data_type(type) )
+        {
+        case dsim_any_type_struct_type:
+        {
+            dsim_struct_type_table_t stype = (dsim_struct_type_table_t)dsim_type_data(type);
+            dsim_struct_field_vec_t fields = dsim_struct_type_fields(stype);
+
+            fprintf( f, "typedef struct %s {\n", dsim_type_name(type) );
+            for( size_t j = 0; j < dsim_struct_field_vec_len(fields); ++j )
+            {
+                dsim_struct_field_table_t field = dsim_struct_field_vec_at(fields,j);
+                fprintf( f, "    %s %s;\n", dsim_struct_field_type(field), dsim_struct_field_name(field) );
+            }
+            fprintf( f, "} %s;\n", dsim_type_name(type) );
+            fprintf( f, "\n" );
+            break;
+        }
+        case dsim_any_type_enum_type:
+        {
+            dsim_enum_type_table_t etype = (dsim_enum_type_table_t)dsim_type_data(type);
+            flatbuffers_string_vec_t values = dsim_enum_type_values(etype);
+            size_t values_count = flatbuffers_string_vec_len(values);
+
+            fprintf( f, "typedef enum %s {\n", dsim_type_name(type) );
+            for( size_t j = 0; j < values_count; ++j )
+            {
+                flatbuffers_string_t value = flatbuffers_string_vec_at(values,j);
+                fprintf( f, "    %s_%s", dsim_type_name(type), value );
+                if( j < values_count-1 )
+                    fprintf( f, "," );
+                fprintf( f, "\n" );
+            }
+            fprintf( f, "} %s;\n", dsim_type_name(type) );
+            fprintf( f, "\n" );
+
+            break;
+        }
+        }
+    }
+
+
     fprintf( f, "void dsim_ddl_register_%s();\n", dsim_ddl_name(ddl) );
     fprintf( f, "\n" );
     fclose( f );

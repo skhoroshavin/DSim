@@ -9,7 +9,21 @@ add_definitions(-Wall -Wextra)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c99")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
+
+add_subdirectory(3rdparty/flatcc)
 include_directories(3rdparty/flatcc/include)
+link_directories(${PROJECT_SOURCE_DIR}/3rdparty/flatcc/lib)
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    add_custom_target(dsim_flatcc
+        COMMAND cmake -E copy bin/flatcc_d bin/flatcc
+        COMMAND cmake -E copy lib/libflatccrt_d.a lib/libflatccrt.a
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/3rdparty/flatcc
+        DEPENDS flatcc_cli flatccrt )
+else(CMAKE_BUILD_TYPE MATCHES Debug)
+    add_custom_target(dsim_flatcc
+        DEPENDS flatcc_cli flatccrt )
+endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 ############################################################
 # dsim
@@ -24,6 +38,7 @@ aux_source_directory(src/table SRC_LIST)
 aux_source_directory(src/utils SRC_LIST)
 
 add_library(dsim SHARED ${SRC_LIST})
+add_dependencies(dsim dsim_flatcc)
 link_directories(${PROJECT_BINARY_DIR})
 
 ############################################################
@@ -57,16 +72,10 @@ add_custom_target(coverage
 # Tools
 ############################################################
 
-OPTION(DSIM_BUILD_TOOLS OFF)
-
-if(DSIM_BUILD_TOOLS)
-
-    aux_source_directory(tools/ddlc DDLC_LIST)
-    add_executable(ddlc ${DDLC_LIST})
-    add_dependencies(ddlc dsim)
-    target_link_libraries(ddlc -ldsim -lflatccrt)
-
-endif(DSIM_BUILD_TOOLS)
+aux_source_directory(tools/ddlc DDLC_LIST)
+add_executable(ddlc ${DDLC_LIST})
+add_dependencies(ddlc dsim)
+target_link_libraries(ddlc -ldsim -lflatccrt)
 
 ############################################################
 # Sample
