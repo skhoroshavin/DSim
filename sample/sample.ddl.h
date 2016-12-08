@@ -1,8 +1,6 @@
 
 #pragma once
 
-extern const char dsim_ddl_sample_data[];
-
 typedef struct vec2 {
     float x;
     float y;

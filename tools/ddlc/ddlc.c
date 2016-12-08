@@ -137,8 +137,6 @@ int main( int argc, char * argv[] )
     fprintf( f, "\n" );
     fprintf( f, "#pragma once\n" );
     fprintf( f, "\n" );
-    fprintf( f, "extern const char dsim_ddl_%s_data[];\n", dsim_ddl_name(ddl) );
-    fprintf( f, "\n" );
 
     dsim_type_vec_t types = dsim_ddl_types( ddl );
     for( size_t i = 0; i != dsim_type_vec_len(types); ++i )
@@ -197,7 +195,7 @@ int main( int argc, char * argv[] )
     fprintf( f, "#include \"reflection/ddl_registry.h\"\n" );
     fprintf( f, "#include \"%s\"\n", h_name.data );
     fprintf( f, "\n" );
-    fprintf( f, "const char dsim_ddl_%s_data[] = {\n", dsim_ddl_name(ddl) );
+    fprintf( f, "static const char dsim_ddl_%s_data[] = {\n", dsim_ddl_name(ddl) );
     dump_c_array( f, new_data, new_size );
     fprintf( f, "};\n" );
     fprintf( f, "\n" );

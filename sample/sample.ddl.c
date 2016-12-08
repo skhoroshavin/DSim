@@ -2,7 +2,7 @@
 #include "reflection/ddl_registry.h"
 #include "sample.ddl.h"
 
-const char dsim_ddl_sample_data[] = {
+static const char dsim_ddl_sample_data[] = {
     8, 0, 0, 0, 0, 0, 0, 0, -122, -5, -1, -1, 80, 4, 0, 0,
     4, 0, 0, 0, 11, 0, 0, 0, 12, 4, 0, 0, -56, 3, 0, 0,
     -124, 3, 0, 0, 64, 3, 0, 0, -4, 2, 0, 0, -72, 2, 0, 0,
