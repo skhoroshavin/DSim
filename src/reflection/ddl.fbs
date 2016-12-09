@@ -66,14 +66,28 @@ table layout
 }
 
 /************************************************************************\
+ * Storage definitions                                                  *
+\************************************************************************/
+
+enum storage_type : ubyte { hashed }
+
+table storage
+{
+	name: string;
+	layout: string;
+    type: storage_type;
+}
+
+/************************************************************************\
  * DDL root                                                             *
 \************************************************************************/
 
 table root
 {
-    name:    string;
-    types:   [type];
-    layouts: [layout];
+    name:     string;
+    types:    [type];
+    layouts:  [layout];
+    storages: [storage];
 }
 
 root_type root;

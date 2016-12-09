@@ -194,6 +194,23 @@ static void dsim_process_layouts( struct flatcc_builder *b, dsim_ddl_layout_vec_
     dsim_ddl_root_layouts_end( b );
 }
 
+static void dsim_process_storages( struct flatcc_builder *b, dsim_ddl_storage_vec_t storages )
+{
+    dsim_ddl_root_storages_start( b );
+    for( size_t i = 0; i != dsim_ddl_storage_vec_len(storages); ++i )
+    {
+        dsim_ddl_storage_table_t storage = dsim_ddl_storage_vec_at(storages, i);
+
+        dsim_ddl_root_storages_push_start( b );
+        dsim_ddl_storage_name_clone( b, dsim_ddl_storage_name(storage) );
+        dsim_ddl_storage_layout_clone( b, dsim_ddl_storage_layout(storage) );
+        dsim_ddl_storage_type_add( b, dsim_ddl_storage_type(storage) );
+
+        dsim_ddl_root_storages_push_end( b );
+    }
+    dsim_ddl_root_storages_end( b );
+}
+
 static void *dsim_process_ddl( const void *raw_data, const void *prev_data, size_t *size_out )
 {
     dsim_ddl_type_vec_t prev_types = 0;
@@ -212,6 +229,7 @@ static void *dsim_process_ddl( const void *raw_data, const void *prev_data, size
 
     dsim_process_types( &b, dsim_ddl_root_types(root), prev_types );
     dsim_process_layouts( &b, dsim_ddl_root_layouts(root) );
+    dsim_process_storages( &b, dsim_ddl_root_storages(root) );
 
     dsim_ddl_root_end_as_root( &b );
     void *buf = flatcc_builder_finalize_buffer( &b, size_out );

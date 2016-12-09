@@ -24,5 +24,8 @@ struct _ddl_test
 };
 extern const struct _ddl_test *const ddl_test;
 
+extern struct dsim_storage * storage;
+
 void dsim_ddl_init_test();
+void dsim_ddl_done_test();
 

@@ -79,5 +79,11 @@
                 { name: "delay",   type: "float"    }
             ]
         }
+    ],
+
+    storages: [
+        { name: "wires", layout: "wire"  },
+        { name: "logic", layout: "logic" },
+        { name: "delay", layout: "delay" }
     ]
 }

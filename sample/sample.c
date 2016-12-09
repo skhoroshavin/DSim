@@ -6,25 +6,12 @@
 #include "utils/file.h"
 #include "utils/log.h"
 
-static struct dsim_hash_storage hash_wires;
-static struct dsim_hash_storage hash_logic;
-static struct dsim_hash_storage hash_delay;
-
-static struct dsim_storage * wires = &hash_wires.storage;
-static struct dsim_storage * logic = &hash_logic.storage;
-static struct dsim_storage * delay = &hash_delay.storage;
-
 int main( int argc, const char * argv[] )
 {
     dsim_unused(argc);
     dsim_unused(argv);
 
-    dsim_ddl_registry_init();
     dsim_ddl_init_sample();
-
-    dsim_hash_storage_init( &hash_wires, ddl_sample->layout_wire, &dsim_default_allocator );
-    dsim_hash_storage_init( &hash_logic, ddl_sample->layout_logic, &dsim_default_allocator );
-    dsim_hash_storage_init( &hash_delay, ddl_sample->layout_delay, &dsim_default_allocator );
 
     lua_State * l = luaL_newstate();
     luaopen_base( l );
@@ -53,11 +40,7 @@ int main( int argc, const char * argv[] )
         printf( "Error: %s\n", lua_tostring( l, -1 ) );
     lua_close( l );
 
-    dsim_storage_done( wires );
-    dsim_storage_done( logic );
-    dsim_storage_done( delay );
-
-    dsim_ddl_registry_reset();
+    dsim_ddl_done_sample();
 
     return 0;
 }

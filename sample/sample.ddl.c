@@ -1,10 +1,19 @@
 
 #include "reflection/ddl_registry.h"
+#include "storage/hash_storage.h"
 #include "sample.ddl.h"
 
 static const char dsim_ddl_sample_data[] = {
-    8, 0, 0, 0, 0, 0, 0, 0, -66, -7, -1, -1, 16, 6, 0, 0,
-    -60, 1, 0, 0, 4, 0, 0, 0, 3, 0, 0, 0, 116, 1, 0, 0,
+    8, 0, 0, 0, 0, 0, 0, 0, 14, -7, -1, -1, -112, 6, 0, 0,
+    68, 2, 0, 0, -124, 0, 0, 0, 4, 0, 0, 0, 3, 0, 0, 0,
+    84, 0, 0, 0, 44, 0, 0, 0, 4, 0, 0, 0, 106, -7, -1, -1,
+    20, 0, 0, 0, 4, 0, 0, 0, 5, 0, 0, 0, 100, 101, 108, 97,
+    121, 0, 0, 0, 5, 0, 0, 0, 100, 101, 108, 97, 121, 0, 0, 0,
+    -114, -7, -1, -1, 20, 0, 0, 0, 4, 0, 0, 0, 5, 0, 0, 0,
+    108, 111, 103, 105, 99, 0, 0, 0, 5, 0, 0, 0, 108, 111, 103, 105,
+    99, 0, 0, 0, -78, -7, -1, -1, 20, 0, 0, 0, 4, 0, 0, 0,
+    4, 0, 0, 0, 119, 105, 114, 101, 0, 0, 0, 0, 5, 0, 0, 0,
+    119, 105, 114, 101, 115, 0, 0, 0, 3, 0, 0, 0, 116, 1, 0, 0,
     -92, 0, 0, 0, 4, 0, 0, 0, -26, -7, -1, -1, -116, 0, 0, 0,
     4, 0, 0, 0, 3, 0, 0, 0, 88, 0, 0, 0, 44, 0, 0, 0,
     4, 0, 0, 0, 2, -6, -1, -1, 20, 0, 0, 0, 4, 0, 0, 0,
@@ -106,8 +115,18 @@ static const char dsim_ddl_sample_data[] = {
     4, 0, 8, 0, 12, 0, 4, 0, 8, 0, 10, 0, 16, 0, 4, 0,
     8, 0, 12, 0, 6, 0, 8, 0, 4, 0, 16, 0, 22, 0, 4, 0,
     0, 0, 20, 0, 21, 0, 12, 0, 16, 0, 16, 0, 20, 0, 4, 0,
-    0, 0, 8, 0, 9, 0, 12, 0, 16, 0
+    0, 0, 8, 0, 9, 0, 12, 0, 16, 0, 12, 0, 20, 0, 4, 0,
+    8, 0, 12, 0, 16, 0
 };
+
+static struct dsim_hash_storage strg_wires;
+struct dsim_storage * wires = &strg_wires.storage;
+
+static struct dsim_hash_storage strg_logic;
+struct dsim_storage * logic = &strg_logic.storage;
+
+static struct dsim_hash_storage strg_delay;
+struct dsim_storage * delay = &strg_delay.storage;
 
 static struct _ddl_sample _ddl;
 const struct _ddl_sample *const ddl_sample = &_ddl;
@@ -130,4 +149,16 @@ void dsim_ddl_init_sample()
     _ddl.layout_wire = dsim_ddl_layout( "wire" );
     _ddl.layout_logic = dsim_ddl_layout( "logic" );
     _ddl.layout_delay = dsim_ddl_layout( "delay" );
+
+    dsim_hash_storage_init( &strg_wires, _ddl.layout_wire, &dsim_default_allocator );
+    dsim_hash_storage_init( &strg_logic, _ddl.layout_logic, &dsim_default_allocator );
+    dsim_hash_storage_init( &strg_delay, _ddl.layout_delay, &dsim_default_allocator );
+}
+void dsim_ddl_done_sample()
+{
+    dsim_ddl_registry_reset();
+
+    dsim_storage_done( wires );
+    dsim_storage_done( logic );
+    dsim_storage_done( delay );
 }

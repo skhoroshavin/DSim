@@ -3,11 +3,7 @@
 #include "test_allocator.h"
 #include <memory.h>
 
-#include "storage/hash_storage.h"
 #include "test.ddl.h"
-
-static struct dsim_hash_storage hash_storage;
-static struct dsim_storage *const storage = &hash_storage.storage;
 
 static void test_hash_storage_scheme()
 {
@@ -55,13 +51,11 @@ TEST_GROUP(hash_storage_empty);
 TEST_SETUP(hash_storage_empty)
 {
     dsim_ddl_init_test();
-    dsim_hash_storage_init( &hash_storage, ddl_test->layout_test, &dsim_test_allocator );
 }
 
 TEST_TEAR_DOWN(hash_storage_empty)
 {
-    dsim_storage_done( storage );
-    dsim_ddl_registry_reset();
+    dsim_ddl_done_test();
 }
 
 TEST(hash_storage_empty, assert_empty)
@@ -130,7 +124,6 @@ TEST_GROUP(hash_storage_non_empty);
 TEST_SETUP(hash_storage_non_empty)
 {
     dsim_ddl_init_test();
-    dsim_hash_storage_init( &hash_storage, ddl_test->layout_test, &dsim_test_allocator );
 
     TEST_ASSERT_EQUAL( count_of(test_data_i), 10 );
     TEST_ASSERT_EQUAL( count_of(test_data_f), 10 );
@@ -144,8 +137,7 @@ TEST_SETUP(hash_storage_non_empty)
 
 TEST_TEAR_DOWN(hash_storage_non_empty)
 {
-    dsim_storage_done( storage );
-    dsim_ddl_registry_reset();
+    dsim_ddl_done_test();
 }
 
 TEST(hash_storage_non_empty, assert_non_empty)

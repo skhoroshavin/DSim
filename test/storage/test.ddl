@@ -26,5 +26,9 @@
                 { name: "v", type: "vec4"  },
             ]
         }
+    ],
+
+    storages: [
+        { name: "storage", layout: "test" }
     ]
 }

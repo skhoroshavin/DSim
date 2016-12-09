@@ -18,6 +18,10 @@
 #define flatbuffers_extension ".bin"
 #endif
 
+#define __dsim_ddl_storage_type_formal_args , dsim_ddl_storage_type_enum_t v0
+#define __dsim_ddl_storage_type_call_args , v0
+__flatbuffers_build_scalar(flatbuffers_, dsim_ddl_storage_type, dsim_ddl_storage_type_enum_t)
+
 typedef struct dsim_ddl_any_type_union_ref dsim_ddl_any_type_union_ref_t;
 
 static const flatbuffers_voffset_t __dsim_ddl_numeric_type_required[] = {0 };
@@ -36,8 +40,10 @@ static const flatbuffers_voffset_t __dsim_ddl_array_required[] = {0 };
 __flatbuffers_build_table(flatbuffers_, dsim_ddl_array, 2)
 static const flatbuffers_voffset_t __dsim_ddl_layout_required[] = {0 };
 __flatbuffers_build_table(flatbuffers_, dsim_ddl_layout, 2)
+static const flatbuffers_voffset_t __dsim_ddl_storage_required[] = {0 };
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_storage, 3)
 static const flatbuffers_voffset_t __dsim_ddl_root_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_ddl_root, 3)
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_root, 4)
 #define __dsim_ddl_numeric_type_formal_args , flatbuffers_bool_t v0
 #define __dsim_ddl_numeric_type_call_args , v0
 static inline dsim_ddl_numeric_type_ref_t dsim_ddl_numeric_type_create(flatbuffers_builder_t *B __dsim_ddl_numeric_type_formal_args);
@@ -64,8 +70,11 @@ static inline dsim_ddl_array_ref_t dsim_ddl_array_create(flatbuffers_builder_t *
 #define __dsim_ddl_layout_formal_args , flatbuffers_string_ref_t v0, dsim_ddl_array_vec_ref_t v1
 #define __dsim_ddl_layout_call_args , v0, v1
 static inline dsim_ddl_layout_ref_t dsim_ddl_layout_create(flatbuffers_builder_t *B __dsim_ddl_layout_formal_args);
-#define __dsim_ddl_root_formal_args , flatbuffers_string_ref_t v0, dsim_ddl_type_vec_ref_t v1, dsim_ddl_layout_vec_ref_t v2
-#define __dsim_ddl_root_call_args , v0, v1, v2
+#define __dsim_ddl_storage_formal_args , flatbuffers_string_ref_t v0, flatbuffers_string_ref_t v1, dsim_ddl_storage_type_enum_t v2
+#define __dsim_ddl_storage_call_args , v0, v1, v2
+static inline dsim_ddl_storage_ref_t dsim_ddl_storage_create(flatbuffers_builder_t *B __dsim_ddl_storage_formal_args);
+#define __dsim_ddl_root_formal_args , flatbuffers_string_ref_t v0, dsim_ddl_type_vec_ref_t v1, dsim_ddl_layout_vec_ref_t v2, dsim_ddl_storage_vec_ref_t v3
+#define __dsim_ddl_root_call_args , v0, v1, v2, v3
 static inline dsim_ddl_root_ref_t dsim_ddl_root_create(flatbuffers_builder_t *B __dsim_ddl_root_formal_args);
 
 struct dsim_ddl_any_type_union_ref {
@@ -208,16 +217,34 @@ static inline dsim_ddl_layout_ref_t dsim_ddl_layout_create(flatbuffers_builder_t
 }
 __flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_layout, dsim_ddl_layout_identifier, dsim_ddl_layout_type_identifier)
 
+__flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_storage_name)
+__flatbuffers_build_string_field(1, flatbuffers_, dsim_ddl_storage_layout)
+__flatbuffers_build_scalar_field(2, flatbuffers_, dsim_ddl_storage_type, dsim_ddl_storage_type, dsim_ddl_storage_type_enum_t, 1, 1, 0)
+
+static inline dsim_ddl_storage_ref_t dsim_ddl_storage_create(flatbuffers_builder_t *B __dsim_ddl_storage_formal_args)
+{
+    if (dsim_ddl_storage_start(B)
+        || dsim_ddl_storage_name_add(B, v0)
+        || dsim_ddl_storage_layout_add(B, v1)
+        || dsim_ddl_storage_type_add(B, v2)) {
+        return 0;
+    }
+    return dsim_ddl_storage_end(B);
+}
+__flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_storage, dsim_ddl_storage_identifier, dsim_ddl_storage_type_identifier)
+
 __flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_root_name)
 __flatbuffers_build_table_vector_field(1, flatbuffers_, dsim_ddl_root_types, dsim_ddl_type)
 __flatbuffers_build_table_vector_field(2, flatbuffers_, dsim_ddl_root_layouts, dsim_ddl_layout)
+__flatbuffers_build_table_vector_field(3, flatbuffers_, dsim_ddl_root_storages, dsim_ddl_storage)
 
 static inline dsim_ddl_root_ref_t dsim_ddl_root_create(flatbuffers_builder_t *B __dsim_ddl_root_formal_args)
 {
     if (dsim_ddl_root_start(B)
         || dsim_ddl_root_name_add(B, v0)
         || dsim_ddl_root_types_add(B, v1)
-        || dsim_ddl_root_layouts_add(B, v2)) {
+        || dsim_ddl_root_layouts_add(B, v2)
+        || dsim_ddl_root_storages_add(B, v3)) {
         return 0;
     }
     return dsim_ddl_root_end(B);

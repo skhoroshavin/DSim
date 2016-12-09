@@ -62,5 +62,10 @@ struct _ddl_sample
 };
 extern const struct _ddl_sample *const ddl_sample;
 
+extern struct dsim_storage * wires;
+extern struct dsim_storage * logic;
+extern struct dsim_storage * delay;
+
 void dsim_ddl_init_sample();
+void dsim_ddl_done_sample();
 
