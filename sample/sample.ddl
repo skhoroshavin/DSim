@@ -56,14 +56,14 @@
     layouts: [
         {
             name: "wire",
-            columns: [
+            arrays: [
                 { name: "state", type: "uint8" }
             ]
         },
 
         {
             name: "logic",
-            columns: [
+            arrays: [
                 { name: "input_1", type: "wire_ref"   },
                 { name: "input_2", type: "wire_ref"   },
                 { name: "output",  type: "wire_ref"   },
@@ -73,12 +73,11 @@
 
         {
             name: "delay",
-            columns: [
+            arrays: [
                 { name: "input",   type: "wire_ref" },
                 { name: "output",  type: "wire_ref" },
                 { name: "delay",   type: "float"    }
             ]
         }
-
     ]
 }

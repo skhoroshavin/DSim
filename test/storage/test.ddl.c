@@ -50,8 +50,8 @@ void dsim_ddl_init_test()
 {
     dsim_ddl_register( dsim_ddl_test_data );
 
-    _ddl.type_uint8 = dsim_type( "uint8" );
-    _ddl.type_float = dsim_type( "float" );
-    _ddl.type_vec4 = dsim_type( "vec4" );
-    _ddl.layout_test = dsim_layout( "test" );
+    _ddl.type_uint8 = dsim_ddl_type( "uint8" );
+    _ddl.type_float = dsim_ddl_type( "float" );
+    _ddl.type_vec4 = dsim_ddl_type( "vec4" );
+    _ddl.layout_test = dsim_ddl_layout( "test" );
 }

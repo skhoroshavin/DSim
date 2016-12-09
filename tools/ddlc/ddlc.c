@@ -7,6 +7,7 @@
 #include "containers/string.h"
 #include "reflection/ddl_registry.h"
 #include "utils/file.h"
+#include "utils/log.h"
 #include "ddl_json.h"
 
 #include <stdio.h>
@@ -44,7 +45,9 @@ int main( int argc, char *argv[] )
 {
     size_t size;
     void * data = load_json_ddl( argv[1], &size );
-    dsim_ddl_table_t ddl = dsim_ddl_as_root( data );
+    if( !data )
+        dsim_fatal( "Failed to load %s", argv[1] );
+    dsim_ddl_root_table_t root = dsim_ddl_root_as_root( data );
 
     struct dsim_string bin_name = dsim_string_static_init(&dsim_default_allocator);
     dsim_string_append( &bin_name, argv[1] );
@@ -70,59 +73,59 @@ int main( int argc, char *argv[] )
     fprintf( f, "\n" );
     fprintf( f, "#pragma once\n" );
     fprintf( f, "\n" );
-    fprintf( f, "#include \"table/table.h\"\n" );
+    fprintf( f, "#include \"storage/storage.h\"\n" );
     fprintf( f, "#include \"reflection/ddl_reader.h\"\n" );
     fprintf( f, "\n" );
 
-    dsim_type_vec_t types = dsim_ddl_types( ddl );
-    for( size_t i = 0; i != dsim_type_vec_len(types); ++i )
+    dsim_ddl_type_vec_t types = dsim_ddl_root_types( root );
+    for( size_t i = 0; i != dsim_ddl_type_vec_len(types); ++i )
     {
-        dsim_type_table_t type = dsim_type_vec_at(types, i);
-        if( dsim_type_ctype_is_present(type) )
+        dsim_ddl_type_table_t type = dsim_ddl_type_vec_at(types, i);
+        if( dsim_ddl_type_ctype_is_present(type) )
             continue;
 
-        switch( dsim_type_data_type(type) )
+        switch( dsim_ddl_type_data_type(type) )
         {
-        case dsim_any_type_struct_type:
+        case dsim_ddl_any_type_struct_type:
         {
-            dsim_struct_type_table_t stype = (dsim_struct_type_table_t)dsim_type_data(type);
-            dsim_struct_field_vec_t fields = dsim_struct_type_fields(stype);
+            dsim_ddl_struct_type_table_t stype = (dsim_ddl_struct_type_table_t)dsim_ddl_type_data(type);
+            dsim_ddl_struct_field_vec_t fields = dsim_ddl_struct_type_fields(stype);
 
-            fprintf( f, "typedef struct %s {\n", dsim_type_name(type) );
-            for( size_t j = 0; j < dsim_struct_field_vec_len(fields); ++j )
+            fprintf( f, "typedef struct %s {\n", dsim_ddl_type_name(type) );
+            for( size_t j = 0; j < dsim_ddl_struct_field_vec_len(fields); ++j )
             {
-                dsim_struct_field_table_t field = dsim_struct_field_vec_at(fields,j);
-                fprintf( f, "    %s %s;\n", dsim_struct_field_type(field), dsim_struct_field_name(field) );
+                dsim_ddl_struct_field_table_t field = dsim_ddl_struct_field_vec_at(fields,j);
+                fprintf( f, "    %s %s;\n", dsim_ddl_struct_field_type(field), dsim_ddl_struct_field_name(field) );
             }
-            fprintf( f, "} %s;\n", dsim_type_name(type) );
+            fprintf( f, "} %s;\n", dsim_ddl_type_name(type) );
             fprintf( f, "\n" );
             break;
         }
-        case dsim_any_type_enum_type:
+        case dsim_ddl_any_type_enum_type:
         {
-            dsim_enum_type_table_t etype = (dsim_enum_type_table_t)dsim_type_data(type);
-            flatbuffers_string_vec_t values = dsim_enum_type_values(etype);
+            dsim_ddl_enum_type_table_t etype = (dsim_ddl_enum_type_table_t)dsim_ddl_type_data(type);
+            flatbuffers_string_vec_t values = dsim_ddl_enum_type_values(etype);
             size_t values_count = flatbuffers_string_vec_len(values);
 
-            fprintf( f, "typedef enum %s {\n", dsim_type_name(type) );
+            fprintf( f, "typedef enum %s {\n", dsim_ddl_type_name(type) );
             for( size_t j = 0; j < values_count; ++j )
             {
                 flatbuffers_string_t value = flatbuffers_string_vec_at(values,j);
-                fprintf( f, "    %s_%s", dsim_type_name(type), value );
+                fprintf( f, "    %s_%s", dsim_ddl_type_name(type), value );
                 if( j < values_count-1 )
                     fprintf( f, "," );
                 fprintf( f, "\n" );
             }
-            fprintf( f, "} %s;\n", dsim_type_name(type) );
+            fprintf( f, "} %s;\n", dsim_ddl_type_name(type) );
             fprintf( f, "\n" );
 
             break;
         }
-        case dsim_any_type_reference_type:
+        case dsim_ddl_any_type_reference_type:
         {
-            //dsim_reference_type_table_t rtype = (dsim_reference_type_table_t)dsim_type_data(type);
+            //dsim_ddl_reference_type_table_t rtype = (dsim_ddl_reference_type_table_t)dsim_ddl_type_data(type);
 
-            fprintf( f, "typedef struct %s { uint64_t id; } %s;\n", dsim_type_name(type), dsim_type_name(type) );
+            fprintf( f, "typedef struct %s { uint64_t id; } %s;\n", dsim_ddl_type_name(type), dsim_ddl_type_name(type) );
             fprintf( f, "\n" );
 
             break;
@@ -130,44 +133,44 @@ int main( int argc, char *argv[] )
         }
     }
 
-    dsim_layout_vec_t layouts = dsim_ddl_layouts( ddl );
-    for( size_t i = 0; i != dsim_layout_vec_len(layouts); ++i )
+    dsim_ddl_layout_vec_t layouts = dsim_ddl_root_layouts( root );
+    for( size_t i = 0; i != dsim_ddl_layout_vec_len(layouts); ++i )
     {
-        dsim_layout_table_t layout = dsim_layout_vec_at(layouts, i);
+        dsim_ddl_layout_table_t layout = dsim_ddl_layout_vec_at(layouts, i);
 
-        const char * name = dsim_layout_name(layout);
-        dsim_column_vec_t columns = dsim_layout_columns(layout);
-        for( size_t j = 0; j != dsim_column_vec_len(columns); ++j )
+        const char * name = dsim_ddl_layout_name(layout);
+        dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(layout);
+        for( size_t j = 0; j != dsim_ddl_array_vec_len(arrays); ++j )
         {
-            dsim_column_table_t column = dsim_column_vec_at(columns, j);
-            dsim_type_table_t type = dsim_types_scan_by_name( types, dsim_column_type(column) );
+            dsim_ddl_array_table_t array = dsim_ddl_array_vec_at(arrays, j);
+            dsim_ddl_type_table_t type = dsim_ddl_types_scan_by_name( types, dsim_ddl_array_type(array) );
 
-            const char * ctype = dsim_type_ctype(type);
-            if( !ctype ) ctype = dsim_type_name(type);
+            const char * ctype = dsim_ddl_type_ctype(type);
+            if( !ctype ) ctype = dsim_ddl_type_name(type);
 
-            fprintf( f, "inline static %s *%s_%s_data( struct dsim_table *t, uint32_t block ) { return (%s *)dsim_table_data( t, block, %zd ); }\n",
-                     ctype, name, dsim_column_name(column), ctype, j );
+            fprintf( f, "inline static %s *%s_%s_data( struct dsim_storage *s, uint32_t block ) { return (%s *)dsim_storage_data( s, block, %zd ); }\n",
+                     ctype, name, dsim_ddl_array_name(array), ctype, j );
         }
         fprintf( f, "\n" );
     }
 
-    fprintf( f, "struct _ddl_%s\n", dsim_ddl_name(ddl) );
+    fprintf( f, "struct _ddl_%s\n", dsim_ddl_root_name(root) );
     fprintf( f, "{\n" );
-    for( size_t i = 0; i != dsim_type_vec_len(types); ++i )
+    for( size_t i = 0; i != dsim_ddl_type_vec_len(types); ++i )
     {
-        dsim_type_table_t type = dsim_type_vec_at(types, i);
-        fprintf( f, "    dsim_type_table_t type_%s;\n", dsim_type_name(type) );
+        dsim_ddl_type_table_t type = dsim_ddl_type_vec_at(types, i);
+        fprintf( f, "    dsim_ddl_type_table_t type_%s;\n", dsim_ddl_type_name(type) );
     }
-    for( size_t i = 0; i != dsim_layout_vec_len(layouts); ++i )
+    for( size_t i = 0; i != dsim_ddl_layout_vec_len(layouts); ++i )
     {
-        dsim_layout_table_t layout = dsim_layout_vec_at(layouts, i);
-        fprintf( f, "    dsim_layout_table_t layout_%s;\n", dsim_layout_name(layout) );
+        dsim_ddl_layout_table_t layout = dsim_ddl_layout_vec_at(layouts, i);
+        fprintf( f, "    dsim_ddl_layout_table_t layout_%s;\n", dsim_ddl_layout_name(layout) );
     }
     fprintf( f, "};\n" );
-    fprintf( f, "extern const struct _ddl_%s *const ddl_%s;\n", dsim_ddl_name(ddl), dsim_ddl_name(ddl) );
+    fprintf( f, "extern const struct _ddl_%s *const ddl_%s;\n", dsim_ddl_root_name(root), dsim_ddl_root_name(root) );
     fprintf( f, "\n" );
 
-    fprintf( f, "void dsim_ddl_init_%s();\n", dsim_ddl_name(ddl) );
+    fprintf( f, "void dsim_ddl_init_%s();\n", dsim_ddl_root_name(root) );
     fprintf( f, "\n" );
     fclose( f );
 
@@ -180,26 +183,26 @@ int main( int argc, char *argv[] )
     fprintf( f, "#include \"reflection/ddl_registry.h\"\n" );
     fprintf( f, "#include \"%s\"\n", h_name.data );
     fprintf( f, "\n" );
-    fprintf( f, "static const char dsim_ddl_%s_data[] = {\n", dsim_ddl_name(ddl) );
+    fprintf( f, "static const char dsim_ddl_%s_data[] = {\n", dsim_ddl_root_name(root) );
     dump_c_array( f, (const char *)data, size );
     fprintf( f, "};\n" );
     fprintf( f, "\n" );
-    fprintf( f, "static struct _ddl_%s _ddl;\n", dsim_ddl_name(ddl) );
-    fprintf( f, "const struct _ddl_%s *const ddl_%s = &_ddl;\n", dsim_ddl_name(ddl), dsim_ddl_name(ddl) );
+    fprintf( f, "static struct _ddl_%s _ddl;\n", dsim_ddl_root_name(root) );
+    fprintf( f, "const struct _ddl_%s *const ddl_%s = &_ddl;\n", dsim_ddl_root_name(root), dsim_ddl_root_name(root) );
     fprintf( f, "\n" );
-    fprintf( f, "void dsim_ddl_init_%s()\n", dsim_ddl_name(ddl) );
+    fprintf( f, "void dsim_ddl_init_%s()\n", dsim_ddl_root_name(root) );
     fprintf( f, "{\n" );
-    fprintf( f, "    dsim_ddl_register( dsim_ddl_%s_data );\n", dsim_ddl_name(ddl) );
+    fprintf( f, "    dsim_ddl_register( dsim_ddl_%s_data );\n", dsim_ddl_root_name(root) );
     fprintf( f, "\n" );
-    for( size_t i = 0; i != dsim_type_vec_len(types); ++i )
+    for( size_t i = 0; i != dsim_ddl_type_vec_len(types); ++i )
     {
-        dsim_type_table_t type = dsim_type_vec_at(types, i);
-        fprintf( f, "    _ddl.type_%s = dsim_type( \"%s\" );\n", dsim_type_name(type), dsim_type_name(type) );
+        dsim_ddl_type_table_t type = dsim_ddl_type_vec_at(types, i);
+        fprintf( f, "    _ddl.type_%s = dsim_ddl_type( \"%s\" );\n", dsim_ddl_type_name(type), dsim_ddl_type_name(type) );
     }
-    for( size_t i = 0; i != dsim_layout_vec_len(layouts); ++i )
+    for( size_t i = 0; i != dsim_ddl_layout_vec_len(layouts); ++i )
     {
-        dsim_layout_table_t layout = dsim_layout_vec_at(layouts, i);
-        fprintf( f, "    _ddl.layout_%s = dsim_layout( \"%s\" );\n", dsim_layout_name(layout), dsim_layout_name(layout) );
+        dsim_ddl_layout_table_t layout = dsim_ddl_layout_vec_at(layouts, i);
+        fprintf( f, "    _ddl.layout_%s = dsim_ddl_layout( \"%s\" );\n", dsim_ddl_layout_name(layout), dsim_ddl_layout_name(layout) );
     }
     fprintf( f, "}\n" );
     fclose( f );

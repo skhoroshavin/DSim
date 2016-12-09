@@ -8,8 +8,8 @@ void run_test_common();
 
 void run_test_allocator();
 
-void run_test_table_log();
-void run_test_hash_table();
+void run_test_storage_log();
+void run_test_hash_storage();
 
 static void run_all_tests()
 {
@@ -20,8 +20,8 @@ static void run_all_tests()
     run_test_array();
     run_test_hash();
 
-    run_test_table_log();
-    run_test_hash_table();
+    run_test_storage_log();
+    run_test_hash_storage();
 }
 
 int main( int argc, const char * argv[] )

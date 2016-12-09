@@ -10,55 +10,55 @@
 #define PDIAGNOSTIC_IGNORE_UNUSED
 #include "flatcc/portable/pdiagnostic_push.h"
 
-static int __dsim_numeric_type_table_verifier(flatcc_table_verifier_descriptor_t *td);
-static int __dsim_struct_field_table_verifier(flatcc_table_verifier_descriptor_t *td);
-static int __dsim_struct_type_table_verifier(flatcc_table_verifier_descriptor_t *td);
-static int __dsim_enum_type_table_verifier(flatcc_table_verifier_descriptor_t *td);
-static int __dsim_reference_type_table_verifier(flatcc_table_verifier_descriptor_t *td);
-static int __dsim_type_table_verifier(flatcc_table_verifier_descriptor_t *td);
-static int __dsim_column_table_verifier(flatcc_table_verifier_descriptor_t *td);
-static int __dsim_layout_table_verifier(flatcc_table_verifier_descriptor_t *td);
-static int __dsim_ddl_table_verifier(flatcc_table_verifier_descriptor_t *td);
+static int __dsim_ddl_numeric_type_table_verifier(flatcc_table_verifier_descriptor_t *td);
+static int __dsim_ddl_struct_field_table_verifier(flatcc_table_verifier_descriptor_t *td);
+static int __dsim_ddl_struct_type_table_verifier(flatcc_table_verifier_descriptor_t *td);
+static int __dsim_ddl_enum_type_table_verifier(flatcc_table_verifier_descriptor_t *td);
+static int __dsim_ddl_reference_type_table_verifier(flatcc_table_verifier_descriptor_t *td);
+static int __dsim_ddl_type_table_verifier(flatcc_table_verifier_descriptor_t *td);
+static int __dsim_ddl_array_table_verifier(flatcc_table_verifier_descriptor_t *td);
+static int __dsim_ddl_layout_table_verifier(flatcc_table_verifier_descriptor_t *td);
+static int __dsim_ddl_root_table_verifier(flatcc_table_verifier_descriptor_t *td);
 
-static int __dsim_any_type_union_verifier(flatcc_table_verifier_descriptor_t *td, flatbuffers_voffset_t id, uint8_t type)
+static int __dsim_ddl_any_type_union_verifier(flatcc_table_verifier_descriptor_t *td, flatbuffers_voffset_t id, uint8_t type)
 {
     switch(type) {
-    case 1: return flatcc_verify_table_field(td, id, 0, __dsim_numeric_type_table_verifier);
-    case 2: return flatcc_verify_table_field(td, id, 0, __dsim_struct_type_table_verifier);
-    case 3: return flatcc_verify_table_field(td, id, 0, __dsim_enum_type_table_verifier);
-    case 4: return flatcc_verify_table_field(td, id, 0, __dsim_reference_type_table_verifier);
+    case 1: return flatcc_verify_table_field(td, id, 0, __dsim_ddl_numeric_type_table_verifier);
+    case 2: return flatcc_verify_table_field(td, id, 0, __dsim_ddl_struct_type_table_verifier);
+    case 3: return flatcc_verify_table_field(td, id, 0, __dsim_ddl_enum_type_table_verifier);
+    case 4: return flatcc_verify_table_field(td, id, 0, __dsim_ddl_reference_type_table_verifier);
     default: return flatcc_verify_ok;
     }
 }
 
-static int __dsim_numeric_type_table_verifier(flatcc_table_verifier_descriptor_t *td)
+static int __dsim_ddl_numeric_type_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
     if ((ret = flatcc_verify_field(td, 0, 1, 1) /* is_float */)) return ret;
     return flatcc_verify_ok;
 }
 
-static inline int dsim_numeric_type_verify_as_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_numeric_type_verify_as_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_numeric_type_identifier, &__dsim_numeric_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_numeric_type_identifier, &__dsim_ddl_numeric_type_table_verifier);
 }
 
-static inline int dsim_numeric_type_verify_as_typed_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_numeric_type_verify_as_typed_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_numeric_type_type_identifier, &__dsim_numeric_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_numeric_type_type_identifier, &__dsim_ddl_numeric_type_table_verifier);
 }
 
-static inline int dsim_numeric_type_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
+static inline int dsim_ddl_numeric_type_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_numeric_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_ddl_numeric_type_table_verifier);
 }
 
-static inline int dsim_numeric_type_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
+static inline int dsim_ddl_numeric_type_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
 {
-    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_numeric_type_table_verifier);
+    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_ddl_numeric_type_table_verifier);
 }
 
-static int __dsim_struct_field_table_verifier(flatcc_table_verifier_descriptor_t *td)
+static int __dsim_ddl_struct_field_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
     if ((ret = flatcc_verify_string_field(td, 0, 0) /* name */)) return ret;
@@ -67,139 +67,139 @@ static int __dsim_struct_field_table_verifier(flatcc_table_verifier_descriptor_t
     return flatcc_verify_ok;
 }
 
-static inline int dsim_struct_field_verify_as_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_struct_field_verify_as_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_struct_field_identifier, &__dsim_struct_field_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_struct_field_identifier, &__dsim_ddl_struct_field_table_verifier);
 }
 
-static inline int dsim_struct_field_verify_as_typed_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_struct_field_verify_as_typed_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_struct_field_type_identifier, &__dsim_struct_field_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_struct_field_type_identifier, &__dsim_ddl_struct_field_table_verifier);
 }
 
-static inline int dsim_struct_field_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
+static inline int dsim_ddl_struct_field_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_struct_field_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_ddl_struct_field_table_verifier);
 }
 
-static inline int dsim_struct_field_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
+static inline int dsim_ddl_struct_field_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
 {
-    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_struct_field_table_verifier);
+    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_ddl_struct_field_table_verifier);
 }
 
-static int __dsim_struct_type_table_verifier(flatcc_table_verifier_descriptor_t *td)
+static int __dsim_ddl_struct_type_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
-    if ((ret = flatcc_verify_table_vector_field(td, 0, 0, &__dsim_struct_field_table_verifier) /* fields */)) return ret;
+    if ((ret = flatcc_verify_table_vector_field(td, 0, 0, &__dsim_ddl_struct_field_table_verifier) /* fields */)) return ret;
     return flatcc_verify_ok;
 }
 
-static inline int dsim_struct_type_verify_as_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_struct_type_verify_as_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_struct_type_identifier, &__dsim_struct_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_struct_type_identifier, &__dsim_ddl_struct_type_table_verifier);
 }
 
-static inline int dsim_struct_type_verify_as_typed_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_struct_type_verify_as_typed_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_struct_type_type_identifier, &__dsim_struct_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_struct_type_type_identifier, &__dsim_ddl_struct_type_table_verifier);
 }
 
-static inline int dsim_struct_type_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
+static inline int dsim_ddl_struct_type_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_struct_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_ddl_struct_type_table_verifier);
 }
 
-static inline int dsim_struct_type_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
+static inline int dsim_ddl_struct_type_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
 {
-    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_struct_type_table_verifier);
+    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_ddl_struct_type_table_verifier);
 }
 
-static int __dsim_enum_type_table_verifier(flatcc_table_verifier_descriptor_t *td)
+static int __dsim_ddl_enum_type_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
     if ((ret = flatcc_verify_string_vector_field(td, 0, 0) /* values */)) return ret;
     return flatcc_verify_ok;
 }
 
-static inline int dsim_enum_type_verify_as_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_enum_type_verify_as_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_enum_type_identifier, &__dsim_enum_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_enum_type_identifier, &__dsim_ddl_enum_type_table_verifier);
 }
 
-static inline int dsim_enum_type_verify_as_typed_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_enum_type_verify_as_typed_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_enum_type_type_identifier, &__dsim_enum_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_enum_type_type_identifier, &__dsim_ddl_enum_type_table_verifier);
 }
 
-static inline int dsim_enum_type_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
+static inline int dsim_ddl_enum_type_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_enum_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_ddl_enum_type_table_verifier);
 }
 
-static inline int dsim_enum_type_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
+static inline int dsim_ddl_enum_type_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
 {
-    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_enum_type_table_verifier);
+    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_ddl_enum_type_table_verifier);
 }
 
-static int __dsim_reference_type_table_verifier(flatcc_table_verifier_descriptor_t *td)
+static int __dsim_ddl_reference_type_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
     if ((ret = flatcc_verify_string_field(td, 0, 0) /* target */)) return ret;
     return flatcc_verify_ok;
 }
 
-static inline int dsim_reference_type_verify_as_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_reference_type_verify_as_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_reference_type_identifier, &__dsim_reference_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_reference_type_identifier, &__dsim_ddl_reference_type_table_verifier);
 }
 
-static inline int dsim_reference_type_verify_as_typed_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_reference_type_verify_as_typed_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_reference_type_type_identifier, &__dsim_reference_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_reference_type_type_identifier, &__dsim_ddl_reference_type_table_verifier);
 }
 
-static inline int dsim_reference_type_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
+static inline int dsim_ddl_reference_type_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_reference_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_ddl_reference_type_table_verifier);
 }
 
-static inline int dsim_reference_type_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
+static inline int dsim_ddl_reference_type_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
 {
-    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_reference_type_table_verifier);
+    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_ddl_reference_type_table_verifier);
 }
 
-static int __dsim_type_table_verifier(flatcc_table_verifier_descriptor_t *td)
+static int __dsim_ddl_type_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
     if ((ret = flatcc_verify_string_field(td, 0, 0) /* name */)) return ret;
     if ((ret = flatcc_verify_string_field(td, 1, 0) /* ctype */)) return ret;
     if ((ret = flatcc_verify_field(td, 2, 1, 1) /* size */)) return ret;
     if ((ret = flatcc_verify_field(td, 3, 1, 1) /* align */)) return ret;
-    if ((ret = flatcc_verify_union_field(td, 5, 0, &__dsim_any_type_union_verifier) /* data */)) return ret;
+    if ((ret = flatcc_verify_union_field(td, 5, 0, &__dsim_ddl_any_type_union_verifier) /* data */)) return ret;
     return flatcc_verify_ok;
 }
 
-static inline int dsim_type_verify_as_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_type_verify_as_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_type_identifier, &__dsim_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_type_identifier, &__dsim_ddl_type_table_verifier);
 }
 
-static inline int dsim_type_verify_as_typed_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_type_verify_as_typed_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_type_type_identifier, &__dsim_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_type_type_identifier, &__dsim_ddl_type_table_verifier);
 }
 
-static inline int dsim_type_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
+static inline int dsim_ddl_type_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_type_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_ddl_type_table_verifier);
 }
 
-static inline int dsim_type_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
+static inline int dsim_ddl_type_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
 {
-    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_type_table_verifier);
+    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_ddl_type_table_verifier);
 }
 
-static int __dsim_column_table_verifier(flatcc_table_verifier_descriptor_t *td)
+static int __dsim_ddl_array_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
     if ((ret = flatcc_verify_string_field(td, 0, 0) /* name */)) return ret;
@@ -207,81 +207,81 @@ static int __dsim_column_table_verifier(flatcc_table_verifier_descriptor_t *td)
     return flatcc_verify_ok;
 }
 
-static inline int dsim_column_verify_as_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_array_verify_as_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_column_identifier, &__dsim_column_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_array_identifier, &__dsim_ddl_array_table_verifier);
 }
 
-static inline int dsim_column_verify_as_typed_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_array_verify_as_typed_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_column_type_identifier, &__dsim_column_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_array_type_identifier, &__dsim_ddl_array_table_verifier);
 }
 
-static inline int dsim_column_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
+static inline int dsim_ddl_array_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_column_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_ddl_array_table_verifier);
 }
 
-static inline int dsim_column_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
+static inline int dsim_ddl_array_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
 {
-    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_column_table_verifier);
+    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_ddl_array_table_verifier);
 }
 
-static int __dsim_layout_table_verifier(flatcc_table_verifier_descriptor_t *td)
+static int __dsim_ddl_layout_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
     if ((ret = flatcc_verify_string_field(td, 0, 0) /* name */)) return ret;
-    if ((ret = flatcc_verify_table_vector_field(td, 1, 0, &__dsim_column_table_verifier) /* columns */)) return ret;
+    if ((ret = flatcc_verify_table_vector_field(td, 1, 0, &__dsim_ddl_array_table_verifier) /* arrays */)) return ret;
     return flatcc_verify_ok;
 }
 
-static inline int dsim_layout_verify_as_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_layout_verify_as_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_layout_identifier, &__dsim_layout_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_layout_identifier, &__dsim_ddl_layout_table_verifier);
 }
 
-static inline int dsim_layout_verify_as_typed_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_layout_verify_as_typed_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_layout_type_identifier, &__dsim_layout_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_layout_type_identifier, &__dsim_ddl_layout_table_verifier);
 }
 
-static inline int dsim_layout_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
+static inline int dsim_ddl_layout_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_layout_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_ddl_layout_table_verifier);
 }
 
-static inline int dsim_layout_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
+static inline int dsim_ddl_layout_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
 {
-    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_layout_table_verifier);
+    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_ddl_layout_table_verifier);
 }
 
-static int __dsim_ddl_table_verifier(flatcc_table_verifier_descriptor_t *td)
+static int __dsim_ddl_root_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
     if ((ret = flatcc_verify_string_field(td, 0, 0) /* name */)) return ret;
-    if ((ret = flatcc_verify_table_vector_field(td, 1, 0, &__dsim_type_table_verifier) /* types */)) return ret;
-    if ((ret = flatcc_verify_table_vector_field(td, 2, 0, &__dsim_layout_table_verifier) /* layouts */)) return ret;
+    if ((ret = flatcc_verify_table_vector_field(td, 1, 0, &__dsim_ddl_type_table_verifier) /* types */)) return ret;
+    if ((ret = flatcc_verify_table_vector_field(td, 2, 0, &__dsim_ddl_layout_table_verifier) /* layouts */)) return ret;
     return flatcc_verify_ok;
 }
 
-static inline int dsim_ddl_verify_as_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_root_verify_as_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_identifier, &__dsim_ddl_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_root_identifier, &__dsim_ddl_root_table_verifier);
 }
 
-static inline int dsim_ddl_verify_as_typed_root(const void *buf, size_t bufsiz)
+static inline int dsim_ddl_root_verify_as_typed_root(const void *buf, size_t bufsiz)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_type_identifier, &__dsim_ddl_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_root_type_identifier, &__dsim_ddl_root_table_verifier);
 }
 
-static inline int dsim_ddl_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
+static inline int dsim_ddl_root_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
 {
-    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_ddl_table_verifier);
+    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_ddl_root_table_verifier);
 }
 
-static inline int dsim_ddl_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
+static inline int dsim_ddl_root_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
 {
-    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_ddl_table_verifier);
+    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_ddl_root_table_verifier);
 }
 
 #include "flatcc/portable/pdiagnostic_pop.h"

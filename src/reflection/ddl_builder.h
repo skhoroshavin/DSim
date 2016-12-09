@@ -18,211 +18,211 @@
 #define flatbuffers_extension ".bin"
 #endif
 
-typedef struct dsim_any_type_union_ref dsim_any_type_union_ref_t;
+typedef struct dsim_ddl_any_type_union_ref dsim_ddl_any_type_union_ref_t;
 
-static const flatbuffers_voffset_t __dsim_numeric_type_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_numeric_type, 1)
-static const flatbuffers_voffset_t __dsim_struct_field_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_struct_field, 3)
-static const flatbuffers_voffset_t __dsim_struct_type_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_struct_type, 1)
-static const flatbuffers_voffset_t __dsim_enum_type_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_enum_type, 1)
-static const flatbuffers_voffset_t __dsim_reference_type_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_reference_type, 1)
-static const flatbuffers_voffset_t __dsim_type_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_type, 6)
-static const flatbuffers_voffset_t __dsim_column_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_column, 2)
-static const flatbuffers_voffset_t __dsim_layout_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_layout, 2)
-static const flatbuffers_voffset_t __dsim_ddl_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_ddl, 3)
-#define __dsim_numeric_type_formal_args , flatbuffers_bool_t v0
-#define __dsim_numeric_type_call_args , v0
-static inline dsim_numeric_type_ref_t dsim_numeric_type_create(flatbuffers_builder_t *B __dsim_numeric_type_formal_args);
-#define __dsim_struct_field_formal_args , flatbuffers_string_ref_t v0, flatbuffers_string_ref_t v1, uint32_t v2
-#define __dsim_struct_field_call_args , v0, v1, v2
-static inline dsim_struct_field_ref_t dsim_struct_field_create(flatbuffers_builder_t *B __dsim_struct_field_formal_args);
-#define __dsim_struct_type_formal_args , dsim_struct_field_vec_ref_t v0
-#define __dsim_struct_type_call_args , v0
-static inline dsim_struct_type_ref_t dsim_struct_type_create(flatbuffers_builder_t *B __dsim_struct_type_formal_args);
-#define __dsim_enum_type_formal_args , flatbuffers_string_vec_ref_t v0
-#define __dsim_enum_type_call_args , v0
-static inline dsim_enum_type_ref_t dsim_enum_type_create(flatbuffers_builder_t *B __dsim_enum_type_formal_args);
-#define __dsim_reference_type_formal_args , flatbuffers_string_ref_t v0
-#define __dsim_reference_type_call_args , v0
-static inline dsim_reference_type_ref_t dsim_reference_type_create(flatbuffers_builder_t *B __dsim_reference_type_formal_args);
-#define __dsim_type_formal_args ,\
-  flatbuffers_string_ref_t v0, flatbuffers_string_ref_t v1, uint8_t v2, uint8_t v3, dsim_any_type_union_ref_t v5
-#define __dsim_type_call_args ,\
+static const flatbuffers_voffset_t __dsim_ddl_numeric_type_required[] = {0 };
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_numeric_type, 1)
+static const flatbuffers_voffset_t __dsim_ddl_struct_field_required[] = {0 };
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_struct_field, 3)
+static const flatbuffers_voffset_t __dsim_ddl_struct_type_required[] = {0 };
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_struct_type, 1)
+static const flatbuffers_voffset_t __dsim_ddl_enum_type_required[] = {0 };
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_enum_type, 1)
+static const flatbuffers_voffset_t __dsim_ddl_reference_type_required[] = {0 };
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_reference_type, 1)
+static const flatbuffers_voffset_t __dsim_ddl_type_required[] = {0 };
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_type, 6)
+static const flatbuffers_voffset_t __dsim_ddl_array_required[] = {0 };
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_array, 2)
+static const flatbuffers_voffset_t __dsim_ddl_layout_required[] = {0 };
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_layout, 2)
+static const flatbuffers_voffset_t __dsim_ddl_root_required[] = {0 };
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_root, 3)
+#define __dsim_ddl_numeric_type_formal_args , flatbuffers_bool_t v0
+#define __dsim_ddl_numeric_type_call_args , v0
+static inline dsim_ddl_numeric_type_ref_t dsim_ddl_numeric_type_create(flatbuffers_builder_t *B __dsim_ddl_numeric_type_formal_args);
+#define __dsim_ddl_struct_field_formal_args , flatbuffers_string_ref_t v0, flatbuffers_string_ref_t v1, uint32_t v2
+#define __dsim_ddl_struct_field_call_args , v0, v1, v2
+static inline dsim_ddl_struct_field_ref_t dsim_ddl_struct_field_create(flatbuffers_builder_t *B __dsim_ddl_struct_field_formal_args);
+#define __dsim_ddl_struct_type_formal_args , dsim_ddl_struct_field_vec_ref_t v0
+#define __dsim_ddl_struct_type_call_args , v0
+static inline dsim_ddl_struct_type_ref_t dsim_ddl_struct_type_create(flatbuffers_builder_t *B __dsim_ddl_struct_type_formal_args);
+#define __dsim_ddl_enum_type_formal_args , flatbuffers_string_vec_ref_t v0
+#define __dsim_ddl_enum_type_call_args , v0
+static inline dsim_ddl_enum_type_ref_t dsim_ddl_enum_type_create(flatbuffers_builder_t *B __dsim_ddl_enum_type_formal_args);
+#define __dsim_ddl_reference_type_formal_args , flatbuffers_string_ref_t v0
+#define __dsim_ddl_reference_type_call_args , v0
+static inline dsim_ddl_reference_type_ref_t dsim_ddl_reference_type_create(flatbuffers_builder_t *B __dsim_ddl_reference_type_formal_args);
+#define __dsim_ddl_type_formal_args ,\
+  flatbuffers_string_ref_t v0, flatbuffers_string_ref_t v1, uint8_t v2, uint8_t v3, dsim_ddl_any_type_union_ref_t v5
+#define __dsim_ddl_type_call_args ,\
   v0, v1, v2, v3, v5
-static inline dsim_type_ref_t dsim_type_create(flatbuffers_builder_t *B __dsim_type_formal_args);
-#define __dsim_column_formal_args , flatbuffers_string_ref_t v0, flatbuffers_string_ref_t v1
-#define __dsim_column_call_args , v0, v1
-static inline dsim_column_ref_t dsim_column_create(flatbuffers_builder_t *B __dsim_column_formal_args);
-#define __dsim_layout_formal_args , flatbuffers_string_ref_t v0, dsim_column_vec_ref_t v1
-#define __dsim_layout_call_args , v0, v1
-static inline dsim_layout_ref_t dsim_layout_create(flatbuffers_builder_t *B __dsim_layout_formal_args);
-#define __dsim_ddl_formal_args , flatbuffers_string_ref_t v0, dsim_type_vec_ref_t v1, dsim_layout_vec_ref_t v2
-#define __dsim_ddl_call_args , v0, v1, v2
-static inline dsim_ddl_ref_t dsim_ddl_create(flatbuffers_builder_t *B __dsim_ddl_formal_args);
+static inline dsim_ddl_type_ref_t dsim_ddl_type_create(flatbuffers_builder_t *B __dsim_ddl_type_formal_args);
+#define __dsim_ddl_array_formal_args , flatbuffers_string_ref_t v0, flatbuffers_string_ref_t v1
+#define __dsim_ddl_array_call_args , v0, v1
+static inline dsim_ddl_array_ref_t dsim_ddl_array_create(flatbuffers_builder_t *B __dsim_ddl_array_formal_args);
+#define __dsim_ddl_layout_formal_args , flatbuffers_string_ref_t v0, dsim_ddl_array_vec_ref_t v1
+#define __dsim_ddl_layout_call_args , v0, v1
+static inline dsim_ddl_layout_ref_t dsim_ddl_layout_create(flatbuffers_builder_t *B __dsim_ddl_layout_formal_args);
+#define __dsim_ddl_root_formal_args , flatbuffers_string_ref_t v0, dsim_ddl_type_vec_ref_t v1, dsim_ddl_layout_vec_ref_t v2
+#define __dsim_ddl_root_call_args , v0, v1, v2
+static inline dsim_ddl_root_ref_t dsim_ddl_root_create(flatbuffers_builder_t *B __dsim_ddl_root_formal_args);
 
-struct dsim_any_type_union_ref {
-    dsim_any_type_union_type_t type;
+struct dsim_ddl_any_type_union_ref {
+    dsim_ddl_any_type_union_type_t type;
     union {
         flatbuffers_ref_t _member;
         flatbuffers_ref_t NONE;
-        dsim_numeric_type_ref_t numeric_type;
-        dsim_struct_type_ref_t struct_type;
-        dsim_enum_type_ref_t enum_type;
-        dsim_reference_type_ref_t reference_type;
+        dsim_ddl_numeric_type_ref_t numeric_type;
+        dsim_ddl_struct_type_ref_t struct_type;
+        dsim_ddl_enum_type_ref_t enum_type;
+        dsim_ddl_reference_type_ref_t reference_type;
     };
 };
 
-static inline dsim_any_type_union_ref_t dsim_any_type_as_NONE()
-{ dsim_any_type_union_ref_t uref; uref.type = dsim_any_type_NONE; uref._member = 0; return uref; }
-static inline dsim_any_type_union_ref_t dsim_any_type_as_numeric_type(dsim_numeric_type_ref_t ref)
-{ dsim_any_type_union_ref_t uref; uref.type = dsim_any_type_numeric_type; uref.numeric_type = ref; return uref; }
-static inline dsim_any_type_union_ref_t dsim_any_type_as_struct_type(dsim_struct_type_ref_t ref)
-{ dsim_any_type_union_ref_t uref; uref.type = dsim_any_type_struct_type; uref.struct_type = ref; return uref; }
-static inline dsim_any_type_union_ref_t dsim_any_type_as_enum_type(dsim_enum_type_ref_t ref)
-{ dsim_any_type_union_ref_t uref; uref.type = dsim_any_type_enum_type; uref.enum_type = ref; return uref; }
-static inline dsim_any_type_union_ref_t dsim_any_type_as_reference_type(dsim_reference_type_ref_t ref)
-{ dsim_any_type_union_ref_t uref; uref.type = dsim_any_type_reference_type; uref.reference_type = ref; return uref; }
+static inline dsim_ddl_any_type_union_ref_t dsim_ddl_any_type_as_NONE()
+{ dsim_ddl_any_type_union_ref_t uref; uref.type = dsim_ddl_any_type_NONE; uref._member = 0; return uref; }
+static inline dsim_ddl_any_type_union_ref_t dsim_ddl_any_type_as_numeric_type(dsim_ddl_numeric_type_ref_t ref)
+{ dsim_ddl_any_type_union_ref_t uref; uref.type = dsim_ddl_any_type_numeric_type; uref.numeric_type = ref; return uref; }
+static inline dsim_ddl_any_type_union_ref_t dsim_ddl_any_type_as_struct_type(dsim_ddl_struct_type_ref_t ref)
+{ dsim_ddl_any_type_union_ref_t uref; uref.type = dsim_ddl_any_type_struct_type; uref.struct_type = ref; return uref; }
+static inline dsim_ddl_any_type_union_ref_t dsim_ddl_any_type_as_enum_type(dsim_ddl_enum_type_ref_t ref)
+{ dsim_ddl_any_type_union_ref_t uref; uref.type = dsim_ddl_any_type_enum_type; uref.enum_type = ref; return uref; }
+static inline dsim_ddl_any_type_union_ref_t dsim_ddl_any_type_as_reference_type(dsim_ddl_reference_type_ref_t ref)
+{ dsim_ddl_any_type_union_ref_t uref; uref.type = dsim_ddl_any_type_reference_type; uref.reference_type = ref; return uref; }
 
-__flatbuffers_build_scalar_field(0, flatbuffers_, dsim_numeric_type_is_float, flatbuffers_bool, flatbuffers_bool_t, 1, 1, 0)
+__flatbuffers_build_scalar_field(0, flatbuffers_, dsim_ddl_numeric_type_is_float, flatbuffers_bool, flatbuffers_bool_t, 1, 1, 0)
 
-static inline dsim_numeric_type_ref_t dsim_numeric_type_create(flatbuffers_builder_t *B __dsim_numeric_type_formal_args)
+static inline dsim_ddl_numeric_type_ref_t dsim_ddl_numeric_type_create(flatbuffers_builder_t *B __dsim_ddl_numeric_type_formal_args)
 {
-    if (dsim_numeric_type_start(B)
-        || dsim_numeric_type_is_float_add(B, v0)) {
+    if (dsim_ddl_numeric_type_start(B)
+        || dsim_ddl_numeric_type_is_float_add(B, v0)) {
         return 0;
     }
-    return dsim_numeric_type_end(B);
+    return dsim_ddl_numeric_type_end(B);
 }
-__flatbuffers_build_table_prolog(flatbuffers_, dsim_numeric_type, dsim_numeric_type_identifier, dsim_numeric_type_type_identifier)
+__flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_numeric_type, dsim_ddl_numeric_type_identifier, dsim_ddl_numeric_type_type_identifier)
 
-__flatbuffers_build_string_field(0, flatbuffers_, dsim_struct_field_name)
-__flatbuffers_build_string_field(1, flatbuffers_, dsim_struct_field_type)
-__flatbuffers_build_scalar_field(2, flatbuffers_, dsim_struct_field_offset, flatbuffers_uint32, uint32_t, 4, 4, 0)
+__flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_struct_field_name)
+__flatbuffers_build_string_field(1, flatbuffers_, dsim_ddl_struct_field_type)
+__flatbuffers_build_scalar_field(2, flatbuffers_, dsim_ddl_struct_field_offset, flatbuffers_uint32, uint32_t, 4, 4, 0)
 
-static inline dsim_struct_field_ref_t dsim_struct_field_create(flatbuffers_builder_t *B __dsim_struct_field_formal_args)
+static inline dsim_ddl_struct_field_ref_t dsim_ddl_struct_field_create(flatbuffers_builder_t *B __dsim_ddl_struct_field_formal_args)
 {
-    if (dsim_struct_field_start(B)
-        || dsim_struct_field_name_add(B, v0)
-        || dsim_struct_field_type_add(B, v1)
-        || dsim_struct_field_offset_add(B, v2)) {
+    if (dsim_ddl_struct_field_start(B)
+        || dsim_ddl_struct_field_name_add(B, v0)
+        || dsim_ddl_struct_field_type_add(B, v1)
+        || dsim_ddl_struct_field_offset_add(B, v2)) {
         return 0;
     }
-    return dsim_struct_field_end(B);
+    return dsim_ddl_struct_field_end(B);
 }
-__flatbuffers_build_table_prolog(flatbuffers_, dsim_struct_field, dsim_struct_field_identifier, dsim_struct_field_type_identifier)
+__flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_struct_field, dsim_ddl_struct_field_identifier, dsim_ddl_struct_field_type_identifier)
 
-__flatbuffers_build_table_vector_field(0, flatbuffers_, dsim_struct_type_fields, dsim_struct_field)
+__flatbuffers_build_table_vector_field(0, flatbuffers_, dsim_ddl_struct_type_fields, dsim_ddl_struct_field)
 
-static inline dsim_struct_type_ref_t dsim_struct_type_create(flatbuffers_builder_t *B __dsim_struct_type_formal_args)
+static inline dsim_ddl_struct_type_ref_t dsim_ddl_struct_type_create(flatbuffers_builder_t *B __dsim_ddl_struct_type_formal_args)
 {
-    if (dsim_struct_type_start(B)
-        || dsim_struct_type_fields_add(B, v0)) {
+    if (dsim_ddl_struct_type_start(B)
+        || dsim_ddl_struct_type_fields_add(B, v0)) {
         return 0;
     }
-    return dsim_struct_type_end(B);
+    return dsim_ddl_struct_type_end(B);
 }
-__flatbuffers_build_table_prolog(flatbuffers_, dsim_struct_type, dsim_struct_type_identifier, dsim_struct_type_type_identifier)
+__flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_struct_type, dsim_ddl_struct_type_identifier, dsim_ddl_struct_type_type_identifier)
 
-__flatbuffers_build_string_vector_field(0, flatbuffers_, dsim_enum_type_values)
+__flatbuffers_build_string_vector_field(0, flatbuffers_, dsim_ddl_enum_type_values)
 
-static inline dsim_enum_type_ref_t dsim_enum_type_create(flatbuffers_builder_t *B __dsim_enum_type_formal_args)
+static inline dsim_ddl_enum_type_ref_t dsim_ddl_enum_type_create(flatbuffers_builder_t *B __dsim_ddl_enum_type_formal_args)
 {
-    if (dsim_enum_type_start(B)
-        || dsim_enum_type_values_add(B, v0)) {
+    if (dsim_ddl_enum_type_start(B)
+        || dsim_ddl_enum_type_values_add(B, v0)) {
         return 0;
     }
-    return dsim_enum_type_end(B);
+    return dsim_ddl_enum_type_end(B);
 }
-__flatbuffers_build_table_prolog(flatbuffers_, dsim_enum_type, dsim_enum_type_identifier, dsim_enum_type_type_identifier)
+__flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_enum_type, dsim_ddl_enum_type_identifier, dsim_ddl_enum_type_type_identifier)
 
-__flatbuffers_build_string_field(0, flatbuffers_, dsim_reference_type_target)
+__flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_reference_type_target)
 
-static inline dsim_reference_type_ref_t dsim_reference_type_create(flatbuffers_builder_t *B __dsim_reference_type_formal_args)
+static inline dsim_ddl_reference_type_ref_t dsim_ddl_reference_type_create(flatbuffers_builder_t *B __dsim_ddl_reference_type_formal_args)
 {
-    if (dsim_reference_type_start(B)
-        || dsim_reference_type_target_add(B, v0)) {
+    if (dsim_ddl_reference_type_start(B)
+        || dsim_ddl_reference_type_target_add(B, v0)) {
         return 0;
     }
-    return dsim_reference_type_end(B);
+    return dsim_ddl_reference_type_end(B);
 }
-__flatbuffers_build_table_prolog(flatbuffers_, dsim_reference_type, dsim_reference_type_identifier, dsim_reference_type_type_identifier)
+__flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_reference_type, dsim_ddl_reference_type_identifier, dsim_ddl_reference_type_type_identifier)
 
-__flatbuffers_build_string_field(0, flatbuffers_, dsim_type_name)
-__flatbuffers_build_string_field(1, flatbuffers_, dsim_type_ctype)
-__flatbuffers_build_scalar_field(2, flatbuffers_, dsim_type_size, flatbuffers_uint8, uint8_t, 1, 1, 0)
-__flatbuffers_build_scalar_field(3, flatbuffers_, dsim_type_align, flatbuffers_uint8, uint8_t, 1, 1, 0)
-__flatbuffers_build_union_field(5, flatbuffers_, dsim_type_data, dsim_any_type)
-__flatbuffers_build_union_member_field(flatbuffers_, dsim_type_data, dsim_any_type, numeric_type, dsim_numeric_type)
-__flatbuffers_build_union_member_field(flatbuffers_, dsim_type_data, dsim_any_type, struct_type, dsim_struct_type)
-__flatbuffers_build_union_member_field(flatbuffers_, dsim_type_data, dsim_any_type, enum_type, dsim_enum_type)
-__flatbuffers_build_union_member_field(flatbuffers_, dsim_type_data, dsim_any_type, reference_type, dsim_reference_type)
+__flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_type_name)
+__flatbuffers_build_string_field(1, flatbuffers_, dsim_ddl_type_ctype)
+__flatbuffers_build_scalar_field(2, flatbuffers_, dsim_ddl_type_size, flatbuffers_uint8, uint8_t, 1, 1, 0)
+__flatbuffers_build_scalar_field(3, flatbuffers_, dsim_ddl_type_align, flatbuffers_uint8, uint8_t, 1, 1, 0)
+__flatbuffers_build_union_field(5, flatbuffers_, dsim_ddl_type_data, dsim_ddl_any_type)
+__flatbuffers_build_union_member_field(flatbuffers_, dsim_ddl_type_data, dsim_ddl_any_type, numeric_type, dsim_ddl_numeric_type)
+__flatbuffers_build_union_member_field(flatbuffers_, dsim_ddl_type_data, dsim_ddl_any_type, struct_type, dsim_ddl_struct_type)
+__flatbuffers_build_union_member_field(flatbuffers_, dsim_ddl_type_data, dsim_ddl_any_type, enum_type, dsim_ddl_enum_type)
+__flatbuffers_build_union_member_field(flatbuffers_, dsim_ddl_type_data, dsim_ddl_any_type, reference_type, dsim_ddl_reference_type)
 
-static inline dsim_type_ref_t dsim_type_create(flatbuffers_builder_t *B __dsim_type_formal_args)
+static inline dsim_ddl_type_ref_t dsim_ddl_type_create(flatbuffers_builder_t *B __dsim_ddl_type_formal_args)
 {
-    if (dsim_type_start(B)
-        || dsim_type_name_add(B, v0)
-        || dsim_type_ctype_add(B, v1)
-        || dsim_type_data_add_member(B, v5)
-        || dsim_type_size_add(B, v2)
-        || dsim_type_align_add(B, v3)
-        || dsim_type_data_add_type(B, v5.type)) {
+    if (dsim_ddl_type_start(B)
+        || dsim_ddl_type_name_add(B, v0)
+        || dsim_ddl_type_ctype_add(B, v1)
+        || dsim_ddl_type_data_add_member(B, v5)
+        || dsim_ddl_type_size_add(B, v2)
+        || dsim_ddl_type_align_add(B, v3)
+        || dsim_ddl_type_data_add_type(B, v5.type)) {
         return 0;
     }
-    return dsim_type_end(B);
+    return dsim_ddl_type_end(B);
 }
-__flatbuffers_build_table_prolog(flatbuffers_, dsim_type, dsim_type_identifier, dsim_type_type_identifier)
+__flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_type, dsim_ddl_type_identifier, dsim_ddl_type_type_identifier)
 
-__flatbuffers_build_string_field(0, flatbuffers_, dsim_column_name)
-__flatbuffers_build_string_field(1, flatbuffers_, dsim_column_type)
+__flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_array_name)
+__flatbuffers_build_string_field(1, flatbuffers_, dsim_ddl_array_type)
 
-static inline dsim_column_ref_t dsim_column_create(flatbuffers_builder_t *B __dsim_column_formal_args)
+static inline dsim_ddl_array_ref_t dsim_ddl_array_create(flatbuffers_builder_t *B __dsim_ddl_array_formal_args)
 {
-    if (dsim_column_start(B)
-        || dsim_column_name_add(B, v0)
-        || dsim_column_type_add(B, v1)) {
+    if (dsim_ddl_array_start(B)
+        || dsim_ddl_array_name_add(B, v0)
+        || dsim_ddl_array_type_add(B, v1)) {
         return 0;
     }
-    return dsim_column_end(B);
+    return dsim_ddl_array_end(B);
 }
-__flatbuffers_build_table_prolog(flatbuffers_, dsim_column, dsim_column_identifier, dsim_column_type_identifier)
+__flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_array, dsim_ddl_array_identifier, dsim_ddl_array_type_identifier)
 
-__flatbuffers_build_string_field(0, flatbuffers_, dsim_layout_name)
-__flatbuffers_build_table_vector_field(1, flatbuffers_, dsim_layout_columns, dsim_column)
+__flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_layout_name)
+__flatbuffers_build_table_vector_field(1, flatbuffers_, dsim_ddl_layout_arrays, dsim_ddl_array)
 
-static inline dsim_layout_ref_t dsim_layout_create(flatbuffers_builder_t *B __dsim_layout_formal_args)
+static inline dsim_ddl_layout_ref_t dsim_ddl_layout_create(flatbuffers_builder_t *B __dsim_ddl_layout_formal_args)
 {
-    if (dsim_layout_start(B)
-        || dsim_layout_name_add(B, v0)
-        || dsim_layout_columns_add(B, v1)) {
+    if (dsim_ddl_layout_start(B)
+        || dsim_ddl_layout_name_add(B, v0)
+        || dsim_ddl_layout_arrays_add(B, v1)) {
         return 0;
     }
-    return dsim_layout_end(B);
+    return dsim_ddl_layout_end(B);
 }
-__flatbuffers_build_table_prolog(flatbuffers_, dsim_layout, dsim_layout_identifier, dsim_layout_type_identifier)
+__flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_layout, dsim_ddl_layout_identifier, dsim_ddl_layout_type_identifier)
 
-__flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_name)
-__flatbuffers_build_table_vector_field(1, flatbuffers_, dsim_ddl_types, dsim_type)
-__flatbuffers_build_table_vector_field(2, flatbuffers_, dsim_ddl_layouts, dsim_layout)
+__flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_root_name)
+__flatbuffers_build_table_vector_field(1, flatbuffers_, dsim_ddl_root_types, dsim_ddl_type)
+__flatbuffers_build_table_vector_field(2, flatbuffers_, dsim_ddl_root_layouts, dsim_ddl_layout)
 
-static inline dsim_ddl_ref_t dsim_ddl_create(flatbuffers_builder_t *B __dsim_ddl_formal_args)
+static inline dsim_ddl_root_ref_t dsim_ddl_root_create(flatbuffers_builder_t *B __dsim_ddl_root_formal_args)
 {
-    if (dsim_ddl_start(B)
-        || dsim_ddl_name_add(B, v0)
-        || dsim_ddl_types_add(B, v1)
-        || dsim_ddl_layouts_add(B, v2)) {
+    if (dsim_ddl_root_start(B)
+        || dsim_ddl_root_name_add(B, v0)
+        || dsim_ddl_root_types_add(B, v1)
+        || dsim_ddl_root_layouts_add(B, v2)) {
         return 0;
     }
-    return dsim_ddl_end(B);
+    return dsim_ddl_root_end(B);
 }
-__flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl, dsim_ddl_identifier, dsim_ddl_type_identifier)
+__flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_root, dsim_ddl_root_identifier, dsim_ddl_root_type_identifier)
 
 #include "flatcc/portable/pdiagnostic_pop.h"
 #endif /* DDL_BUILDER_H */

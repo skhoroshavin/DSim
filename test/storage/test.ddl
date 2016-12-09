@@ -20,7 +20,7 @@
     layouts: [
         {
             name: "test",
-            columns: [
+            arrays: [
                 { name: "int",   type: "uint8" },
                 { name: "float", type: "float" },
                 { name: "vec",   type: "vec4"  },

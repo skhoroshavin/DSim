@@ -19,285 +19,285 @@
 #endif
 
 
-typedef const struct dsim_numeric_type_table *dsim_numeric_type_table_t;
-typedef const flatbuffers_uoffset_t *dsim_numeric_type_vec_t;
-typedef flatbuffers_uoffset_t *dsim_numeric_type_mutable_vec_t;
-typedef const struct dsim_struct_field_table *dsim_struct_field_table_t;
-typedef const flatbuffers_uoffset_t *dsim_struct_field_vec_t;
-typedef flatbuffers_uoffset_t *dsim_struct_field_mutable_vec_t;
-typedef const struct dsim_struct_type_table *dsim_struct_type_table_t;
-typedef const flatbuffers_uoffset_t *dsim_struct_type_vec_t;
-typedef flatbuffers_uoffset_t *dsim_struct_type_mutable_vec_t;
-typedef const struct dsim_enum_type_table *dsim_enum_type_table_t;
-typedef const flatbuffers_uoffset_t *dsim_enum_type_vec_t;
-typedef flatbuffers_uoffset_t *dsim_enum_type_mutable_vec_t;
-typedef const struct dsim_reference_type_table *dsim_reference_type_table_t;
-typedef const flatbuffers_uoffset_t *dsim_reference_type_vec_t;
-typedef flatbuffers_uoffset_t *dsim_reference_type_mutable_vec_t;
-typedef const struct dsim_type_table *dsim_type_table_t;
-typedef const flatbuffers_uoffset_t *dsim_type_vec_t;
-typedef flatbuffers_uoffset_t *dsim_type_mutable_vec_t;
-typedef const struct dsim_column_table *dsim_column_table_t;
-typedef const flatbuffers_uoffset_t *dsim_column_vec_t;
-typedef flatbuffers_uoffset_t *dsim_column_mutable_vec_t;
-typedef const struct dsim_layout_table *dsim_layout_table_t;
-typedef const flatbuffers_uoffset_t *dsim_layout_vec_t;
-typedef flatbuffers_uoffset_t *dsim_layout_mutable_vec_t;
-typedef const struct dsim_ddl_table *dsim_ddl_table_t;
-typedef const flatbuffers_uoffset_t *dsim_ddl_vec_t;
-typedef flatbuffers_uoffset_t *dsim_ddl_mutable_vec_t;
+typedef const struct dsim_ddl_numeric_type_table *dsim_ddl_numeric_type_table_t;
+typedef const flatbuffers_uoffset_t *dsim_ddl_numeric_type_vec_t;
+typedef flatbuffers_uoffset_t *dsim_ddl_numeric_type_mutable_vec_t;
+typedef const struct dsim_ddl_struct_field_table *dsim_ddl_struct_field_table_t;
+typedef const flatbuffers_uoffset_t *dsim_ddl_struct_field_vec_t;
+typedef flatbuffers_uoffset_t *dsim_ddl_struct_field_mutable_vec_t;
+typedef const struct dsim_ddl_struct_type_table *dsim_ddl_struct_type_table_t;
+typedef const flatbuffers_uoffset_t *dsim_ddl_struct_type_vec_t;
+typedef flatbuffers_uoffset_t *dsim_ddl_struct_type_mutable_vec_t;
+typedef const struct dsim_ddl_enum_type_table *dsim_ddl_enum_type_table_t;
+typedef const flatbuffers_uoffset_t *dsim_ddl_enum_type_vec_t;
+typedef flatbuffers_uoffset_t *dsim_ddl_enum_type_mutable_vec_t;
+typedef const struct dsim_ddl_reference_type_table *dsim_ddl_reference_type_table_t;
+typedef const flatbuffers_uoffset_t *dsim_ddl_reference_type_vec_t;
+typedef flatbuffers_uoffset_t *dsim_ddl_reference_type_mutable_vec_t;
+typedef const struct dsim_ddl_type_table *dsim_ddl_type_table_t;
+typedef const flatbuffers_uoffset_t *dsim_ddl_type_vec_t;
+typedef flatbuffers_uoffset_t *dsim_ddl_type_mutable_vec_t;
+typedef const struct dsim_ddl_array_table *dsim_ddl_array_table_t;
+typedef const flatbuffers_uoffset_t *dsim_ddl_array_vec_t;
+typedef flatbuffers_uoffset_t *dsim_ddl_array_mutable_vec_t;
+typedef const struct dsim_ddl_layout_table *dsim_ddl_layout_table_t;
+typedef const flatbuffers_uoffset_t *dsim_ddl_layout_vec_t;
+typedef flatbuffers_uoffset_t *dsim_ddl_layout_mutable_vec_t;
+typedef const struct dsim_ddl_root_table *dsim_ddl_root_table_t;
+typedef const flatbuffers_uoffset_t *dsim_ddl_root_vec_t;
+typedef flatbuffers_uoffset_t *dsim_ddl_root_mutable_vec_t;
 
 
 
 /************************************************************************\
  *  * Type definitions                                                     *
  * \*********************************************************************** */
-struct dsim_numeric_type_table { uint8_t unused__; };
+struct dsim_ddl_numeric_type_table { uint8_t unused__; };
 
-#ifndef dsim_numeric_type_identifier
-#define dsim_numeric_type_identifier flatbuffers_identifier
+#ifndef dsim_ddl_numeric_type_identifier
+#define dsim_ddl_numeric_type_identifier flatbuffers_identifier
 #endif
-#define dsim_numeric_type_type_hash ((flatbuffers_thash_t)0xa4768410)
-#define dsim_numeric_type_type_identifier "\x10\x84\x76\xa4"
-static inline size_t dsim_numeric_type_vec_len(dsim_numeric_type_vec_t vec)
+#define dsim_ddl_numeric_type_type_hash ((flatbuffers_thash_t)0x75650eee)
+#define dsim_ddl_numeric_type_type_identifier "\xee\x0e\x65\x75"
+static inline size_t dsim_ddl_numeric_type_vec_len(dsim_ddl_numeric_type_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline dsim_numeric_type_table_t dsim_numeric_type_vec_at(dsim_numeric_type_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(dsim_numeric_type_table_t, vec, i, 0)
-__flatbuffers_table_as_root(dsim_numeric_type)
+static inline dsim_ddl_numeric_type_table_t dsim_ddl_numeric_type_vec_at(dsim_ddl_numeric_type_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_ddl_numeric_type_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_ddl_numeric_type)
 
-static inline flatbuffers_bool_t dsim_numeric_type_is_float(dsim_numeric_type_table_t t)
+static inline flatbuffers_bool_t dsim_ddl_numeric_type_is_float(dsim_ddl_numeric_type_table_t t)
 __flatbuffers_scalar_field(flatbuffers_bool, 0, 0, t)
-static inline int dsim_numeric_type_is_float_is_present(dsim_numeric_type_table_t t)
+static inline int dsim_ddl_numeric_type_is_float_is_present(dsim_ddl_numeric_type_table_t t)
 __flatbuffers_field_present(0, t)
 
 
-struct dsim_struct_field_table { uint8_t unused__; };
+struct dsim_ddl_struct_field_table { uint8_t unused__; };
 
-#ifndef dsim_struct_field_identifier
-#define dsim_struct_field_identifier flatbuffers_identifier
+#ifndef dsim_ddl_struct_field_identifier
+#define dsim_ddl_struct_field_identifier flatbuffers_identifier
 #endif
-#define dsim_struct_field_type_hash ((flatbuffers_thash_t)0xd262dfba)
-#define dsim_struct_field_type_identifier "\xba\xdf\x62\xd2"
-static inline size_t dsim_struct_field_vec_len(dsim_struct_field_vec_t vec)
+#define dsim_ddl_struct_field_type_hash ((flatbuffers_thash_t)0xbeb0cf0c)
+#define dsim_ddl_struct_field_type_identifier "\x0c\xcf\xb0\xbe"
+static inline size_t dsim_ddl_struct_field_vec_len(dsim_ddl_struct_field_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline dsim_struct_field_table_t dsim_struct_field_vec_at(dsim_struct_field_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(dsim_struct_field_table_t, vec, i, 0)
-__flatbuffers_table_as_root(dsim_struct_field)
+static inline dsim_ddl_struct_field_table_t dsim_ddl_struct_field_vec_at(dsim_ddl_struct_field_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_ddl_struct_field_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_ddl_struct_field)
 
-static inline flatbuffers_string_t dsim_struct_field_name(dsim_struct_field_table_t t)
+static inline flatbuffers_string_t dsim_ddl_struct_field_name(dsim_ddl_struct_field_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-static inline int dsim_struct_field_name_is_present(dsim_struct_field_table_t t)
+static inline int dsim_ddl_struct_field_name_is_present(dsim_ddl_struct_field_table_t t)
 __flatbuffers_field_present(0, t)
 
-static inline flatbuffers_string_t dsim_struct_field_type(dsim_struct_field_table_t t)
+static inline flatbuffers_string_t dsim_ddl_struct_field_type(dsim_ddl_struct_field_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 1, t, 0)
-static inline int dsim_struct_field_type_is_present(dsim_struct_field_table_t t)
+static inline int dsim_ddl_struct_field_type_is_present(dsim_ddl_struct_field_table_t t)
 __flatbuffers_field_present(1, t)
 
-static inline uint32_t dsim_struct_field_offset(dsim_struct_field_table_t t)
+static inline uint32_t dsim_ddl_struct_field_offset(dsim_ddl_struct_field_table_t t)
 __flatbuffers_scalar_field(flatbuffers_uint32, 2, 0, t)
-static inline int dsim_struct_field_offset_is_present(dsim_struct_field_table_t t)
+static inline int dsim_ddl_struct_field_offset_is_present(dsim_ddl_struct_field_table_t t)
 __flatbuffers_field_present(2, t)
 
 
-struct dsim_struct_type_table { uint8_t unused__; };
+struct dsim_ddl_struct_type_table { uint8_t unused__; };
 
-#ifndef dsim_struct_type_identifier
-#define dsim_struct_type_identifier flatbuffers_identifier
+#ifndef dsim_ddl_struct_type_identifier
+#define dsim_ddl_struct_type_identifier flatbuffers_identifier
 #endif
-#define dsim_struct_type_type_hash ((flatbuffers_thash_t)0xa36a8ace)
-#define dsim_struct_type_type_identifier "\xce\x8a\x6a\xa3"
-static inline size_t dsim_struct_type_vec_len(dsim_struct_type_vec_t vec)
+#define dsim_ddl_struct_type_type_hash ((flatbuffers_thash_t)0xcc855668)
+#define dsim_ddl_struct_type_type_identifier "\x68\x56\x85\xcc"
+static inline size_t dsim_ddl_struct_type_vec_len(dsim_ddl_struct_type_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline dsim_struct_type_table_t dsim_struct_type_vec_at(dsim_struct_type_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(dsim_struct_type_table_t, vec, i, 0)
-__flatbuffers_table_as_root(dsim_struct_type)
+static inline dsim_ddl_struct_type_table_t dsim_ddl_struct_type_vec_at(dsim_ddl_struct_type_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_ddl_struct_type_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_ddl_struct_type)
 
-static inline dsim_struct_field_vec_t dsim_struct_type_fields(dsim_struct_type_table_t t)
-__flatbuffers_vector_field(dsim_struct_field_vec_t, 0, t, 0)
-static inline int dsim_struct_type_fields_is_present(dsim_struct_type_table_t t)
+static inline dsim_ddl_struct_field_vec_t dsim_ddl_struct_type_fields(dsim_ddl_struct_type_table_t t)
+__flatbuffers_vector_field(dsim_ddl_struct_field_vec_t, 0, t, 0)
+static inline int dsim_ddl_struct_type_fields_is_present(dsim_ddl_struct_type_table_t t)
 __flatbuffers_field_present(0, t)
 
 
-struct dsim_enum_type_table { uint8_t unused__; };
+struct dsim_ddl_enum_type_table { uint8_t unused__; };
 
-#ifndef dsim_enum_type_identifier
-#define dsim_enum_type_identifier flatbuffers_identifier
+#ifndef dsim_ddl_enum_type_identifier
+#define dsim_ddl_enum_type_identifier flatbuffers_identifier
 #endif
-#define dsim_enum_type_type_hash ((flatbuffers_thash_t)0x64c3f8a)
-#define dsim_enum_type_type_identifier "\x8a\x3f\x4c\x06"
-static inline size_t dsim_enum_type_vec_len(dsim_enum_type_vec_t vec)
+#define dsim_ddl_enum_type_type_hash ((flatbuffers_thash_t)0x303f2354)
+#define dsim_ddl_enum_type_type_identifier "\x54\x23\x3f\x30"
+static inline size_t dsim_ddl_enum_type_vec_len(dsim_ddl_enum_type_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline dsim_enum_type_table_t dsim_enum_type_vec_at(dsim_enum_type_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(dsim_enum_type_table_t, vec, i, 0)
-__flatbuffers_table_as_root(dsim_enum_type)
+static inline dsim_ddl_enum_type_table_t dsim_ddl_enum_type_vec_at(dsim_ddl_enum_type_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_ddl_enum_type_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_ddl_enum_type)
 
-static inline flatbuffers_string_vec_t dsim_enum_type_values(dsim_enum_type_table_t t)
+static inline flatbuffers_string_vec_t dsim_ddl_enum_type_values(dsim_ddl_enum_type_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_vec_t, 0, t, 0)
-static inline int dsim_enum_type_values_is_present(dsim_enum_type_table_t t)
+static inline int dsim_ddl_enum_type_values_is_present(dsim_ddl_enum_type_table_t t)
 __flatbuffers_field_present(0, t)
 
 
-struct dsim_reference_type_table { uint8_t unused__; };
+struct dsim_ddl_reference_type_table { uint8_t unused__; };
 
-#ifndef dsim_reference_type_identifier
-#define dsim_reference_type_identifier flatbuffers_identifier
+#ifndef dsim_ddl_reference_type_identifier
+#define dsim_ddl_reference_type_identifier flatbuffers_identifier
 #endif
-#define dsim_reference_type_type_hash ((flatbuffers_thash_t)0x7a9da432)
-#define dsim_reference_type_type_identifier "\x32\xa4\x9d\x7a"
-static inline size_t dsim_reference_type_vec_len(dsim_reference_type_vec_t vec)
+#define dsim_ddl_reference_type_type_hash ((flatbuffers_thash_t)0xa9dce238)
+#define dsim_ddl_reference_type_type_identifier "\x38\xe2\xdc\xa9"
+static inline size_t dsim_ddl_reference_type_vec_len(dsim_ddl_reference_type_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline dsim_reference_type_table_t dsim_reference_type_vec_at(dsim_reference_type_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(dsim_reference_type_table_t, vec, i, 0)
-__flatbuffers_table_as_root(dsim_reference_type)
+static inline dsim_ddl_reference_type_table_t dsim_ddl_reference_type_vec_at(dsim_ddl_reference_type_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_ddl_reference_type_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_ddl_reference_type)
 
-static inline flatbuffers_string_t dsim_reference_type_target(dsim_reference_type_table_t t)
+static inline flatbuffers_string_t dsim_ddl_reference_type_target(dsim_ddl_reference_type_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-static inline int dsim_reference_type_target_is_present(dsim_reference_type_table_t t)
+static inline int dsim_ddl_reference_type_target_is_present(dsim_ddl_reference_type_table_t t)
 __flatbuffers_field_present(0, t)
 
-typedef uint8_t dsim_any_type_union_type_t;
-__flatbuffers_define_integer_type(dsim_any_type, dsim_any_type_union_type_t, 8)
-#define dsim_any_type_NONE ((dsim_any_type_union_type_t)0U)
-#define dsim_any_type_numeric_type ((dsim_any_type_union_type_t)1U)
-#define dsim_any_type_struct_type ((dsim_any_type_union_type_t)2U)
-#define dsim_any_type_enum_type ((dsim_any_type_union_type_t)3U)
-#define dsim_any_type_reference_type ((dsim_any_type_union_type_t)4U)
+typedef uint8_t dsim_ddl_any_type_union_type_t;
+__flatbuffers_define_integer_type(dsim_ddl_any_type, dsim_ddl_any_type_union_type_t, 8)
+#define dsim_ddl_any_type_NONE ((dsim_ddl_any_type_union_type_t)0U)
+#define dsim_ddl_any_type_numeric_type ((dsim_ddl_any_type_union_type_t)1U)
+#define dsim_ddl_any_type_struct_type ((dsim_ddl_any_type_union_type_t)2U)
+#define dsim_ddl_any_type_enum_type ((dsim_ddl_any_type_union_type_t)3U)
+#define dsim_ddl_any_type_reference_type ((dsim_ddl_any_type_union_type_t)4U)
 
-static inline const char *dsim_any_type_type_name(dsim_any_type_union_type_t type)
+static inline const char *dsim_ddl_any_type_type_name(dsim_ddl_any_type_union_type_t type)
 {
     switch (type) {
-    case dsim_any_type_NONE: return "NONE";
-    case dsim_any_type_numeric_type: return "numeric_type";
-    case dsim_any_type_struct_type: return "struct_type";
-    case dsim_any_type_enum_type: return "enum_type";
-    case dsim_any_type_reference_type: return "reference_type";
+    case dsim_ddl_any_type_NONE: return "NONE";
+    case dsim_ddl_any_type_numeric_type: return "numeric_type";
+    case dsim_ddl_any_type_struct_type: return "struct_type";
+    case dsim_ddl_any_type_enum_type: return "enum_type";
+    case dsim_ddl_any_type_reference_type: return "reference_type";
     default: return "";
     }
 }
 
 
-struct dsim_type_table { uint8_t unused__; };
+struct dsim_ddl_type_table { uint8_t unused__; };
 
-#ifndef dsim_type_identifier
-#define dsim_type_identifier flatbuffers_identifier
+#ifndef dsim_ddl_type_identifier
+#define dsim_ddl_type_identifier flatbuffers_identifier
 #endif
-#define dsim_type_type_hash ((flatbuffers_thash_t)0x8ae1061c)
-#define dsim_type_type_identifier "\x1c\x06\xe1\x8a"
-static inline size_t dsim_type_vec_len(dsim_type_vec_t vec)
+#define dsim_ddl_type_type_hash ((flatbuffers_thash_t)0xb77bd7fa)
+#define dsim_ddl_type_type_identifier "\xfa\xd7\x7b\xb7"
+static inline size_t dsim_ddl_type_vec_len(dsim_ddl_type_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline dsim_type_table_t dsim_type_vec_at(dsim_type_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(dsim_type_table_t, vec, i, 0)
-__flatbuffers_table_as_root(dsim_type)
+static inline dsim_ddl_type_table_t dsim_ddl_type_vec_at(dsim_ddl_type_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_ddl_type_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_ddl_type)
 
-static inline flatbuffers_string_t dsim_type_name(dsim_type_table_t t)
+static inline flatbuffers_string_t dsim_ddl_type_name(dsim_ddl_type_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-static inline int dsim_type_name_is_present(dsim_type_table_t t)
+static inline int dsim_ddl_type_name_is_present(dsim_ddl_type_table_t t)
 __flatbuffers_field_present(0, t)
 
-static inline flatbuffers_string_t dsim_type_ctype(dsim_type_table_t t)
+static inline flatbuffers_string_t dsim_ddl_type_ctype(dsim_ddl_type_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 1, t, 0)
-static inline int dsim_type_ctype_is_present(dsim_type_table_t t)
+static inline int dsim_ddl_type_ctype_is_present(dsim_ddl_type_table_t t)
 __flatbuffers_field_present(1, t)
 
-static inline uint8_t dsim_type_size(dsim_type_table_t t)
+static inline uint8_t dsim_ddl_type_size(dsim_ddl_type_table_t t)
 __flatbuffers_scalar_field(flatbuffers_uint8, 2, 0, t)
-static inline int dsim_type_size_is_present(dsim_type_table_t t)
+static inline int dsim_ddl_type_size_is_present(dsim_ddl_type_table_t t)
 __flatbuffers_field_present(2, t)
 
-static inline uint8_t dsim_type_align(dsim_type_table_t t)
+static inline uint8_t dsim_ddl_type_align(dsim_ddl_type_table_t t)
 __flatbuffers_scalar_field(flatbuffers_uint8, 3, 0, t)
-static inline int dsim_type_align_is_present(dsim_type_table_t t)
+static inline int dsim_ddl_type_align_is_present(dsim_ddl_type_table_t t)
 __flatbuffers_field_present(3, t)
 
-static inline dsim_any_type_union_type_t dsim_type_data_type(dsim_type_table_t t)
-__flatbuffers_scalar_field(dsim_any_type, 4, 0, t)
-static inline flatbuffers_generic_table_t dsim_type_data(dsim_type_table_t t)
+static inline dsim_ddl_any_type_union_type_t dsim_ddl_type_data_type(dsim_ddl_type_table_t t)
+__flatbuffers_scalar_field(dsim_ddl_any_type, 4, 0, t)
+static inline flatbuffers_generic_table_t dsim_ddl_type_data(dsim_ddl_type_table_t t)
 __flatbuffers_table_field(flatbuffers_generic_table_t, 5, t, 0)
-static inline int dsim_type_data_is_present(dsim_type_table_t t)
+static inline int dsim_ddl_type_data_is_present(dsim_ddl_type_table_t t)
 __flatbuffers_field_present(4, t)
 
 
 /************************************************************************\
  *  * Layout definitions                                                   *
  * \*********************************************************************** */
-struct dsim_column_table { uint8_t unused__; };
+struct dsim_ddl_array_table { uint8_t unused__; };
 
-#ifndef dsim_column_identifier
-#define dsim_column_identifier flatbuffers_identifier
+#ifndef dsim_ddl_array_identifier
+#define dsim_ddl_array_identifier flatbuffers_identifier
 #endif
-#define dsim_column_type_hash ((flatbuffers_thash_t)0x226da746)
-#define dsim_column_type_identifier "\x46\xa7\x6d\x22"
-static inline size_t dsim_column_vec_len(dsim_column_vec_t vec)
+#define dsim_ddl_array_type_hash ((flatbuffers_thash_t)0x9788e1fb)
+#define dsim_ddl_array_type_identifier "\xfb\xe1\x88\x97"
+static inline size_t dsim_ddl_array_vec_len(dsim_ddl_array_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline dsim_column_table_t dsim_column_vec_at(dsim_column_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(dsim_column_table_t, vec, i, 0)
-__flatbuffers_table_as_root(dsim_column)
+static inline dsim_ddl_array_table_t dsim_ddl_array_vec_at(dsim_ddl_array_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_ddl_array_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_ddl_array)
 
-static inline flatbuffers_string_t dsim_column_name(dsim_column_table_t t)
+static inline flatbuffers_string_t dsim_ddl_array_name(dsim_ddl_array_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-static inline int dsim_column_name_is_present(dsim_column_table_t t)
+static inline int dsim_ddl_array_name_is_present(dsim_ddl_array_table_t t)
 __flatbuffers_field_present(0, t)
 
-static inline flatbuffers_string_t dsim_column_type(dsim_column_table_t t)
+static inline flatbuffers_string_t dsim_ddl_array_type(dsim_ddl_array_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 1, t, 0)
-static inline int dsim_column_type_is_present(dsim_column_table_t t)
+static inline int dsim_ddl_array_type_is_present(dsim_ddl_array_table_t t)
 __flatbuffers_field_present(1, t)
 
 
-struct dsim_layout_table { uint8_t unused__; };
+struct dsim_ddl_layout_table { uint8_t unused__; };
 
-#ifndef dsim_layout_identifier
-#define dsim_layout_identifier flatbuffers_identifier
+#ifndef dsim_ddl_layout_identifier
+#define dsim_ddl_layout_identifier flatbuffers_identifier
 #endif
-#define dsim_layout_type_hash ((flatbuffers_thash_t)0xb97c557a)
-#define dsim_layout_type_identifier "\x7a\x55\x7c\xb9"
-static inline size_t dsim_layout_vec_len(dsim_layout_vec_t vec)
+#define dsim_ddl_layout_type_hash ((flatbuffers_thash_t)0x784c1c04)
+#define dsim_ddl_layout_type_identifier "\x04\x1c\x4c\x78"
+static inline size_t dsim_ddl_layout_vec_len(dsim_ddl_layout_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline dsim_layout_table_t dsim_layout_vec_at(dsim_layout_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(dsim_layout_table_t, vec, i, 0)
-__flatbuffers_table_as_root(dsim_layout)
+static inline dsim_ddl_layout_table_t dsim_ddl_layout_vec_at(dsim_ddl_layout_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_ddl_layout_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_ddl_layout)
 
-static inline flatbuffers_string_t dsim_layout_name(dsim_layout_table_t t)
+static inline flatbuffers_string_t dsim_ddl_layout_name(dsim_ddl_layout_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-static inline int dsim_layout_name_is_present(dsim_layout_table_t t)
+static inline int dsim_ddl_layout_name_is_present(dsim_ddl_layout_table_t t)
 __flatbuffers_field_present(0, t)
 
-static inline dsim_column_vec_t dsim_layout_columns(dsim_layout_table_t t)
-__flatbuffers_vector_field(dsim_column_vec_t, 1, t, 0)
-static inline int dsim_layout_columns_is_present(dsim_layout_table_t t)
+static inline dsim_ddl_array_vec_t dsim_ddl_layout_arrays(dsim_ddl_layout_table_t t)
+__flatbuffers_vector_field(dsim_ddl_array_vec_t, 1, t, 0)
+static inline int dsim_ddl_layout_arrays_is_present(dsim_ddl_layout_table_t t)
 __flatbuffers_field_present(1, t)
 
 
 /************************************************************************\
  *  * DDL root                                                             *
  * \*********************************************************************** */
-struct dsim_ddl_table { uint8_t unused__; };
+struct dsim_ddl_root_table { uint8_t unused__; };
 
-#ifndef dsim_ddl_identifier
-#define dsim_ddl_identifier flatbuffers_identifier
+#ifndef dsim_ddl_root_identifier
+#define dsim_ddl_root_identifier flatbuffers_identifier
 #endif
-#define dsim_ddl_type_hash ((flatbuffers_thash_t)0x3485ef30)
-#define dsim_ddl_type_identifier "\x30\xef\x85\x34"
-static inline size_t dsim_ddl_vec_len(dsim_ddl_vec_t vec)
+#define dsim_ddl_root_type_hash ((flatbuffers_thash_t)0x991c18e)
+#define dsim_ddl_root_type_identifier "\x8e\xc1\x91\x09"
+static inline size_t dsim_ddl_root_vec_len(dsim_ddl_root_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline dsim_ddl_table_t dsim_ddl_vec_at(dsim_ddl_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(dsim_ddl_table_t, vec, i, 0)
-__flatbuffers_table_as_root(dsim_ddl)
+static inline dsim_ddl_root_table_t dsim_ddl_root_vec_at(dsim_ddl_root_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_ddl_root_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_ddl_root)
 
-static inline flatbuffers_string_t dsim_ddl_name(dsim_ddl_table_t t)
+static inline flatbuffers_string_t dsim_ddl_root_name(dsim_ddl_root_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-static inline int dsim_ddl_name_is_present(dsim_ddl_table_t t)
+static inline int dsim_ddl_root_name_is_present(dsim_ddl_root_table_t t)
 __flatbuffers_field_present(0, t)
 
-static inline dsim_type_vec_t dsim_ddl_types(dsim_ddl_table_t t)
-__flatbuffers_vector_field(dsim_type_vec_t, 1, t, 0)
-static inline int dsim_ddl_types_is_present(dsim_ddl_table_t t)
+static inline dsim_ddl_type_vec_t dsim_ddl_root_types(dsim_ddl_root_table_t t)
+__flatbuffers_vector_field(dsim_ddl_type_vec_t, 1, t, 0)
+static inline int dsim_ddl_root_types_is_present(dsim_ddl_root_table_t t)
 __flatbuffers_field_present(1, t)
 
-static inline dsim_layout_vec_t dsim_ddl_layouts(dsim_ddl_table_t t)
-__flatbuffers_vector_field(dsim_layout_vec_t, 2, t, 0)
-static inline int dsim_ddl_layouts_is_present(dsim_ddl_table_t t)
+static inline dsim_ddl_layout_vec_t dsim_ddl_root_layouts(dsim_ddl_root_table_t t)
+__flatbuffers_vector_field(dsim_ddl_layout_vec_t, 2, t, 0)
+static inline int dsim_ddl_root_layouts_is_present(dsim_ddl_root_table_t t)
 __flatbuffers_field_present(2, t)
 
 

@@ -1,5 +1,5 @@
 
-namespace dsim;
+namespace dsim.ddl;
 
 /************************************************************************\
  * Type definitions                                                     *
@@ -53,7 +53,7 @@ table type
  * Layout definitions                                                   *
 \************************************************************************/
 
-table column
+table array
 {
     name: string;
     type: string;
@@ -62,18 +62,18 @@ table column
 table layout
 {
     name: string;
-    columns: [column];
+    arrays: [array];
 }
 
 /************************************************************************\
  * DDL root                                                             *
 \************************************************************************/
 
-table ddl
+table root
 {
     name:    string;
     types:   [type];
     layouts: [layout];
 }
 
-root_type ddl;
+root_type root;

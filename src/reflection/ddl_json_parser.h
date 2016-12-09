@@ -19,26 +19,26 @@
 static int ddl_parse_json(flatcc_builder_t *B, flatcc_json_parser_t *ctx,
         const char *buf, size_t bufsiz, int flags);
 
-static const char *dsim_numeric_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
-static const char *dsim_struct_field_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
-static const char *dsim_struct_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
-static const char *dsim_enum_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
-static const char *dsim_reference_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
-static const char *dsim_any_type_parse_json_union(flatcc_json_parser_t *ctx, const char *buf, const char *end, uint8_t type, flatbuffers_voffset_t id);
-static const char *dsim_any_type_parse_json_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
+static const char *dsim_ddl_numeric_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
+static const char *dsim_ddl_struct_field_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
+static const char *dsim_ddl_struct_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
+static const char *dsim_ddl_enum_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
+static const char *dsim_ddl_reference_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
+static const char *dsim_ddl_any_type_parse_json_union(flatcc_json_parser_t *ctx, const char *buf, const char *end, uint8_t type, flatbuffers_voffset_t id);
+static const char *dsim_ddl_any_type_parse_json_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
         int *value_type, uint64_t *value, int *aggregate);
-static const char *dsim_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
-static const char *dsim_column_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
-static const char *dsim_layout_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
-static const char *dsim_ddl_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
+static const char *dsim_ddl_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
+static const char *dsim_ddl_array_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
+static const char *dsim_ddl_layout_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
+static const char *dsim_ddl_root_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
 static const char *ddl_local_json_parser_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
 int *value_type, uint64_t *value, int *aggregate);
-static const char *ddl_local_dsim_json_parser_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
+static const char *ddl_local_dsim_ddl_json_parser_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
 int *value_type, uint64_t *value, int *aggregate);
 static const char *ddl_global_json_parser_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
         int *value_type, uint64_t *value, int *aggregate);
 
-static const char *dsim_numeric_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
+static const char *dsim_ddl_numeric_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
 {
     int more;
     void *pval;
@@ -57,7 +57,7 @@ static const char *dsim_numeric_type_parse_json_table(flatcc_json_parser_t *ctx,
             if (mark != buf) {
                 uint8_t val = 0;
                 static flatcc_json_parser_integral_symbol_f *symbolic_parsers[] = {
-                        ddl_local_dsim_json_parser_enum,
+                        ddl_local_dsim_ddl_json_parser_enum,
                         ddl_global_json_parser_enum, 0 };
                 buf = flatcc_json_parser_bool(ctx, (mark = buf), end, &val);
                 if (mark == buf) {
@@ -81,7 +81,7 @@ failed:
     return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
 }
 
-static const char *dsim_struct_field_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
+static const char *dsim_ddl_struct_field_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
 {
     int more;
     void *pval;
@@ -156,7 +156,7 @@ static const char *dsim_struct_field_parse_json_table(flatcc_json_parser_t *ctx,
                     if (mark != buf) {
                         uint32_t val = 0;
                         static flatcc_json_parser_integral_symbol_f *symbolic_parsers[] = {
-                                ddl_local_dsim_json_parser_enum,
+                                ddl_local_dsim_ddl_json_parser_enum,
                                 ddl_global_json_parser_enum, 0 };
                         buf = flatcc_json_parser_uint32(ctx, (mark = buf), end, &val);
                         if (mark == buf) {
@@ -182,7 +182,7 @@ failed:
     return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
 }
 
-static const char *dsim_struct_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
+static const char *dsim_ddl_struct_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
 {
     int more;
     void *pval;
@@ -202,7 +202,7 @@ static const char *dsim_struct_type_parse_json_table(flatcc_json_parser_t *ctx, 
                 if (flatcc_builder_start_offset_vector(ctx->ctx)) goto failed;
                 buf = flatcc_json_parser_array_start(ctx, buf, end, &more);
                 while (more) {
-                    buf = dsim_struct_field_parse_json_table(ctx, buf, end);
+                    buf = dsim_ddl_struct_field_parse_json_table(ctx, buf, end);
                     ref = flatcc_builder_end_table(ctx->ctx);
                     if (!(pref = flatcc_builder_extend_offset_vector(ctx->ctx, 1))) goto failed;
                     *pref = ref;
@@ -224,7 +224,7 @@ failed:
     return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
 }
 
-static const char *dsim_enum_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
+static const char *dsim_ddl_enum_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
 {
     int more;
     void *pval;
@@ -281,7 +281,7 @@ failed:
     return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
 }
 
-static const char *dsim_reference_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
+static const char *dsim_ddl_reference_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
 {
     int more;
     void *pval;
@@ -330,7 +330,7 @@ failed:
     return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
 }
 
-static const char *dsim_any_type_parse_json_union(flatcc_json_parser_t *ctx, const char *buf, const char *end, uint8_t type, flatbuffers_voffset_t id)
+static const char *dsim_ddl_any_type_parse_json_union(flatcc_json_parser_t *ctx, const char *buf, const char *end, uint8_t type, flatbuffers_voffset_t id)
 {
     flatcc_builder_ref_t ref, *pref;
     uint8_t *ptype;
@@ -339,16 +339,16 @@ static const char *dsim_any_type_parse_json_union(flatcc_json_parser_t *ctx, con
     case 0:
         return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_union_none);
     case 1:
-        buf = dsim_numeric_type_parse_json_table(ctx, buf, end);
+        buf = dsim_ddl_numeric_type_parse_json_table(ctx, buf, end);
         break;
     case 2:
-        buf = dsim_struct_type_parse_json_table(ctx, buf, end);
+        buf = dsim_ddl_struct_type_parse_json_table(ctx, buf, end);
         break;
     case 3:
-        buf = dsim_enum_type_parse_json_table(ctx, buf, end);
+        buf = dsim_ddl_enum_type_parse_json_table(ctx, buf, end);
         break;
     case 4:
-        buf = dsim_reference_type_parse_json_table(ctx, buf, end);
+        buf = dsim_ddl_reference_type_parse_json_table(ctx, buf, end);
         break;
     default:
         if (!(ctx->flags & flatcc_json_parser_f_skip_unknown)) {
@@ -369,7 +369,7 @@ failed:
     return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
 }
 
-static const char *dsim_any_type_parse_json_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
+static const char *dsim_ddl_any_type_parse_json_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
         int *value_sign, uint64_t *value, int *aggregate)
 {
     const char *unmatched = buf;
@@ -466,7 +466,7 @@ static const char *dsim_any_type_parse_json_enum(flatcc_json_parser_t *ctx, cons
     return buf;
 }
 
-static const char *dsim_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
+static const char *dsim_ddl_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
 {
     int more;
     void *pval;
@@ -513,7 +513,7 @@ static const char *dsim_type_parse_json_table(flatcc_json_parser_t *ctx, const c
                     if (mark != buf) {
                         uint8_t val = 0;
                         static flatcc_json_parser_integral_symbol_f *symbolic_parsers[] = {
-                                ddl_local_dsim_json_parser_enum,
+                                ddl_local_dsim_ddl_json_parser_enum,
                                 ddl_global_json_parser_enum, 0 };
                         buf = flatcc_json_parser_uint8(ctx, (mark = buf), end, &val);
                         if (mark == buf) {
@@ -540,10 +540,10 @@ static const char *dsim_type_parse_json_table(flatcc_json_parser_t *ctx, const c
                         buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 1);
                         if (mark != buf) {
                             static flatcc_json_parser_integral_symbol_f *symbolic_parsers[] = {
-                                    dsim_any_type_parse_json_enum,
-                                    ddl_local_dsim_json_parser_enum,
+                                    dsim_ddl_any_type_parse_json_enum,
+                                    ddl_local_dsim_ddl_json_parser_enum,
                                     ddl_global_json_parser_enum, 0 };
-                            buf = flatcc_json_parser_union_type(ctx, buf, end, 1, 5, symbolic_parsers, dsim_any_type_parse_json_union);
+                            buf = flatcc_json_parser_union_type(ctx, buf, end, 1, 5, symbolic_parsers, dsim_ddl_any_type_parse_json_union);
                         } else {
                             buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
                         }
@@ -554,7 +554,7 @@ static const char *dsim_type_parse_json_table(flatcc_json_parser_t *ctx, const c
                     if ((w & 0xffffffff00000000) == 0x6461746100000000) { /* "data" */
                         buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 4);
                         if (mark != buf) {
-                            buf = flatcc_json_parser_union(ctx, buf, end, 1, 5, dsim_any_type_parse_json_union);
+                            buf = flatcc_json_parser_union(ctx, buf, end, 1, 5, dsim_ddl_any_type_parse_json_union);
                         } else {
                             buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
                         }
@@ -568,7 +568,7 @@ static const char *dsim_type_parse_json_table(flatcc_json_parser_t *ctx, const c
                     if (mark != buf) {
                         uint8_t val = 0;
                         static flatcc_json_parser_integral_symbol_f *symbolic_parsers[] = {
-                                ddl_local_dsim_json_parser_enum,
+                                ddl_local_dsim_ddl_json_parser_enum,
                                 ddl_global_json_parser_enum, 0 };
                         buf = flatcc_json_parser_uint8(ctx, (mark = buf), end, &val);
                         if (mark == buf) {
@@ -622,7 +622,7 @@ failed:
     return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
 }
 
-static const char *dsim_column_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
+static const char *dsim_ddl_array_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
 {
     int more;
     void *pval;
@@ -698,7 +698,7 @@ failed:
     return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
 }
 
-static const char *dsim_layout_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
+static const char *dsim_ddl_layout_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
 {
     int more;
     void *pval;
@@ -738,13 +738,13 @@ static const char *dsim_layout_parse_json_table(flatcc_json_parser_t *ctx, const
                 buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
             }
         } else { /* "name" */
-            if ((w & 0xffffffffffffff00) == 0x636f6c756d6e7300) { /* "columns" */
-                buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 7);
+            if ((w & 0xffffffffffff0000) == 0x6172726179730000) { /* "arrays" */
+                buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 6);
                 if (mark != buf) {
                     if (flatcc_builder_start_offset_vector(ctx->ctx)) goto failed;
                     buf = flatcc_json_parser_array_start(ctx, buf, end, &more);
                     while (more) {
-                        buf = dsim_column_parse_json_table(ctx, buf, end);
+                        buf = dsim_ddl_array_parse_json_table(ctx, buf, end);
                         ref = flatcc_builder_end_table(ctx->ctx);
                         if (!(pref = flatcc_builder_extend_offset_vector(ctx->ctx, 1))) goto failed;
                         *pref = ref;
@@ -756,9 +756,9 @@ static const char *dsim_layout_parse_json_table(flatcc_json_parser_t *ctx, const
                 } else {
                     buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
                 }
-            } else { /* "columns" */
+            } else { /* "arrays" */
                 buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
-            } /* "columns" */
+            } /* "arrays" */
         } /* "name" */
         buf = flatcc_json_parser_object_end(ctx, buf, end, &more);
     }
@@ -767,7 +767,7 @@ failed:
     return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
 }
 
-static const char *dsim_ddl_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
+static const char *dsim_ddl_root_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
 {
     int more;
     void *pval;
@@ -788,7 +788,7 @@ static const char *dsim_ddl_parse_json_table(flatcc_json_parser_t *ctx, const ch
                     if (flatcc_builder_start_offset_vector(ctx->ctx)) goto failed;
                     buf = flatcc_json_parser_array_start(ctx, buf, end, &more);
                     while (more) {
-                        buf = dsim_layout_parse_json_table(ctx, buf, end);
+                        buf = dsim_ddl_layout_parse_json_table(ctx, buf, end);
                         ref = flatcc_builder_end_table(ctx->ctx);
                         if (!(pref = flatcc_builder_extend_offset_vector(ctx->ctx, 1))) goto failed;
                         *pref = ref;
@@ -810,7 +810,7 @@ static const char *dsim_ddl_parse_json_table(flatcc_json_parser_t *ctx, const ch
                     if (flatcc_builder_start_offset_vector(ctx->ctx)) goto failed;
                     buf = flatcc_json_parser_array_start(ctx, buf, end, &more);
                     while (more) {
-                        buf = dsim_type_parse_json_table(ctx, buf, end);
+                        buf = dsim_ddl_type_parse_json_table(ctx, buf, end);
                         ref = flatcc_builder_end_table(ctx->ctx);
                         if (!(pref = flatcc_builder_extend_offset_vector(ctx->ctx, 1))) goto failed;
                         *pref = ref;
@@ -867,7 +867,7 @@ static const char *ddl_local_json_parser_enum(flatcc_json_parser_t *ctx, const c
     return buf; /* unmatched; */
 }
 
-static const char *ddl_local_dsim_json_parser_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
+static const char *ddl_local_dsim_ddl_json_parser_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
         int *value_type, uint64_t *value, int *aggregate)
 {
     /* Scope has no enum / union types to look up. */
@@ -882,22 +882,28 @@ static const char *ddl_global_json_parser_enum(flatcc_json_parser_t *ctx, const 
     uint64_t w;
 
     w = flatcc_json_parser_symbol_part(buf, end);
-    if (w == 0x6473696d2e616e79) { /* prefix "dsim.any" */
+    if (w == 0x6473696d2e64646c) { /* prefix "dsim.ddl" */
         buf += 8;
         w = flatcc_json_parser_symbol_part(buf, end);
-        if ((w & 0xffffffffff000000) == 0x5f74797065000000) { /* "_type" */
-            buf = flatcc_json_parser_match_scope(ctx, (mark = buf), end, 5);
-            if (buf != mark) {
-                buf = dsim_any_type_parse_json_enum(ctx, buf, end, value_type, value, aggregate);
-            } else {
+        if (w == 0x2e616e795f747970) { /* prefix ".any_typ" */
+            buf += 8;
+            w = flatcc_json_parser_symbol_part(buf, end);
+            if ((w & 0xff00000000000000) == 0x6500000000000000) { /* "e" */
+                buf = flatcc_json_parser_match_scope(ctx, (mark = buf), end, 1);
+                if (buf != mark) {
+                    buf = dsim_ddl_any_type_parse_json_enum(ctx, buf, end, value_type, value, aggregate);
+                } else {
+                    return unmatched;
+                }
+            } else { /* "e" */
                 return unmatched;
-            }
-        } else { /* "_type" */
+            } /* "e" */
+        } else { /* prefix ".any_typ" */
             return unmatched;
-        } /* "_type" */
-    } else { /* prefix "dsim.any" */
+        } /* prefix ".any_typ" */
+    } else { /* prefix "dsim.ddl" */
         return unmatched;
-    } /* prefix "dsim.any" */
+    } /* prefix "dsim.ddl" */
     return buf;
 }
 
@@ -910,7 +916,7 @@ static int ddl_parse_json(flatcc_builder_t *B, flatcc_json_parser_t *ctx,
     ctx = ctx ? ctx : &parser;
     flatcc_json_parser_init(ctx, B, buf, buf + bufsiz, flags);
     if (flatcc_builder_start_buffer(B, 0, 0, 0)) return -1;
-    dsim_ddl_parse_json_table(ctx, buf, buf + bufsiz);
+    dsim_ddl_root_parse_json_table(ctx, buf, buf + bufsiz);
     if (ctx->error) {
         return ctx->error;
     }

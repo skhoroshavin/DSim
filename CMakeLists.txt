@@ -35,7 +35,7 @@ include_directories(src)
 aux_source_directory(src/allocators SRC_LIST)
 aux_source_directory(src/containers SRC_LIST)
 aux_source_directory(src/reflection SRC_LIST)
-aux_source_directory(src/table SRC_LIST)
+aux_source_directory(src/storage SRC_LIST)
 aux_source_directory(src/utils SRC_LIST)
 
 add_library(dsim SHARED ${SRC_LIST})
@@ -48,8 +48,8 @@ link_directories(${PROJECT_BINARY_DIR})
 
 add_custom_target(test_dsim_prepare
     COMMAND ddlc test.ddl
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test/table
-    SOURCES test/table/test.ddl)
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test/storage
+    SOURCES test/storage/test.ddl)
 add_dependencies(test_dsim_prepare ddlc)
 
 include_directories(test)
@@ -58,7 +58,7 @@ aux_source_directory(test TEST_LIST)
 aux_source_directory(test/allocators TEST_LIST)
 aux_source_directory(test/containers TEST_LIST)
 aux_source_directory(test/reflection TEST_LIST)
-aux_source_directory(test/table TEST_LIST)
+aux_source_directory(test/storage TEST_LIST)
 aux_source_directory(test/utils TEST_LIST)
 
 add_executable(test_dsim ${TEST_LIST})
@@ -74,7 +74,7 @@ add_custom_target(coverage
     COMMAND genhtml coverage.info --output-directory coverage
     DEPENDS tests)
 
-add_custom_target(clear_coverage
+add_custom_target(coverage_clean
     COMMAND find CMakeFiles/dsim.dir/ -name *.gcda -type f -delete || true
     COMMAND rm -rvf coverage*)
 
