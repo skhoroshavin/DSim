@@ -63,6 +63,13 @@ static void _dsim_hash_rehash( struct dsim_hash *h, uint32_t count )
         _dsim_hash_key_insert( h, i );
 }
 
+void dsim_hash_init( struct dsim_hash *h, struct dsim_allocator *alloc )
+{
+    dsim_array_uint64_init( &h->keys, alloc );
+    dsim_array_uint32_init( &h->_hash, alloc );
+    dsim_array_uint32_init( &h->_next, alloc );
+}
+
 uint32_t dsim_hash_find( const struct dsim_hash *h, uint64_t key )
 {
     if( h->_hash.count == 0 )

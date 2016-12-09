@@ -92,16 +92,16 @@ static int lua_storage_set_by_id( lua_State *l )
 {
     const char *name = lua_tostring( l, lua_upvalueindex(1) );
     struct dsim_storage *s = *(struct dsim_storage **)lua_touserdata( l, 1 );
-    uint32_t col = dsim_storage_array_by_name( s, name );
-    if( col == DSIM_INVALID_INDEX )
+    uint32_t arr = dsim_storage_array_by_name( s, name );
+    if( arr == DSIM_INVALID_INDEX )
         return 0;
 
     uint64_t id = lua_tonumber( l, 2 );
     dsim_storage_index idx = dsim_storage_find( s, id );
 
-    enum dsim_type type = dsim_storage_array_type( s, col );
-    uint32_t size = dsim_storage_array_size(s,col);
-    char *data = (char*)dsim_storage_data( s, idx.block, col ) + size * idx.index;
+    enum dsim_type type = dsim_storage_array_type( s, arr );
+    uint32_t size = dsim_storage_array_size(s,arr);
+    char *data = (char*)dsim_storage_data( s, idx.block, arr ) + size * idx.index;
 
     dsim_lua_read( l, 3, type, size, data );
 

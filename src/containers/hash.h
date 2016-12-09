@@ -17,6 +17,7 @@ struct dsim_hash
     /* ._hash = */ dsim_array_static_init(alloc), \
     /* ._next = */ dsim_array_static_init(alloc) }
 
+void dsim_hash_init( struct dsim_hash *h, struct dsim_allocator *alloc );
 uint32_t dsim_hash_find( const struct dsim_hash *h, uint64_t key );
 uint32_t dsim_hash_find_next( const struct dsim_hash *h, uint32_t pos );
 void dsim_hash_reserve( struct dsim_hash *h, uint32_t count );

@@ -21,9 +21,9 @@
         {
             name: "test",
             arrays: [
-                { name: "int",   type: "uint8" },
-                { name: "float", type: "float" },
-                { name: "vec",   type: "vec4"  },
+                { name: "i", type: "uint8" },
+                { name: "f", type: "float" },
+                { name: "v", type: "vec4"  },
             ]
         }
     ]

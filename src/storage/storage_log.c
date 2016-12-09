@@ -1,6 +1,12 @@
 
 #include "storage_log.h"
 
+void dsim_storage_log_init( struct dsim_storage_log *sl, struct dsim_allocator *alloc )
+{
+    sl->version = 0;
+    dsim_array_storage_command_init( &sl->commands, alloc );
+}
+
 void dsim_storage_log_cmd_push_back( struct dsim_storage_log *sl, uint32_t block, uint64_t start_id, uint32_t count )
 {
     struct dsim_storage_command cmd =

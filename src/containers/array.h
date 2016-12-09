@@ -20,6 +20,7 @@ struct _dsim_array
     /* .capacity = */ 0, \
     /* ._alloc = */    alloc }
 
+void _dsim_array_init( struct _dsim_array *a, struct dsim_allocator *alloc );
 void _dsim_array_reserve( struct _dsim_array *a, uint32_t capacity, uint32_t elem_size );
 void _dsim_array_grow( struct _dsim_array *a, uint32_t count, uint32_t elem_size );
 void _dsim_array_resize( struct _dsim_array *a, uint32_t count, uint32_t elem_size );
@@ -36,6 +37,8 @@ void _dsim_array_reset( struct _dsim_array *a, uint32_t elem_size );
         uint32_t capacity; \
         struct dsim_allocator * _alloc; \
     }; \
+    inline static void dsim_array_##short_type##_init( struct dsim_array_##short_type *a, struct dsim_allocator *alloc ) \
+    { a->data = 0; a->count = 0; a->capacity = 0; a->_alloc = alloc; } \
     inline static void dsim_array_##short_type##_reserve( struct dsim_array_##short_type *a, uint32_t count ) \
     { _dsim_array_reserve( (struct _dsim_array*)a, count, sizeof(type)); } \
     inline static void dsim_array_##short_type##_resize( struct dsim_array_##short_type *a, uint32_t count ) \

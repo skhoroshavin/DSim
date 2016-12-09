@@ -7,8 +7,6 @@
 
 DSIM_BEGIN_HEADER
 
-extern struct dsim_storage_operations dsim_hash_storage_ops;
-
 struct dsim_hash_storage
 {
     struct dsim_storage storage;
@@ -16,9 +14,6 @@ struct dsim_hash_storage
     struct dsim_storage_block data;
 };
 
-#define dsim_hash_storage_static_init(array_count,arrays,alloc) { \
-    /* .storage = */ dsim_storage_static_init(&dsim_hash_storage_ops, alloc), \
-    /* .ids = */     dsim_hash_static_init(alloc), \
-    /* .data = */    dsim_storage_block_static_init(array_count,arrays) }
+void dsim_hash_storage_init( struct dsim_hash_storage *storage, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc );
 
 DSIM_END_HEADER

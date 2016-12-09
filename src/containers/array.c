@@ -2,6 +2,14 @@
 #include "array.h"
 #include <memory.h>
 
+void _dsim_array_init( struct _dsim_array *a, struct dsim_allocator *alloc )
+{
+    a->data = 0;
+    a->count = 0;
+    a->capacity = 0;
+    a->_alloc = alloc;
+}
+
 void _dsim_array_reserve( struct _dsim_array *a, uint32_t capacity, uint32_t elem_size )
 {
     if( a->capacity >= capacity ) return;

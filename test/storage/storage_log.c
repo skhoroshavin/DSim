@@ -4,7 +4,7 @@
 
 #include "storage/storage_log.h"
 
-static struct dsim_storage_log slog = dsim_storage_log_static_init(&dsim_test_allocator);
+static struct dsim_storage_log slog;
 
 /*
  * Empty log
@@ -14,7 +14,7 @@ TEST_GROUP(storage_log_empty);
 
 TEST_SETUP(storage_log_empty)
 {
-
+    dsim_storage_log_init( &slog, &dsim_test_allocator );
 }
 
 TEST_TEAR_DOWN(storage_log_empty)
@@ -95,6 +95,7 @@ TEST_GROUP(storage_log_non_empty);
 
 TEST_SETUP(storage_log_non_empty)
 {
+    dsim_storage_log_init( &slog, &dsim_test_allocator );
     dsim_storage_log_cmd_push_back( &slog, 0, 1000, 250 );
     dsim_storage_log_cmd_push_back( &slog, 0, 2000, 100 );
     dsim_storage_log_cmd_push_back( &slog, 0, 1, 5 );

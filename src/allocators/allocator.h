@@ -17,7 +17,7 @@ struct dsim_allocator_operations
 
 struct dsim_allocator
 {
-    struct dsim_allocator_operations * _ops;
+    const struct dsim_allocator_operations * _ops;
 };
 
 inline static void * dsim_allocate( struct dsim_allocator *alloc, size_t size )

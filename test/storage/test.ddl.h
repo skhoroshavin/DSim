@@ -11,9 +11,9 @@ typedef struct vec4 {
     float w;
 } vec4;
 
-inline static uint8_t *test_int_data( struct dsim_storage *s, uint32_t block ) { return (uint8_t *)dsim_storage_data( s, block, 0 ); }
-inline static float *test_float_data( struct dsim_storage *s, uint32_t block ) { return (float *)dsim_storage_data( s, block, 1 ); }
-inline static vec4 *test_vec_data( struct dsim_storage *s, uint32_t block ) { return (vec4 *)dsim_storage_data( s, block, 2 ); }
+inline static uint8_t *test_i_data( struct dsim_storage *s, uint32_t block ) { return (uint8_t *)dsim_storage_data( s, block, 0 ); }
+inline static float *test_f_data( struct dsim_storage *s, uint32_t block ) { return (float *)dsim_storage_data( s, block, 1 ); }
+inline static vec4 *test_v_data( struct dsim_storage *s, uint32_t block ) { return (vec4 *)dsim_storage_data( s, block, 2 ); }
 
 struct _ddl_test
 {

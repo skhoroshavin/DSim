@@ -3,37 +3,6 @@
 #include "allocators/stack_allocator.h"
 #include <memory.h>
 
-static uint32_t dsim_hash_storage_array_count( const struct dsim_storage *self )
-{
-    const struct dsim_hash_storage *s = container_of( self, const struct dsim_hash_storage, storage );
-
-    return s->data.array_count;
-}
-
-static uint32_t dsim_hash_storage_array_size( const struct dsim_storage *self, uint32_t col )
-{
-    const struct dsim_hash_storage *s = container_of( self, const struct dsim_hash_storage, storage );
-
-    assert( col < s->data.array_count ); // LCOV_EXCL_BR_LINE
-    return s->data.arrays[col].size;
-}
-
-static const char * dsim_hash_storage_array_name( const struct dsim_storage *self, uint32_t col )
-{
-    const struct dsim_hash_storage *s = container_of( self, const struct dsim_hash_storage, storage );
-
-    assert( col < s->data.array_count ); // LCOV_EXCL_BR_LINE
-    return s->data.arrays[col].name;
-}
-
-static enum dsim_type dsim_hash_storage_array_type( const struct dsim_storage *self, uint32_t col )
-{
-    const struct dsim_hash_storage *s = container_of( self, const struct dsim_hash_storage, storage );
-
-    assert( col < s->data.array_count ); // LCOV_EXCL_BR_LINE
-    return s->data.arrays[col].type;
-}
-
 static uint32_t dsim_hash_storage_block_count( const struct dsim_storage *self )
 {
     dsim_unused(self);
@@ -60,15 +29,15 @@ static const uint64_t *dsim_hash_storage_id_data( const struct dsim_storage *sel
     return s->ids.keys.data;
 }
 
-static void *dsim_hash_storage_data( struct dsim_storage *self, uint32_t block, uint32_t col )
+static void *dsim_hash_storage_data( struct dsim_storage *self, uint32_t block, uint32_t i )
 {
     dsim_unused(block);
 
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
 
     assert( block == 0 ); // LCOV_EXCL_BR_LINE
-    assert( col < s->data.array_count ); // LCOV_EXCL_BR_LINE
-    return s->data.arrays[col].data.data;
+    assert( i < dsim_storage_array_count(self) ); // LCOV_EXCL_BR_LINE TODO
+    return s->data.arrays[i].array.data;
 }
 
 static dsim_storage_index dsim_hash_storage_find( const struct dsim_storage *self, uint64_t id )
@@ -149,21 +118,16 @@ static void dsim_hash_storage_remove( struct dsim_storage *self, uint64_t start_
     dsim_stack_alloc_restore(0);
 }
 
-static void dsim_hash_storage_reset( struct dsim_storage *self )
+static void dsim_hash_storage_done( struct dsim_storage *self )
 {
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
 
     dsim_hash_reset( &s->ids );
-    dsim_storage_block_reset( &s->data );
+    dsim_storage_block_done( &s->data );
 };
 
 struct dsim_storage_operations dsim_hash_storage_ops =
 {
-    .array_count = dsim_hash_storage_array_count,
-    .array_size = dsim_hash_storage_array_size,
-    .array_name = dsim_hash_storage_array_name,
-    .array_type = dsim_hash_storage_array_type,
-
     .block_count = dsim_hash_storage_block_count,
     .block_size = dsim_hash_storage_block_size,
 
@@ -175,5 +139,12 @@ struct dsim_storage_operations dsim_hash_storage_ops =
 
     .insert = dsim_hash_storage_insert,
     .remove = dsim_hash_storage_remove,
-    .reset  = dsim_hash_storage_reset
+    .done  = dsim_hash_storage_done
 };
+
+void dsim_hash_storage_init( struct dsim_hash_storage *storage, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )
+{
+    dsim_storage_init( &storage->storage, &dsim_hash_storage_ops, layout, alloc );
+    dsim_hash_init( &storage->ids, alloc );
+    dsim_storage_block_init( &storage->data, layout, alloc );
+}

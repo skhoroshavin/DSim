@@ -2,7 +2,7 @@
 #pragma once
 
 #include "storage_log.h"
-#include "reflection.h"
+#include "reflection/ddl_reader.h"
 
 DSIM_BEGIN_HEADER
 
@@ -25,43 +25,37 @@ struct dsim_storage;
 
 struct dsim_storage_operations
 {
-    uint32_t       (*array_count)( const struct dsim_storage *self );
-    uint32_t       (*array_size)( const struct dsim_storage *self, uint32_t col );
-    const char    *(*array_name)( const struct dsim_storage *self, uint32_t col );
-    enum dsim_type (*array_type)( const struct dsim_storage *self, uint32_t col );
-
     uint32_t (*block_count)( const struct dsim_storage *self );
     uint32_t (*block_size)( const struct dsim_storage *self, uint32_t block );
 
     const uint64_t * (*id_data)( const struct dsim_storage *self, uint32_t block );
-    void *           (*data)( struct dsim_storage *self, uint32_t block, uint32_t col );
+    void *           (*data)( struct dsim_storage *self, uint32_t block, uint32_t i );
 
     dsim_storage_index (*find)( const struct dsim_storage *self, uint64_t id );
     void             (*find_range)( const struct dsim_storage *self, uint64_t start_id, uint32_t count, struct dsim_array_storage_range * result );
 
     void     (*insert)( struct dsim_storage *self, uint64_t start_id, uint32_t count );
     void     (*remove)( struct dsim_storage *self, uint64_t start_id, uint32_t count );
-    void     (*reset)( struct dsim_storage *self );
+    void     (*done)( struct dsim_storage *self );
 };
 
 struct dsim_storage
 {
-    struct dsim_storage_operations * _ops;
+    const struct dsim_storage_operations * _ops;
     struct dsim_storage_log log;
+    dsim_ddl_layout_table_t layout;
 };
 
-#define dsim_storage_static_init(ops,alloc) { \
-    /* ._ops = */ ops, \
-    /* .log = */ dsim_storage_log_static_init(alloc) }
+inline static void dsim_storage_init( struct dsim_storage *storage, const struct dsim_storage_operations *ops,
+                                      dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )
+{
+    storage->_ops = ops;
+    storage->layout = layout;
+    dsim_storage_log_init( &storage->log, alloc );
+}
 
 inline static uint32_t dsim_storage_array_count( const struct dsim_storage *storage )
-{ return storage->_ops->array_count( storage ); }
-inline static uint32_t dsim_storage_array_size( const struct dsim_storage *storage, uint32_t col )
-{ return storage->_ops->array_size( storage, col ); }
-inline static const char * dsim_storage_array_name( const struct dsim_storage *storage, uint32_t col )
-{ return storage->_ops->array_name( storage, col ); }
-inline static enum dsim_type dsim_storage_array_type( const struct dsim_storage *storage, uint32_t col )
-{ return storage->_ops->array_type( storage, col ); }
+{ return dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(storage->layout) ); }
 
 inline static uint32_t dsim_storage_block_count( const struct dsim_storage *storage )
 { return storage->_ops->block_count( storage ); }
@@ -70,8 +64,8 @@ inline static uint32_t dsim_storage_block_size( const struct dsim_storage *stora
 
 inline static const uint64_t *dsim_storage_id_data( const struct dsim_storage *storage, uint32_t block )
 { return storage->_ops->id_data( storage, block ); }
-inline static void *dsim_storage_data( struct dsim_storage *storage, uint32_t block, uint32_t col )
-{ return storage->_ops->data( storage, block, col ); }
+inline static void *dsim_storage_data( struct dsim_storage *storage, uint32_t block, uint32_t i )
+{ return storage->_ops->data( storage, block, i ); }
 
 inline static dsim_storage_index dsim_storage_find( const struct dsim_storage *storage, uint64_t id )
 { return storage->_ops->find( storage, id ); }
@@ -81,7 +75,7 @@ inline static void dsim_storage_insert( struct dsim_storage *storage, uint64_t s
 { storage->_ops->insert( storage, start_id, count ); }
 inline static void dsim_storage_remove( struct dsim_storage *storage, uint64_t start_id, uint32_t count )
 { storage->_ops->remove( storage, start_id, count ); }
-inline static void dsim_storage_reset( struct dsim_storage *storage )
-{ storage->_ops->reset( storage ); dsim_storage_log_reset( &storage->log ); }
+inline static void dsim_storage_done( struct dsim_storage *storage )
+{ storage->_ops->done( storage ); dsim_storage_log_reset( &storage->log ); }
 
 DSIM_END_HEADER

@@ -4,25 +4,13 @@
 #include <memory.h>
 
 #include "storage/hash_storage.h"
+#include "test.ddl.h"
 
-static struct dsim_storage_array storage_arrays[] = {
-    dsim_storage_array_static_init( "test_int",   DSIM_TYPE_INT,    sizeof(uint64_t), &dsim_test_allocator ),
-    dsim_storage_array_static_init( "test_float", DSIM_TYPE_FLOAT,  sizeof(float),    &dsim_test_allocator ),
-    dsim_storage_array_static_init( "test_blob",  DSIM_TYPE_STRUCT, 128,              &dsim_test_allocator )
-};
-
-static struct dsim_hash_storage hash_storage = dsim_hash_storage_static_init(
-        count_of(storage_arrays), storage_arrays,
-        &dsim_test_allocator );
-
+static struct dsim_hash_storage hash_storage;
 static struct dsim_storage *const storage = &hash_storage.storage;
 
 static void test_hash_storage_scheme()
 {
-    TEST_ASSERT_EQUAL( dsim_storage_array_count( storage ), count_of(storage_arrays) );
-    for( uint32_t i = 0; i < dsim_storage_array_count( storage ); ++i )
-        TEST_ASSERT_EQUAL( dsim_storage_array_size( storage, i ), storage_arrays[i].size );
-
     TEST_ASSERT_EQUAL( dsim_storage_block_count( storage), 1 );
 }
 
@@ -66,12 +54,14 @@ TEST_GROUP(hash_storage_empty);
 
 TEST_SETUP(hash_storage_empty)
 {
-
+    dsim_ddl_init_test();
+    dsim_hash_storage_init( &hash_storage, ddl_test->layout_test, &dsim_test_allocator );
 }
 
 TEST_TEAR_DOWN(hash_storage_empty)
 {
-    dsim_storage_reset( storage );
+    dsim_storage_done( storage );
+    dsim_ddl_registry_reset();
 }
 
 TEST(hash_storage_empty, assert_empty)
@@ -97,34 +87,36 @@ TEST(hash_storage_empty, insert)
     TEST_ASSERT_EQUAL( storage->log.commands.at[0].count, 4 );
 }
 
-TEST(hash_storage_empty, reset)
-{
-    dsim_storage_reset( storage );
-
-    test_hash_storage_scheme();
-    test_hash_storage_empty();
-}
-
 TEST_GROUP_RUNNER(hash_storage_empty)
 {
     RUN_TEST_CASE(hash_storage_empty, assert_empty);
     RUN_TEST_CASE(hash_storage_empty, insert);
-    RUN_TEST_CASE(hash_storage_empty, reset);
 }
 
 /*
  * Non empty storage
  */
 
-static const uint64_t test_data_0[10] = { 12, 64, 23, 76, 643, 0, 2, 9, 7234, 36 };
-static const float    test_data_1[10] = { 0, -1, 23.2, 0.64, -0.0001, -0, -2634.6, 54, 0, 6024 };
-static uint8_t test_data_2[10*128];
+static const uint8_t  test_data_i[10] = { 12, 64, 23, 76, 43, 0, 2, 9, 72, 36 };
+static const float    test_data_f[10] = { 0, -1, 23.2, 0.64, -0.0001, -0, -2634.6, 54, 0, 6024 };
+static const vec4     test_data_v[10] = {
+    { 1, 2, 3, 4 },
+    { 5, 6, 7, 8 },
+    { 12, 13, 14, 15 },
+    { 0.1, 0.2, 0.3, 0.4 },
+    { -1, -2, -3, -4 },
+    { 5, -6, -7, 8 },
+    { -12, -13, 14, 15 },
+    { 0.1, 0.2, -0.3, -0.4 },
+    { 12, 13, -14, 15 },
+    { 0.1, 0.2, -0.3, 0.4 }
+};
 
 static void test_hash_storage_data()
 {
-    TEST_ASSERT_EQUAL_MEMORY( dsim_storage_data( storage, 0, 0 ), test_data_0, sizeof(test_data_0) );
-    TEST_ASSERT_EQUAL_MEMORY( dsim_storage_data( storage, 0, 1 ), test_data_1, sizeof(test_data_1) );
-    TEST_ASSERT_EQUAL_MEMORY( dsim_storage_data( storage, 0, 2 ), test_data_2, sizeof(test_data_2) );
+    TEST_ASSERT_EQUAL_MEMORY( test_i_data( storage, 0 ), test_data_i, sizeof(test_data_i) );
+    TEST_ASSERT_EQUAL_MEMORY( test_f_data( storage, 0 ), test_data_f, sizeof(test_data_f) );
+    TEST_ASSERT_EQUAL_MEMORY( test_v_data( storage, 0 ), test_data_v, sizeof(test_data_v) );
 
     check_index( dsim_storage_find( storage, 0 ),   0, DSIM_INVALID_INDEX );
     check_index( dsim_storage_find( storage, 1 ),   0, DSIM_INVALID_INDEX );
@@ -137,21 +129,23 @@ TEST_GROUP(hash_storage_non_empty);
 
 TEST_SETUP(hash_storage_non_empty)
 {
-    TEST_ASSERT_EQUAL( count_of(test_data_0), 10 );
-    TEST_ASSERT_EQUAL( count_of(test_data_1), 10 );
-    TEST_ASSERT_EQUAL( sizeof(test_data_2), 10*128 );
-    for( size_t i = 0; i < sizeof(test_data_2); ++i )
-        test_data_2[i] = rand() & 0xff;
+    dsim_ddl_init_test();
+    dsim_hash_storage_init( &hash_storage, ddl_test->layout_test, &dsim_test_allocator );
+
+    TEST_ASSERT_EQUAL( count_of(test_data_i), 10 );
+    TEST_ASSERT_EQUAL( count_of(test_data_f), 10 );
+    TEST_ASSERT_EQUAL( count_of(test_data_v), 10 );
 
     dsim_storage_insert( storage, 20, 10 );
-    memcpy( dsim_storage_data( storage, 0, 0 ), test_data_0, sizeof(test_data_0) );
-    memcpy( dsim_storage_data( storage, 0, 1 ), test_data_1, sizeof(test_data_1) );
-    memcpy( dsim_storage_data( storage, 0, 2 ), test_data_2, sizeof(test_data_2) );
+    memcpy( test_i_data( storage, 0 ), test_data_i, sizeof(test_data_i) );
+    memcpy( test_f_data( storage, 0 ), test_data_f, sizeof(test_data_f) );
+    memcpy( test_v_data( storage, 0 ), test_data_v, sizeof(test_data_v) );
 }
 
 TEST_TEAR_DOWN(hash_storage_non_empty)
 {
-    dsim_storage_reset( storage );
+    dsim_storage_done( storage );
+    dsim_ddl_registry_reset();
 }
 
 TEST(hash_storage_non_empty, assert_non_empty)
@@ -197,17 +191,17 @@ TEST(hash_storage_non_empty, remove_fast)
     test_hash_storage_scheme();
     test_hash_storage_count( 7 );
 
-    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)dsim_storage_data( storage, 0, 0 ),     test_data_0,          2*sizeof(test_data_0[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)dsim_storage_data( storage, 0, 0 ) + 2, test_data_0 + 10 - 3, 3*sizeof(test_data_0[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)dsim_storage_data( storage, 0, 0 ) + 5, test_data_0 + 5,      2*sizeof(test_data_0[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_i_data( storage, 0 ),     test_data_i,          2*sizeof(test_data_i[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_i_data( storage, 0 ) + 2, test_data_i + 10 - 3, 3*sizeof(test_data_i[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_i_data( storage, 0 ) + 5, test_data_i + 5,      2*sizeof(test_data_i[0]) );
 
-    TEST_ASSERT_EQUAL_MEMORY( (float*)dsim_storage_data( storage, 0, 1 ),     test_data_1,          2*sizeof(test_data_1[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( (float*)dsim_storage_data( storage, 0, 1 ) + 2, test_data_1 + 10 - 3, 3*sizeof(test_data_1[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( (float*)dsim_storage_data( storage, 0, 1 ) + 5, test_data_1 + 5,      2*sizeof(test_data_1[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_f_data( storage, 0 ),     test_data_f,          2*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_f_data( storage, 0 ) + 2, test_data_f + 10 - 3, 3*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_f_data( storage, 0 ) + 5, test_data_f + 5,      2*sizeof(test_data_f[0]) );
 
-    TEST_ASSERT_EQUAL_MEMORY( (uint8_t*)dsim_storage_data( storage, 0, 2 ),         test_data_2,                2*128 );
-    TEST_ASSERT_EQUAL_MEMORY( (uint8_t*)dsim_storage_data( storage, 0, 2 ) + 2*128, test_data_2 + (10 - 3)*128, 3*128 );
-    TEST_ASSERT_EQUAL_MEMORY( (uint8_t*)dsim_storage_data( storage, 0, 2 ) + 5*128, test_data_2 + 5*128,        2*128 );
+    TEST_ASSERT_EQUAL_MEMORY( test_v_data( storage, 0 ),     test_data_v,          2*sizeof(test_data_v[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_v_data( storage, 0 ) + 2, test_data_v + 10 - 3, 3*sizeof(test_data_v[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_v_data( storage, 0 ) + 5, test_data_v + 5,      2*sizeof(test_data_v[0]) );
 
     check_index( dsim_storage_find( storage, 0 ) , 0, DSIM_INVALID_INDEX );
     check_index( dsim_storage_find( storage, 15 ), 0, DSIM_INVALID_INDEX );
@@ -235,14 +229,14 @@ TEST(hash_storage_non_empty, remove_ordered)
     test_hash_storage_scheme();
     test_hash_storage_count( 6 );
 
-    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)dsim_storage_data( storage, 0, 0 ),     test_data_0,     3*sizeof(test_data_0[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)dsim_storage_data( storage, 0, 0 ) + 3, test_data_0 + 7, 3*sizeof(test_data_0[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_i_data( storage, 0 ),     test_data_i,     3*sizeof(test_data_i[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_i_data( storage, 0 ) + 3, test_data_i + 7, 3*sizeof(test_data_i[0]) );
 
-    TEST_ASSERT_EQUAL_MEMORY( (float*)dsim_storage_data( storage, 0, 1 ),     test_data_1,     3*sizeof(test_data_1[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( (float*)dsim_storage_data( storage, 0, 1 ) + 3, test_data_1 + 7, 3*sizeof(test_data_1[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_f_data( storage, 0 ),     test_data_f,     3*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_f_data( storage, 0 ) + 3, test_data_f + 7, 3*sizeof(test_data_f[0]) );
 
-    TEST_ASSERT_EQUAL_MEMORY( (uint8_t*)dsim_storage_data( storage, 0, 2 ),         test_data_2,         3*128 );
-    TEST_ASSERT_EQUAL_MEMORY( (uint8_t*)dsim_storage_data( storage, 0, 2 ) + 3*128, test_data_2 + 7*128, 3*128 );
+    TEST_ASSERT_EQUAL_MEMORY( test_v_data( storage, 0 ),     test_data_v,     3*sizeof(test_data_v[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_v_data( storage, 0 ) + 3, test_data_v + 7, 3*sizeof(test_data_v[0]) );
 
     check_index( dsim_storage_find( storage, 0 ), 0, DSIM_INVALID_INDEX );
     check_index( dsim_storage_find( storage, 15 ), 0, DSIM_INVALID_INDEX );
@@ -263,21 +257,12 @@ TEST(hash_storage_non_empty, remove_ordered)
     TEST_ASSERT_EQUAL( storage->log.commands.at[1].count, 4 );
 }
 
-TEST(hash_storage_non_empty, reset)
-{
-    dsim_storage_reset( storage );
-
-    test_hash_storage_scheme();
-    test_hash_storage_empty();
-}
-
 TEST_GROUP_RUNNER(hash_storage_non_empty)
 {
     RUN_TEST_CASE(hash_storage_non_empty, assert_non_empty);
     RUN_TEST_CASE(hash_storage_non_empty, insert_more);
     RUN_TEST_CASE(hash_storage_non_empty, remove_fast);
     RUN_TEST_CASE(hash_storage_non_empty, remove_ordered);
-    RUN_TEST_CASE(hash_storage_non_empty, reset);
 }
 
 void run_test_hash_storage()

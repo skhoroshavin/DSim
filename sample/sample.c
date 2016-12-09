@@ -56,8 +56,8 @@ int main( int argc, const char * argv[] )
         printf( "Error: %s\n", lua_tostring( l, -1 ) );
     lua_close( l );
 
-    dsim_storage_reset( strg_wires );
-    dsim_storage_reset( strg_logic );
+    dsim_storage_done( strg_wires );
+    dsim_storage_done( strg_logic );
 
     dsim_ddl_registry_reset();
 
