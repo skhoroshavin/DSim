@@ -109,7 +109,25 @@ static const char dsim_ddl_sample_data[] = {
     0, 0, 8, 0, 9, 0, 12, 0, 16, 0
 };
 
-void dsim_ddl_register_sample()
+static struct _ddl_sample _ddl;
+const struct _ddl_sample *const ddl_sample = &_ddl;
+
+void dsim_ddl_init_sample()
 {
     dsim_ddl_register( dsim_ddl_sample_data );
+
+    _ddl.type_uint8 = dsim_type( "uint8" );
+    _ddl.type_uint16 = dsim_type( "uint16" );
+    _ddl.type_uint32 = dsim_type( "uint32" );
+    _ddl.type_uint64 = dsim_type( "uint64" );
+    _ddl.type_float = dsim_type( "float" );
+    _ddl.type_double = dsim_type( "double" );
+    _ddl.type_vec2 = dsim_type( "vec2" );
+    _ddl.type_vec3 = dsim_type( "vec3" );
+    _ddl.type_vec4 = dsim_type( "vec4" );
+    _ddl.type_wire_ref = dsim_type( "wire_ref" );
+    _ddl.type_logic_type = dsim_type( "logic_type" );
+    _ddl.layout_wire = dsim_layout( "wire" );
+    _ddl.layout_logic = dsim_layout( "logic" );
+    _ddl.layout_delay = dsim_layout( "delay" );
 }

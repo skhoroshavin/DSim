@@ -45,6 +45,12 @@ link_directories(${PROJECT_BINARY_DIR})
 # Tests
 ############################################################
 
+add_custom_target(test_dsim_prepare
+    COMMAND ddlc test.ddl
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test/table
+    SOURCES test/table/test.ddl)
+add_dependencies(test_dsim_prepare ddlc)
+
 include_directories(test)
 aux_source_directory(test TEST_LIST)
 
@@ -55,11 +61,10 @@ aux_source_directory(test/table TEST_LIST)
 aux_source_directory(test/utils TEST_LIST)
 
 add_executable(test_dsim ${TEST_LIST})
-add_dependencies(test_dsim dsim)
+add_dependencies(test_dsim test_dsim_prepare)
 target_link_libraries(test_dsim -ldsim)
 
 add_custom_target(tests
-    COMMAND find CMakeFiles/dsim.dir/ -name *.gcda -type f -delete
     COMMAND test_dsim
     DEPENDS test_dsim)
 
@@ -67,6 +72,10 @@ add_custom_target(coverage
     COMMAND lcov --capture --directory CMakeFiles/dsim.dir/ --output-file coverage.info
     COMMAND genhtml coverage.info --output-directory coverage
     DEPENDS tests)
+
+add_custom_target(clear_coverage
+    COMMAND find CMakeFiles/dsim.dir/ -name *.gcda -type f -delete || true
+    COMMAND rm -rvf coverage*)
 
 ############################################################
 # Tools

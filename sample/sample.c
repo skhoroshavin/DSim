@@ -28,7 +28,7 @@ int main( int argc, const char * argv[] )
     dsim_unused(argv);
 
     dsim_ddl_registry_init();
-    dsim_ddl_register_sample();
+    dsim_ddl_init_sample();
 
     lua_State * l = luaL_newstate();
     luaopen_base( l );

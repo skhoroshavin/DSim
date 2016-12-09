@@ -40,7 +40,7 @@ static void dump_c_array( FILE * f, const char * data, size_t size )
     }
 }
 
-int main( int argc, char * argv[] )
+int main( int argc, char *argv[] )
 {
     size_t size;
     void * data = load_json_ddl( argv[1], &size );
@@ -62,11 +62,16 @@ int main( int argc, char * argv[] )
     fwrite( data, 1, size, f );
     fclose( f );
 
+    ///////////////////////////////////////////////////////////////////////////////
+    // Header
+    ///////////////////////////////////////////////////////////////////////////////
+
     f = fopen( h_name.data, "w" );
     fprintf( f, "\n" );
     fprintf( f, "#pragma once\n" );
     fprintf( f, "\n" );
     fprintf( f, "#include \"table/table.h\"\n" );
+    fprintf( f, "#include \"reflection/ddl_reader.h\"\n" );
     fprintf( f, "\n" );
 
     dsim_type_vec_t types = dsim_ddl_types( ddl );
@@ -140,15 +145,35 @@ int main( int argc, char * argv[] )
             const char * ctype = dsim_type_ctype(type);
             if( !ctype ) ctype = dsim_type_name(type);
 
-            fprintf( f, "inline static %s * %s_%s_data( struct dsim_table * t, uint32_t block ) { return (%s*)dsim_table_data( t, block, %zd ); }\n",
+            fprintf( f, "inline static %s *%s_%s_data( struct dsim_table *t, uint32_t block ) { return (%s *)dsim_table_data( t, block, %zd ); }\n",
                      ctype, name, dsim_column_name(column), ctype, j );
         }
         fprintf( f, "\n" );
     }
 
-    fprintf( f, "void dsim_ddl_register_%s();\n", dsim_ddl_name(ddl) );
+    fprintf( f, "struct _ddl_%s\n", dsim_ddl_name(ddl) );
+    fprintf( f, "{\n" );
+    for( size_t i = 0; i != dsim_type_vec_len(types); ++i )
+    {
+        dsim_type_table_t type = dsim_type_vec_at(types, i);
+        fprintf( f, "    dsim_type_table_t type_%s;\n", dsim_type_name(type) );
+    }
+    for( size_t i = 0; i != dsim_layout_vec_len(layouts); ++i )
+    {
+        dsim_layout_table_t layout = dsim_layout_vec_at(layouts, i);
+        fprintf( f, "    dsim_layout_table_t layout_%s;\n", dsim_layout_name(layout) );
+    }
+    fprintf( f, "};\n" );
+    fprintf( f, "extern const struct _ddl_%s *const ddl_%s;\n", dsim_ddl_name(ddl), dsim_ddl_name(ddl) );
+    fprintf( f, "\n" );
+
+    fprintf( f, "void dsim_ddl_init_%s();\n", dsim_ddl_name(ddl) );
     fprintf( f, "\n" );
     fclose( f );
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Source
+    ///////////////////////////////////////////////////////////////////////////////
 
     f = fopen( c_name.data, "w" );
     fprintf( f, "\n" );
@@ -156,12 +181,26 @@ int main( int argc, char * argv[] )
     fprintf( f, "#include \"%s\"\n", h_name.data );
     fprintf( f, "\n" );
     fprintf( f, "static const char dsim_ddl_%s_data[] = {\n", dsim_ddl_name(ddl) );
-    dump_c_array( f, data, size );
+    dump_c_array( f, (const char *)data, size );
     fprintf( f, "};\n" );
     fprintf( f, "\n" );
-    fprintf( f, "void dsim_ddl_register_%s()\n", dsim_ddl_name(ddl) );
+    fprintf( f, "static struct _ddl_%s _ddl;\n", dsim_ddl_name(ddl) );
+    fprintf( f, "const struct _ddl_%s *const ddl_%s = &_ddl;\n", dsim_ddl_name(ddl), dsim_ddl_name(ddl) );
+    fprintf( f, "\n" );
+    fprintf( f, "void dsim_ddl_init_%s()\n", dsim_ddl_name(ddl) );
     fprintf( f, "{\n" );
     fprintf( f, "    dsim_ddl_register( dsim_ddl_%s_data );\n", dsim_ddl_name(ddl) );
+    fprintf( f, "\n" );
+    for( size_t i = 0; i != dsim_type_vec_len(types); ++i )
+    {
+        dsim_type_table_t type = dsim_type_vec_at(types, i);
+        fprintf( f, "    _ddl.type_%s = dsim_type( \"%s\" );\n", dsim_type_name(type), dsim_type_name(type) );
+    }
+    for( size_t i = 0; i != dsim_layout_vec_len(layouts); ++i )
+    {
+        dsim_layout_table_t layout = dsim_layout_vec_at(layouts, i);
+        fprintf( f, "    _ddl.layout_%s = dsim_layout( \"%s\" );\n", dsim_layout_name(layout), dsim_layout_name(layout) );
+    }
     fprintf( f, "}\n" );
     fclose( f );
 
