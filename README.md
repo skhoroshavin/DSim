@@ -11,14 +11,14 @@ Now at very early stage of development.
 
 ## Roadmap
 
-- Stabilize table interface and finish hash_table implementation
-- Stabilize table asynchronous event queues
-- Implement LUA bindings
+- Stabilize storage interface and finish hash_table implementation
+- Stabilize storage asynchronous event queues
+- Improve LUA bindings
 - Implement network replication
-- Add support for variable length cells
+- Add support for variable length data
 - Implement benchmark for typical use cases
-- Implement partitioned tables
-- Implement table views
+- Implement partitioned storages
+- Implement storage views
 - Implement more allocators (page, buddy, pool)
 - Improve stack allocator
 
@@ -30,4 +30,3 @@ Help with porting to as many platforms as possible is very welcome.
 
 - Hash container inspired by hash from <a href="https://bitbucket.org/bitsquid/foundation">Bitsquid foundation</a> library.
 - Tests written using <a href="http://www.throwtheswitch.org/unity">Unity</a> framework.
-
