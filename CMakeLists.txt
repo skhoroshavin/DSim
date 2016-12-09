@@ -9,6 +9,8 @@ add_definitions(-Wall -Wextra)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c99")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
+set(FLATCC_RTONLY On)
+set(FLATCC_REFLECTION Off)
 
 add_subdirectory(3rdparty/flatcc)
 include_directories(3rdparty/flatcc/include)
@@ -16,13 +18,12 @@ link_directories(${PROJECT_SOURCE_DIR}/3rdparty/flatcc/lib)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     add_custom_target(dsim_flatcc
-        COMMAND cmake -E copy bin/flatcc_d bin/flatcc
         COMMAND cmake -E copy lib/libflatccrt_d.a lib/libflatccrt.a
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/3rdparty/flatcc
-        DEPENDS flatcc_cli flatccrt )
+        DEPENDS flatccrt )
 else(CMAKE_BUILD_TYPE MATCHES Debug)
     add_custom_target(dsim_flatcc
-        DEPENDS flatcc_cli flatccrt )
+        DEPENDS flatccrt )
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 ############################################################
