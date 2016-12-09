@@ -1,5 +1,6 @@
 
 #include "dsim_lua.h"
+#include "reflection/ddl_registry.h"
 #include <memory.h>
 
 /*
@@ -8,24 +9,44 @@
 
 static uint32_t dsim_storage_array_by_name( const struct dsim_storage *s, const char *name )
 {
-    uint32_t count = dsim_storage_array_count( s );
+    dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(s->layout);
+    uint32_t count = dsim_ddl_array_vec_len(arrays);
     for( uint32_t i = 0; i < count; ++i )
-        if( strcmp( name, dsim_storage_array_name( s, i ) ) == 0 )
+    {
+        dsim_ddl_array_table_t array = dsim_ddl_array_vec_at(arrays,i);
+        if( strcmp( name, dsim_ddl_array_name(array) ) == 0 )
             return i;
+    }
     return DSIM_INVALID_INDEX;
 }
 
-static void dsim_lua_read( lua_State *l, int index, enum dsim_type type, uint32_t size, void *data )
+static dsim_ddl_type_table_t dsim_storage_array_type( const struct dsim_storage *s, uint32_t arr )
 {
-    if( type == DSIM_TYPE_STRUCT )
+    dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(s->layout);
+    dsim_ddl_array_table_t array = dsim_ddl_array_vec_at(arrays,arr);
+    return dsim_ddl_type( dsim_ddl_array_type(array) );
+}
+
+static void dsim_lua_read( lua_State *l, int index, dsim_ddl_type_table_t type, void *data )
+{
+    uint32_t size = dsim_ddl_type_size(type);
+    dsim_ddl_any_type_union_type_t ttype = dsim_ddl_type_data_type(type);
+
+    if( ttype == dsim_ddl_any_type_numeric_type )
     {
-        memcpy( data, lua_touserdata( l, index ), size );
-    }
-    else
-    {
+        dsim_ddl_numeric_type_table_t ntype = (dsim_ddl_numeric_type_table_t)dsim_ddl_type_data(type);
         lua_Number value = lua_tonumber( l, index );
 
-        if( type == DSIM_TYPE_INT )
+        if( dsim_ddl_numeric_type_is_float(ntype) )
+        {
+            if( size == 4 )
+                *((float*)data) = value;
+            else if( size == 8 )
+                *((double*)data) = value;
+            else
+                printf( "Unsupported float size %d!\n", size );
+        }
+        else
         {
             if( size == 1 )
                 *((uint8_t*)data) = value;
@@ -38,28 +59,36 @@ static void dsim_lua_read( lua_State *l, int index, enum dsim_type type, uint32_
             else
                 printf( "Unsupported int size %d!\n", size );
         }
-        else if( type == DSIM_TYPE_FLOAT )
-        {
-            if( size == 4 )
-                *((float*)data) = value;
-            else if( size == 8 )
-                *((double*)data) = value;
-            else
-                printf( "Unsupported float size %d!\n", size );
-        }
     }
-}
-
-static void dsim_lua_push( lua_State *l, enum dsim_type type, uint32_t size, const void *data )
-{
-    if( type == DSIM_TYPE_STRUCT )
+    else if( ttype == dsim_ddl_any_type_reference_type )
     {
-        void *value = lua_newuserdata( l, size );
-        memcpy( value, data, size );
+        *((uint64_t*)data) = lua_tonumber( l, index );
     }
     else
     {
-        if( type == DSIM_TYPE_INT )
+        memcpy( data, lua_touserdata( l, index ), size );
+    }
+}
+
+static void dsim_lua_push( lua_State *l, dsim_ddl_type_table_t type, const void *data )
+{
+    uint32_t size = dsim_ddl_type_size(type);
+    dsim_ddl_any_type_union_type_t ttype = dsim_ddl_type_data_type(type);
+
+    if( ttype == dsim_ddl_any_type_numeric_type )
+    {
+        dsim_ddl_numeric_type_table_t ntype = (dsim_ddl_numeric_type_table_t)dsim_ddl_type_data(type);
+
+        if( dsim_ddl_numeric_type_is_float(ntype) )
+        {
+            if( size == 4 )
+                lua_pushnumber( l, *((float*)data) );
+            else if( size == 8 )
+                lua_pushnumber( l, *((double*)data) );
+            else
+                printf( "Unsupported float size %d!\n", size );
+        }
+        else
         {
             if( size == 1 )
                 lua_pushnumber( l, *((uint8_t*)data) );
@@ -72,15 +101,15 @@ static void dsim_lua_push( lua_State *l, enum dsim_type type, uint32_t size, con
             else
                 printf( "Unsupported int size %d!\n", size );
         }
-        else if( type == DSIM_TYPE_FLOAT )
-        {
-            if( size == 4 )
-                lua_pushnumber( l, *((float*)data) );
-            else if( size == 8 )
-                lua_pushnumber( l, *((double*)data) );
-            else
-                printf( "Unsupported float size %d!\n", size );
-        }
+    }
+    else if( ttype == dsim_ddl_any_type_reference_type )
+    {
+        lua_pushnumber( l, *((uint64_t*)data) );
+    }
+    else
+    {
+        void *value = lua_newuserdata( l, size );
+        memcpy( value, data, size );
     }
 }
 
@@ -99,11 +128,11 @@ static int lua_storage_set_by_id( lua_State *l )
     uint64_t id = lua_tonumber( l, 2 );
     dsim_storage_index idx = dsim_storage_find( s, id );
 
-    enum dsim_type type = dsim_storage_array_type( s, arr );
-    uint32_t size = dsim_storage_array_size(s,arr);
+    dsim_ddl_type_table_t type = dsim_storage_array_type( s, arr );
+    uint32_t size = dsim_ddl_type_size(type);
     char *data = (char*)dsim_storage_data( s, idx.block, arr ) + size * idx.index;
 
-    dsim_lua_read( l, 3, type, size, data );
+    dsim_lua_read( l, 3, type, data );
 
     return 0;
 }
@@ -119,11 +148,11 @@ static int lua_storage_get_by_id( lua_State *l )
     uint64_t id = lua_tonumber( l, 2 );
     dsim_storage_index idx = dsim_storage_find( s, id );
 
-    enum dsim_type type = dsim_storage_array_type( s, arr );
-    uint32_t size = dsim_storage_array_size(s,arr);
+    dsim_ddl_type_table_t type = dsim_storage_array_type( s, arr );
+    uint32_t size = dsim_ddl_type_size(type);
     char *data = (char*)dsim_storage_data( s, idx.block, arr ) + size * idx.index;
 
-    dsim_lua_push( l, type, size, data );
+    dsim_lua_push( l, type, data );
 
     return 1;
 }
