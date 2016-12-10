@@ -11,7 +11,7 @@ Now at very early stage of development.
 
 ## Roadmap
 
-- Stabilize storage interface and finish hash_table implementation
+- Stabilize storage interface and finish hash_storage implementation
 - Stabilize storage asynchronous event queues
 - Improve LUA bindings
 - Implement network replication
