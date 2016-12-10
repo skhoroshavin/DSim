@@ -43,27 +43,15 @@ typedef flatbuffers_uoffset_t *dsim_ddl_array_mutable_vec_t;
 typedef const struct dsim_ddl_layout_table *dsim_ddl_layout_table_t;
 typedef const flatbuffers_uoffset_t *dsim_ddl_layout_vec_t;
 typedef flatbuffers_uoffset_t *dsim_ddl_layout_mutable_vec_t;
+typedef const struct dsim_ddl_hash_storage_table *dsim_ddl_hash_storage_table_t;
+typedef const flatbuffers_uoffset_t *dsim_ddl_hash_storage_vec_t;
+typedef flatbuffers_uoffset_t *dsim_ddl_hash_storage_mutable_vec_t;
 typedef const struct dsim_ddl_storage_table *dsim_ddl_storage_table_t;
 typedef const flatbuffers_uoffset_t *dsim_ddl_storage_vec_t;
 typedef flatbuffers_uoffset_t *dsim_ddl_storage_mutable_vec_t;
 typedef const struct dsim_ddl_root_table *dsim_ddl_root_table_t;
 typedef const flatbuffers_uoffset_t *dsim_ddl_root_vec_t;
 typedef flatbuffers_uoffset_t *dsim_ddl_root_mutable_vec_t;
-
-/************************************************************************\
- *  * Storage definitions                                                  *
- * \*********************************************************************** */
-typedef uint8_t dsim_ddl_storage_type_enum_t;
-__flatbuffers_define_integer_type(dsim_ddl_storage_type, dsim_ddl_storage_type_enum_t, 8)
-#define dsim_ddl_storage_type_hashed ((dsim_ddl_storage_type_enum_t)0U)
-
-static inline const char *dsim_ddl_storage_type_name(dsim_ddl_storage_type_enum_t value)
-{
-    switch (value) {
-    case dsim_ddl_storage_type_hashed: return "hashed";
-    default: return "";
-    }
-}
 
 
 
@@ -286,6 +274,37 @@ __flatbuffers_vector_field(dsim_ddl_array_vec_t, 1, t, 0)
 static inline int dsim_ddl_layout_arrays_is_present(dsim_ddl_layout_table_t t)
 __flatbuffers_field_present(1, t)
 
+/************************************************************************\
+ *  * Storage definitions                                                  *
+ * \*********************************************************************** */
+typedef uint8_t dsim_ddl_storage_engine_union_type_t;
+__flatbuffers_define_integer_type(dsim_ddl_storage_engine, dsim_ddl_storage_engine_union_type_t, 8)
+#define dsim_ddl_storage_engine_NONE ((dsim_ddl_storage_engine_union_type_t)0U)
+#define dsim_ddl_storage_engine_hash_storage ((dsim_ddl_storage_engine_union_type_t)1U)
+
+static inline const char *dsim_ddl_storage_engine_type_name(dsim_ddl_storage_engine_union_type_t type)
+{
+    switch (type) {
+    case dsim_ddl_storage_engine_NONE: return "NONE";
+    case dsim_ddl_storage_engine_hash_storage: return "hash_storage";
+    default: return "";
+    }
+}
+
+
+struct dsim_ddl_hash_storage_table { uint8_t unused__; };
+
+#ifndef dsim_ddl_hash_storage_identifier
+#define dsim_ddl_hash_storage_identifier flatbuffers_identifier
+#endif
+#define dsim_ddl_hash_storage_type_hash ((flatbuffers_thash_t)0x9f500bd0)
+#define dsim_ddl_hash_storage_type_identifier "\xd0\x0b\x50\x9f"
+static inline size_t dsim_ddl_hash_storage_vec_len(dsim_ddl_hash_storage_vec_t vec)
+__flatbuffers_vec_len(vec)
+static inline dsim_ddl_hash_storage_table_t dsim_ddl_hash_storage_vec_at(dsim_ddl_hash_storage_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(dsim_ddl_hash_storage_table_t, vec, i, 0)
+__flatbuffers_table_as_root(dsim_ddl_hash_storage)
+
 
 struct dsim_ddl_storage_table { uint8_t unused__; };
 
@@ -310,9 +329,11 @@ __flatbuffers_vector_field(flatbuffers_string_t, 1, t, 0)
 static inline int dsim_ddl_storage_layout_is_present(dsim_ddl_storage_table_t t)
 __flatbuffers_field_present(1, t)
 
-static inline dsim_ddl_storage_type_enum_t dsim_ddl_storage_type(dsim_ddl_storage_table_t t)
-__flatbuffers_scalar_field(dsim_ddl_storage_type, 2, 0, t)
-static inline int dsim_ddl_storage_type_is_present(dsim_ddl_storage_table_t t)
+static inline dsim_ddl_storage_engine_union_type_t dsim_ddl_storage_engine_type(dsim_ddl_storage_table_t t)
+__flatbuffers_scalar_field(dsim_ddl_storage_engine, 2, 0, t)
+static inline flatbuffers_generic_table_t dsim_ddl_storage_engine(dsim_ddl_storage_table_t t)
+__flatbuffers_table_field(flatbuffers_generic_table_t, 3, t, 0)
+static inline int dsim_ddl_storage_engine_is_present(dsim_ddl_storage_table_t t)
 __flatbuffers_field_present(2, t)
 
 

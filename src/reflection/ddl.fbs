@@ -69,13 +69,15 @@ table layout
  * Storage definitions                                                  *
 \************************************************************************/
 
-enum storage_type : ubyte { hashed }
+union storage_engine { hash_storage }
+
+table hash_storage { }
 
 table storage
 {
-	name: string;
-	layout: string;
-    type: storage_type;
+    name: string;
+    layout: string;
+    engine: storage_engine;
 }
 
 /************************************************************************\

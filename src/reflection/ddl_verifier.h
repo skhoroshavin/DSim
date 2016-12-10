@@ -18,6 +18,7 @@ static int __dsim_ddl_reference_type_table_verifier(flatcc_table_verifier_descri
 static int __dsim_ddl_type_table_verifier(flatcc_table_verifier_descriptor_t *td);
 static int __dsim_ddl_array_table_verifier(flatcc_table_verifier_descriptor_t *td);
 static int __dsim_ddl_layout_table_verifier(flatcc_table_verifier_descriptor_t *td);
+static int __dsim_ddl_hash_storage_table_verifier(flatcc_table_verifier_descriptor_t *td);
 static int __dsim_ddl_storage_table_verifier(flatcc_table_verifier_descriptor_t *td);
 static int __dsim_ddl_root_table_verifier(flatcc_table_verifier_descriptor_t *td);
 
@@ -28,6 +29,14 @@ static int __dsim_ddl_any_type_union_verifier(flatcc_table_verifier_descriptor_t
     case 2: return flatcc_verify_table_field(td, id, 0, __dsim_ddl_struct_type_table_verifier);
     case 3: return flatcc_verify_table_field(td, id, 0, __dsim_ddl_enum_type_table_verifier);
     case 4: return flatcc_verify_table_field(td, id, 0, __dsim_ddl_reference_type_table_verifier);
+    default: return flatcc_verify_ok;
+    }
+}
+
+static int __dsim_ddl_storage_engine_union_verifier(flatcc_table_verifier_descriptor_t *td, flatbuffers_voffset_t id, uint8_t type)
+{
+    switch(type) {
+    case 1: return flatcc_verify_table_field(td, id, 0, __dsim_ddl_hash_storage_table_verifier);
     default: return flatcc_verify_ok;
     }
 }
@@ -256,12 +265,37 @@ static inline int dsim_ddl_layout_verify_as_root_with_type_hash(const void *buf,
     return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_ddl_layout_table_verifier);
 }
 
+static int __dsim_ddl_hash_storage_table_verifier(flatcc_table_verifier_descriptor_t *td)
+{
+    return flatcc_verify_ok;
+}
+
+static inline int dsim_ddl_hash_storage_verify_as_root(const void *buf, size_t bufsiz)
+{
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_hash_storage_identifier, &__dsim_ddl_hash_storage_table_verifier);
+}
+
+static inline int dsim_ddl_hash_storage_verify_as_typed_root(const void *buf, size_t bufsiz)
+{
+    return flatcc_verify_table_as_root(buf, bufsiz, dsim_ddl_hash_storage_type_identifier, &__dsim_ddl_hash_storage_table_verifier);
+}
+
+static inline int dsim_ddl_hash_storage_verify_as_root_with_identifier(const void *buf, size_t bufsiz, const char *fid)
+{
+    return flatcc_verify_table_as_root(buf, bufsiz, fid, &__dsim_ddl_hash_storage_table_verifier);
+}
+
+static inline int dsim_ddl_hash_storage_verify_as_root_with_type_hash(const void *buf, size_t bufsiz, flatbuffers_thash_t thash)
+{
+    return flatcc_verify_table_as_typed_root(buf, bufsiz, thash, &__dsim_ddl_hash_storage_table_verifier);
+}
+
 static int __dsim_ddl_storage_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
     if ((ret = flatcc_verify_string_field(td, 0, 0) /* name */)) return ret;
     if ((ret = flatcc_verify_string_field(td, 1, 0) /* layout */)) return ret;
-    if ((ret = flatcc_verify_field(td, 2, 1, 1) /* type */)) return ret;
+    if ((ret = flatcc_verify_union_field(td, 3, 0, &__dsim_ddl_storage_engine_union_verifier) /* engine */)) return ret;
     return flatcc_verify_ok;
 }
 

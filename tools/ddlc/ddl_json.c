@@ -204,7 +204,14 @@ static void dsim_process_storages( struct flatcc_builder *b, dsim_ddl_storage_ve
         dsim_ddl_root_storages_push_start( b );
         dsim_ddl_storage_name_clone( b, dsim_ddl_storage_name(storage) );
         dsim_ddl_storage_layout_clone( b, dsim_ddl_storage_layout(storage) );
-        dsim_ddl_storage_type_add( b, dsim_ddl_storage_type(storage) );
+        switch( dsim_ddl_storage_engine_type(storage) )
+        {
+        case dsim_ddl_storage_engine_NONE:
+        case dsim_ddl_storage_engine_hash_storage:
+            dsim_ddl_storage_engine_hash_storage_start( b );
+            dsim_ddl_storage_engine_hash_storage_end( b );
+            break;
+        }
 
         dsim_ddl_root_storages_push_end( b );
     }

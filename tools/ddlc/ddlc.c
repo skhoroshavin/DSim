@@ -202,9 +202,9 @@ int main( int argc, char *argv[] )
     for( size_t i = 0; i != dsim_ddl_storage_vec_len(storages); ++i )
     {
         dsim_ddl_storage_table_t storage = dsim_ddl_storage_vec_at(storages, i);
-        switch( dsim_ddl_storage_type(storage) )
+        switch( dsim_ddl_storage_engine_type(storage) )
         {
-        case dsim_ddl_storage_type_hashed:
+        case dsim_ddl_storage_engine_hash_storage:
             fprintf( f, "static struct dsim_hash_storage strg_%s;\n", dsim_ddl_storage_name(storage) );
             break;
         }
@@ -235,9 +235,9 @@ int main( int argc, char *argv[] )
     for( size_t i = 0; i != dsim_ddl_storage_vec_len(storages); ++i )
     {
         dsim_ddl_storage_table_t storage = dsim_ddl_storage_vec_at(storages, i);
-        switch( dsim_ddl_storage_type(storage) )
+        switch( dsim_ddl_storage_engine_type(storage) )
         {
-        case dsim_ddl_storage_type_hashed:
+        case dsim_ddl_storage_engine_hash_storage:
             fprintf( f, "    dsim_hash_storage_init( &strg_%s, _ddl.layout_%s, &dsim_default_allocator );\n",
                      dsim_ddl_storage_name(storage), dsim_ddl_storage_layout(storage) );
             break;

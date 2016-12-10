@@ -30,8 +30,10 @@ static const char *dsim_ddl_any_type_parse_json_enum(flatcc_json_parser_t *ctx, 
 static const char *dsim_ddl_type_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
 static const char *dsim_ddl_array_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
 static const char *dsim_ddl_layout_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
-static const char *dsim_ddl_storage_type_parse_json_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
+static const char *dsim_ddl_storage_engine_parse_json_union(flatcc_json_parser_t *ctx, const char *buf, const char *end, uint8_t type, flatbuffers_voffset_t id);
+static const char *dsim_ddl_storage_engine_parse_json_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
         int *value_type, uint64_t *value, int *aggregate);
+static const char *dsim_ddl_hash_storage_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
 static const char *dsim_ddl_storage_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
 static const char *dsim_ddl_root_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end);
 static const char *ddl_local_json_parser_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
@@ -770,7 +772,37 @@ failed:
     return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
 }
 
-static const char *dsim_ddl_storage_type_parse_json_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
+static const char *dsim_ddl_storage_engine_parse_json_union(flatcc_json_parser_t *ctx, const char *buf, const char *end, uint8_t type, flatbuffers_voffset_t id)
+{
+    flatcc_builder_ref_t ref, *pref;
+    uint8_t *ptype;
+
+    switch (type) {
+    case 0:
+        return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_union_none);
+    case 1:
+        buf = dsim_ddl_hash_storage_parse_json_table(ctx, buf, end);
+        break;
+    default:
+        if (!(ctx->flags & flatcc_json_parser_f_skip_unknown)) {
+            return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_unknown_union);
+        } else {
+            return flatcc_json_parser_generic_json(ctx, buf, end);
+        }
+    }
+    if (buf != end) {
+        if(!(ref = flatcc_builder_end_table(ctx->ctx))) goto failed;
+        if (!(pref = flatcc_builder_table_add_offset(ctx->ctx, id))) goto failed;
+        *pref = ref;
+        if (!(ptype = flatcc_builder_table_add(ctx->ctx, id - 1, 1, 1))) goto failed;
+        *ptype = type;
+    }
+    return buf;
+failed:
+    return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
+}
+
+static const char *dsim_ddl_storage_engine_parse_json_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
         int *value_sign, uint64_t *value, int *aggregate)
 {
     const char *unmatched = buf;
@@ -778,17 +810,53 @@ static const char *dsim_ddl_storage_type_parse_json_enum(flatcc_json_parser_t *c
     uint64_t w;
 
     w = flatcc_json_parser_symbol_part(buf, end);
-    if ((w & 0xffffffffffff0000) == 0x6861736865640000) { /* "hashed" */
-        buf = flatcc_json_parser_match_constant(ctx, (mark = buf), end, 6, aggregate);
-        if (buf != mark) {
-            *value = 0, *value_sign = 0;
-        } else {
+    if (w < 0x686173685f73746f) { /* branch "hash_sto" */
+        if ((w & 0xffffffff00000000) == 0x4e4f4e4500000000) { /* "NONE" */
+            buf = flatcc_json_parser_match_constant(ctx, (mark = buf), end, 4, aggregate);
+            if (buf != mark) {
+                *value = 0, *value_sign = 0;
+            } else {
+                return unmatched;
+            }
+        } else { /* "NONE" */
             return unmatched;
-        }
-    } else { /* "hashed" */
-        return unmatched;
-    } /* "hashed" */
+        } /* "NONE" */
+    } else { /* branch "hash_sto" */
+        if (w == 0x686173685f73746f) { /* prefix "hash_sto" */
+            buf += 8;
+            w = flatcc_json_parser_symbol_part(buf, end);
+            if ((w & 0xffffffff00000000) == 0x7261676500000000) { /* "rage" */
+                buf = flatcc_json_parser_match_constant(ctx, (mark = buf), end, 4, aggregate);
+                if (buf != mark) {
+                    *value = 1, *value_sign = 0;
+                } else {
+                    return unmatched;
+                }
+            } else { /* "rage" */
+                return unmatched;
+            } /* "rage" */
+        } else { /* prefix "hash_sto" */
+            return unmatched;
+        } /* prefix "hash_sto" */
+    } /* branch "hash_sto" */
     return buf;
+}
+
+static const char *dsim_ddl_hash_storage_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
+{
+    int more;
+
+    if (flatcc_builder_start_table(ctx->ctx, 0)) goto failed;
+    buf = flatcc_json_parser_object_start(ctx, buf, end, &more);
+    while (more) {
+        buf = flatcc_json_parser_symbol_start(ctx, buf, end);
+        /* Table has no fields. */
+        buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
+        buf = flatcc_json_parser_object_end(ctx, buf, end, &more);
+    }
+    return buf;
+failed:
+    return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
 }
 
 static const char *dsim_ddl_storage_parse_json_table(flatcc_json_parser_t *ctx, const char *buf, const char *end)
@@ -800,14 +868,45 @@ static const char *dsim_ddl_storage_parse_json_table(flatcc_json_parser_t *ctx, 
     uint64_t w;
     flatcc_json_parser_escape_buffer_t code;
 
-    if (flatcc_builder_start_table(ctx->ctx, 3)) goto failed;
+    if (flatcc_builder_start_table(ctx->ctx, 4)) goto failed;
+    if (end == flatcc_json_parser_prepare_unions(ctx, buf, end, 2)) goto failed;
     buf = flatcc_json_parser_object_start(ctx, buf, end, &more);
     while (more) {
         buf = flatcc_json_parser_symbol_start(ctx, buf, end);
         w = flatcc_json_parser_symbol_part(buf, end);
-        if (w < 0x6e616d6500000000) { /* branch "name" */
-            if ((w & 0xffffffffffff0000) == 0x6c61796f75740000) { /* "layout" */
-                buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 6);
+        if (w < 0x6c61796f75740000) { /* branch "layout" */
+            if (w == 0x656e67696e655f74) { /* prefix "engine_t" */
+                buf += 8;
+                w = flatcc_json_parser_symbol_part(buf, end);
+                if ((w & 0xffffff0000000000) == 0x7970650000000000) { /* "ype" */
+                    buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 3);
+                    if (mark != buf) {
+                        static flatcc_json_parser_integral_symbol_f *symbolic_parsers[] = {
+                                dsim_ddl_storage_engine_parse_json_enum,
+                                ddl_local_dsim_ddl_json_parser_enum,
+                                ddl_global_json_parser_enum, 0 };
+                        buf = flatcc_json_parser_union_type(ctx, buf, end, 1, 3, symbolic_parsers, dsim_ddl_storage_engine_parse_json_union);
+                    } else {
+                        buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
+                    }
+                } else { /* "ype" */
+                    buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
+                } /* "ype" */
+            } else { /* prefix "engine_t" */
+                if ((w & 0xffffffffffff0000) == 0x656e67696e650000) { /* "engine" */
+                    buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 6);
+                    if (mark != buf) {
+                        buf = flatcc_json_parser_union(ctx, buf, end, 1, 3, dsim_ddl_storage_engine_parse_json_union);
+                    } else {
+                        buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
+                    }
+                } else { /* "engine" */
+                    buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
+                } /* "engine" */
+            } /* prefix "engine_t" */
+        } else { /* branch "layout" */
+            if ((w & 0xffffffff00000000) == 0x6e616d6500000000) { /* "name" */
+                buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 4);
                 if (mark != buf) {
                     buf = flatcc_json_parser_string_start(ctx, buf, end);
                     buf = flatcc_json_parser_string_part(ctx, (mark = buf), end);
@@ -826,38 +925,14 @@ static const char *dsim_ddl_storage_parse_json_table(flatcc_json_parser_t *ctx, 
                         ref = flatcc_builder_end_string(ctx->ctx);
                     }
                     buf = flatcc_json_parser_string_end(ctx, buf, end);
-                    if (!ref || !(pref = flatcc_builder_table_add_offset(ctx->ctx, 1))) goto failed;
+                    if (!ref || !(pref = flatcc_builder_table_add_offset(ctx->ctx, 0))) goto failed;
                     *pref = ref;
                 } else {
                     buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
                 }
-            } else { /* "layout" */
-                buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
-            } /* "layout" */
-        } else { /* branch "name" */
-            if ((w & 0xffffffff00000000) == 0x7479706500000000) { /* "type" */
-                buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 4);
-                if (mark != buf) {
-                    uint8_t val = 0;
-                    static flatcc_json_parser_integral_symbol_f *symbolic_parsers[] = {
-                            dsim_ddl_storage_type_parse_json_enum,
-                            ddl_local_dsim_ddl_json_parser_enum,
-                            ddl_global_json_parser_enum, 0 };
-                    buf = flatcc_json_parser_uint8(ctx, (mark = buf), end, &val);
-                    if (mark == buf) {
-                        buf = flatcc_json_parser_symbolic_uint8(ctx, (mark = buf), end, symbolic_parsers, &val);
-                        if (buf == mark || buf == end) goto failed;
-                    }
-                    if (val != 0 || (ctx->flags & flatcc_json_parser_f_force_add)) {
-                        if (!(pval = flatcc_builder_table_add(ctx->ctx, 2, 1, 1))) goto failed;
-                        flatbuffers_uint8_write_to_pe(pval, val);
-                    }
-                } else {
-                    buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
-                }
-            } else { /* "type" */
-                if ((w & 0xffffffff00000000) == 0x6e616d6500000000) { /* "name" */
-                    buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 4);
+            } else { /* "name" */
+                if ((w & 0xffffffffffff0000) == 0x6c61796f75740000) { /* "layout" */
+                    buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 6);
                     if (mark != buf) {
                         buf = flatcc_json_parser_string_start(ctx, buf, end);
                         buf = flatcc_json_parser_string_part(ctx, (mark = buf), end);
@@ -876,18 +951,19 @@ static const char *dsim_ddl_storage_parse_json_table(flatcc_json_parser_t *ctx, 
                             ref = flatcc_builder_end_string(ctx->ctx);
                         }
                         buf = flatcc_json_parser_string_end(ctx, buf, end);
-                        if (!ref || !(pref = flatcc_builder_table_add_offset(ctx->ctx, 0))) goto failed;
+                        if (!ref || !(pref = flatcc_builder_table_add_offset(ctx->ctx, 1))) goto failed;
                         *pref = ref;
                     } else {
                         buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
                     }
-                } else { /* "name" */
+                } else { /* "layout" */
                     buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
-                } /* "name" */
-            } /* "type" */
-        } /* branch "name" */
+                } /* "layout" */
+            } /* "name" */
+        } /* branch "layout" */
         buf = flatcc_json_parser_object_end(ctx, buf, end, &more);
     }
+    buf = flatcc_json_parser_finalize_unions(ctx, buf, end);
     return buf;
 failed:
     return flatcc_json_parser_set_error(ctx, buf, end, flatcc_json_parser_error_runtime);
@@ -1020,28 +1096,8 @@ static const char *ddl_local_json_parser_enum(flatcc_json_parser_t *ctx, const c
 static const char *ddl_local_dsim_ddl_json_parser_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
         int *value_type, uint64_t *value, int *aggregate)
 {
-    const char *unmatched = buf;
-    const char *mark;
-    uint64_t w;
-
-    w = flatcc_json_parser_symbol_part(buf, end);
-    if (w == 0x73746f726167655f) { /* prefix "storage_" */
-        buf += 8;
-        w = flatcc_json_parser_symbol_part(buf, end);
-        if ((w & 0xffffffff00000000) == 0x7479706500000000) { /* "type" */
-            buf = flatcc_json_parser_match_scope(ctx, (mark = buf), end, 4);
-            if (buf != mark) {
-                buf = dsim_ddl_storage_type_parse_json_enum(ctx, buf, end, value_type, value, aggregate);
-            } else {
-                return unmatched;
-            }
-        } else { /* "type" */
-            return unmatched;
-        } /* "type" */
-    } else { /* prefix "storage_" */
-        return unmatched;
-    } /* prefix "storage_" */
-    return buf;
+    /* Scope has no enum / union types to look up. */
+    return buf; /* unmatched; */
 }
 
 static const char *ddl_global_json_parser_enum(flatcc_json_parser_t *ctx, const char *buf, const char *end,
@@ -1076,16 +1132,16 @@ static const char *ddl_global_json_parser_enum(flatcc_json_parser_t *ctx, const 
             if (w == 0x2e73746f72616765) { /* prefix ".storage" */
                 buf += 8;
                 w = flatcc_json_parser_symbol_part(buf, end);
-                if ((w & 0xffffffffff000000) == 0x5f74797065000000) { /* "_type" */
-                    buf = flatcc_json_parser_match_scope(ctx, (mark = buf), end, 5);
+                if ((w & 0xffffffffffffff00) == 0x5f656e67696e6500) { /* "_engine" */
+                    buf = flatcc_json_parser_match_scope(ctx, (mark = buf), end, 7);
                     if (buf != mark) {
-                        buf = dsim_ddl_storage_type_parse_json_enum(ctx, buf, end, value_type, value, aggregate);
+                        buf = dsim_ddl_storage_engine_parse_json_enum(ctx, buf, end, value_type, value, aggregate);
                     } else {
                         return unmatched;
                     }
-                } else { /* "_type" */
+                } else { /* "_engine" */
                     return unmatched;
-                } /* "_type" */
+                } /* "_engine" */
             } else { /* prefix ".storage" */
                 return unmatched;
             } /* prefix ".storage" */
