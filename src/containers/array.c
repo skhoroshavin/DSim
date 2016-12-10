@@ -13,7 +13,7 @@ void _dsim_array_init( struct _dsim_array *a, struct dsim_allocator *alloc )
 void _dsim_array_reserve( struct _dsim_array *a, uint32_t capacity, uint32_t elem_size )
 {
     if( a->capacity >= capacity ) return;
-    a->data = dsim_reallocate( a->_alloc, a->data, a->capacity*elem_size, capacity*elem_size );
+    a->data = dsim_reallocate( a->_alloc, a->data, capacity*elem_size );
     a->capacity = capacity;
 }
 
@@ -62,7 +62,7 @@ void _dsim_array_reset( struct _dsim_array *a, uint32_t elem_size )
 {
     if( a->data )
     {
-        dsim_deallocate( a->_alloc, a->data, a->capacity*elem_size );
+        dsim_deallocate( a->_alloc, a->data );
         a->data = 0;
         a->count = 0;
         a->capacity = 0;

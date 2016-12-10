@@ -8,9 +8,12 @@ struct dsim_stack_allocator
     struct dsim_allocator alloc;
 
     struct dsim_allocator * base_alloc;
-    void * data;
+    void *data;
     size_t allocated;
     size_t capacity;
+
+    void *last_data;
+    size_t last_size;
 };
 
 #define dsim_stack_alloc_save(num)    size_t _dsim_stack_pos_##num = dsim_stack_allocator_##num.allocated

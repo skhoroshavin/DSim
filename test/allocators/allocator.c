@@ -10,7 +10,7 @@ static void test_allocate( struct dsim_allocator *alloc )
     void *ptr = dsim_allocate( alloc, 25 );
     TEST_ASSERT_NOT_NULL( ptr );
     memset( ptr, 0xaa, 25 ); // Make sure memory is accessible
-    dsim_deallocate( alloc, ptr, 25 );
+    dsim_deallocate( alloc, ptr );
 }
 
 static void test_reallocate( struct dsim_allocator *alloc )
@@ -21,19 +21,19 @@ static void test_reallocate( struct dsim_allocator *alloc )
     memcpy( ptr, test_data, sizeof(test_data) );
     TEST_ASSERT_EQUAL_MEMORY( ptr, test_data, sizeof(test_data) );
 
-    ptr = dsim_reallocate( alloc, ptr, sizeof(test_data), sizeof(test_data)+64 );
+    ptr = dsim_reallocate( alloc, ptr, sizeof(test_data)+64 );
     TEST_ASSERT_NOT_NULL( ptr );
     TEST_ASSERT_EQUAL_MEMORY( ptr, test_data, sizeof(test_data) );
 
-    dsim_deallocate( alloc, ptr, sizeof(test_data)+64 );
+    dsim_deallocate( alloc, ptr );
 }
 
 static void test_reallocate_from_null( struct dsim_allocator *alloc )
 {
-    void *ptr = dsim_reallocate( alloc, 0, 0, 17 );
+    void *ptr = dsim_reallocate( alloc, 0, 17 );
     TEST_ASSERT_NOT_NULL( ptr );
     memset( ptr, 0xaa, 17 ); // Make sure memory is accessible
-    dsim_deallocate( alloc, ptr, 17 );
+    dsim_deallocate( alloc, ptr );
 }
 
 static void test_reallocate_twin( struct dsim_allocator *alloc )
@@ -50,14 +50,14 @@ static void test_reallocate_twin( struct dsim_allocator *alloc )
     TEST_ASSERT_EQUAL_MEMORY( ptr1, test_data1, sizeof(test_data1) );
     TEST_ASSERT_EQUAL_MEMORY( ptr2, test_data2, sizeof(test_data2) );
 
-    ptr1 = dsim_reallocate( alloc, ptr1, sizeof(test_data1), sizeof(test_data1) + 33 );
-    ptr2 = dsim_reallocate( alloc, ptr2, sizeof(test_data2), sizeof(test_data2) + 11 );
+    ptr1 = dsim_reallocate( alloc, ptr1, sizeof(test_data1) + 33 );
+    ptr2 = dsim_reallocate( alloc, ptr2, sizeof(test_data2) + 11 );
 
     TEST_ASSERT_EQUAL_MEMORY( ptr1, test_data1, sizeof(test_data1) );
     TEST_ASSERT_EQUAL_MEMORY( ptr2, test_data2, sizeof(test_data2) );
 
-    dsim_deallocate( alloc, ptr1, sizeof(test_data1)+33 );
-    dsim_deallocate( alloc, ptr2, sizeof(test_data2)+11 );
+    dsim_deallocate( alloc, ptr1 );
+    dsim_deallocate( alloc, ptr2 );
 }
 
 static void test_reallocate_less( struct dsim_allocator *alloc )
@@ -66,10 +66,10 @@ static void test_reallocate_less( struct dsim_allocator *alloc )
     void * ptr = dsim_allocate( alloc, sizeof(test_data) );
     memcpy( ptr, test_data, sizeof(test_data) );
 
-    ptr = dsim_reallocate( alloc, ptr, sizeof(test_data), sizeof(test_data)-13 );
+    ptr = dsim_reallocate( alloc, ptr, sizeof(test_data)-13 );
     TEST_ASSERT_EQUAL_MEMORY( ptr, test_data, sizeof(test_data)-13 );
 
-    dsim_deallocate( alloc, ptr, sizeof(test_data)-13 );
+    dsim_deallocate( alloc, ptr );
 }
 
 #define TEST_ALLOCATOR(name,alloc) \

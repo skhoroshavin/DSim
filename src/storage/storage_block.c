@@ -60,5 +60,5 @@ void dsim_storage_block_done( struct dsim_storage_block *sb )
     size_t array_count = dsim_ddl_array_vec_len(arrays);
     for( uint32_t i = 0; i < array_count; ++i )
         dsim_storage_array_reset( sb->arrays + i );
-    dsim_deallocate( sb->alloc, sb->arrays, array_count*sizeof(struct dsim_storage_array) );
+    dsim_deallocate( sb->alloc, sb->arrays );
 }
