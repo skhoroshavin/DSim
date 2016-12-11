@@ -8,6 +8,8 @@ Now at very early stage of development.
 - Allocator interface
 - Typed and untyped dynamic arrays
 - Hash container with array-like interface
+- Reflection system through JSON-based data definition language
+- Data definition language compiler and code generator for C
 
 ## Roadmap
 
@@ -28,5 +30,5 @@ Help with porting to as many platforms as possible is very welcome.
 
 ## Credits
 
-- Hash container inspired by hash from <a href="https://bitbucket.org/bitsquid/foundation">Bitsquid foundation</a> library.
-- Tests written using <a href="http://www.throwtheswitch.org/unity">Unity</a> framework.
+- Hash container inspired by hash from [Bitsquid foundation](https://bitbucket.org/bitsquid/foundation) library.
+- Tests written using [Unity](http://www.throwtheswitch.org/unity) framework.
