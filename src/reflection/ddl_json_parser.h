@@ -52,33 +52,64 @@ static const char *dsim_ddl_numeric_type_parse_json_table(flatcc_json_parser_t *
     uint64_t w;
     flatcc_json_parser_escape_buffer_t code;
 
-    if (flatcc_builder_start_table(ctx->ctx, 1)) goto failed;
+    if (flatcc_builder_start_table(ctx->ctx, 2)) goto failed;
     buf = flatcc_json_parser_object_start(ctx, buf, end, &more);
     while (more) {
         buf = flatcc_json_parser_symbol_start(ctx, buf, end);
         w = flatcc_json_parser_symbol_part(buf, end);
-        if (w == 0x69735f666c6f6174) { /* "is_float" */
-            buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 8);
-            if (mark != buf) {
-                uint8_t val = 0;
-                static flatcc_json_parser_integral_symbol_f *symbolic_parsers[] = {
-                        ddl_local_dsim_ddl_json_parser_enum,
-                        ddl_global_json_parser_enum, 0 };
-                buf = flatcc_json_parser_bool(ctx, (mark = buf), end, &val);
-                if (mark == buf) {
-                    buf = flatcc_json_parser_symbolic_bool(ctx, (mark = buf), end, symbolic_parsers, &val);
-                    if (buf == mark || buf == end) goto failed;
+        if (w < 0x69735f7369676e65) { /* branch "is_signe" */
+            if (w == 0x69735f666c6f6174) { /* "is_float" */
+                buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 8);
+                if (mark != buf) {
+                    uint8_t val = 0;
+                    static flatcc_json_parser_integral_symbol_f *symbolic_parsers[] = {
+                            ddl_local_dsim_ddl_json_parser_enum,
+                            ddl_global_json_parser_enum, 0 };
+                    buf = flatcc_json_parser_bool(ctx, (mark = buf), end, &val);
+                    if (mark == buf) {
+                        buf = flatcc_json_parser_symbolic_bool(ctx, (mark = buf), end, symbolic_parsers, &val);
+                        if (buf == mark || buf == end) goto failed;
+                    }
+                    if (val != 0 || (ctx->flags & flatcc_json_parser_f_force_add)) {
+                        if (!(pval = flatcc_builder_table_add(ctx->ctx, 1, 1, 1))) goto failed;
+                        flatbuffers_bool_write_to_pe(pval, val);
+                    }
+                } else {
+                    buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
                 }
-                if (val != 0 || (ctx->flags & flatcc_json_parser_f_force_add)) {
-                    if (!(pval = flatcc_builder_table_add(ctx->ctx, 0, 1, 1))) goto failed;
-                    flatbuffers_bool_write_to_pe(pval, val);
-                }
-            } else {
+            } else { /* "is_float" */
                 buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
-            }
-        } else { /* "is_float" */
-            buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
-        } /* "is_float" */
+            } /* "is_float" */
+        } else { /* branch "is_signe" */
+            if (w == 0x69735f7369676e65) { /* prefix "is_signe" */
+                buf += 8;
+                w = flatcc_json_parser_symbol_part(buf, end);
+                if ((w & 0xff00000000000000) == 0x6400000000000000) { /* "d" */
+                    buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 1);
+                    if (mark != buf) {
+                        uint8_t val = 0;
+                        static flatcc_json_parser_integral_symbol_f *symbolic_parsers[] = {
+                                ddl_local_dsim_ddl_json_parser_enum,
+                                ddl_global_json_parser_enum, 0 };
+                        buf = flatcc_json_parser_bool(ctx, (mark = buf), end, &val);
+                        if (mark == buf) {
+                            buf = flatcc_json_parser_symbolic_bool(ctx, (mark = buf), end, symbolic_parsers, &val);
+                            if (buf == mark || buf == end) goto failed;
+                        }
+                        if (val != 0 || (ctx->flags & flatcc_json_parser_f_force_add)) {
+                            if (!(pval = flatcc_builder_table_add(ctx->ctx, 0, 1, 1))) goto failed;
+                            flatbuffers_bool_write_to_pe(pval, val);
+                        }
+                    } else {
+                        buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
+                    }
+                } else { /* "d" */
+                    buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
+                } /* "d" */
+            } else { /* prefix "is_signe" */
+                buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
+            } /* prefix "is_signe" */
+        } /* branch "is_signe" */
         buf = flatcc_json_parser_object_end(ctx, buf, end, &more);
     }
     return buf;
@@ -300,8 +331,8 @@ static const char *dsim_ddl_reference_type_parse_json_table(flatcc_json_parser_t
     while (more) {
         buf = flatcc_json_parser_symbol_start(ctx, buf, end);
         w = flatcc_json_parser_symbol_part(buf, end);
-        if ((w & 0xffffffffffff0000) == 0x7461726765740000) { /* "target" */
-            buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 6);
+        if ((w & 0xffffffffffffff00) == 0x73746f7261676500) { /* "storage" */
+            buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 7);
             if (mark != buf) {
                 buf = flatcc_json_parser_string_start(ctx, buf, end);
                 buf = flatcc_json_parser_string_part(ctx, (mark = buf), end);
@@ -325,9 +356,9 @@ static const char *dsim_ddl_reference_type_parse_json_table(flatcc_json_parser_t
             } else {
                 buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
             }
-        } else { /* "target" */
+        } else { /* "storage" */
             buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
-        } /* "target" */
+        } /* "storage" */
         buf = flatcc_json_parser_object_end(ctx, buf, end, &more);
     }
     return buf;

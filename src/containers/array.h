@@ -27,7 +27,7 @@ void _dsim_array_resize( struct _dsim_array *a, uint32_t count, uint32_t elem_si
 void _dsim_array_push_back( struct _dsim_array *a, const void *data, uint32_t count, uint32_t elem_size );
 void _dsim_array_remove( struct _dsim_array *a, uint32_t pos, uint32_t count, uint32_t elem_size );
 void _dsim_array_remove_fast( struct _dsim_array *a, uint32_t pos, uint32_t count, uint32_t elem_size );
-void _dsim_array_reset( struct _dsim_array *a, uint32_t elem_size );
+void _dsim_array_reset( struct _dsim_array *a );
 
 #define DSIM_DEFINE_ARRAY(type,short_type) \
     struct dsim_array_##short_type \
@@ -58,7 +58,7 @@ void _dsim_array_reset( struct _dsim_array *a, uint32_t elem_size );
     inline static void dsim_array_##short_type##_clear( struct dsim_array_##short_type *a ) \
     { a->count = 0; } \
     inline static void dsim_array_##short_type##_reset( struct dsim_array_##short_type *a ) \
-    { _dsim_array_reset( (struct _dsim_array*)a, sizeof(type) ); } \
+    { _dsim_array_reset( (struct _dsim_array*)a ); } \
 
 DSIM_DEFINE_ARRAY(char,        char)    // LCOV_EXCL_BR_LINE
 DSIM_DEFINE_ARRAY(uint8_t,     uint8)   // LCOV_EXCL_BR_LINE

@@ -58,7 +58,7 @@ void _dsim_array_remove_fast( struct _dsim_array *a, uint32_t pos, uint32_t coun
     a->count -= count;
 }
 
-void _dsim_array_reset( struct _dsim_array *a, uint32_t elem_size )
+void _dsim_array_reset( struct _dsim_array *a )
 {
     if( a->data )
     {

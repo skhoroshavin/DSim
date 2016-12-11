@@ -44,7 +44,8 @@ static int __dsim_ddl_storage_engine_union_verifier(flatcc_table_verifier_descri
 static int __dsim_ddl_numeric_type_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
-    if ((ret = flatcc_verify_field(td, 0, 1, 1) /* is_float */)) return ret;
+    if ((ret = flatcc_verify_field(td, 0, 1, 1) /* is_signed */)) return ret;
+    if ((ret = flatcc_verify_field(td, 1, 1, 1) /* is_float */)) return ret;
     return flatcc_verify_ok;
 }
 
@@ -154,7 +155,7 @@ static inline int dsim_ddl_enum_type_verify_as_root_with_type_hash(const void *b
 static int __dsim_ddl_reference_type_table_verifier(flatcc_table_verifier_descriptor_t *td)
 {
     int ret;
-    if ((ret = flatcc_verify_string_field(td, 0, 0) /* target */)) return ret;
+    if ((ret = flatcc_verify_string_field(td, 0, 0) /* storage */)) return ret;
     return flatcc_verify_ok;
 }
 

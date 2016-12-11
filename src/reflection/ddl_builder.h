@@ -22,7 +22,7 @@ typedef struct dsim_ddl_any_type_union_ref dsim_ddl_any_type_union_ref_t;
 typedef struct dsim_ddl_storage_engine_union_ref dsim_ddl_storage_engine_union_ref_t;
 
 static const flatbuffers_voffset_t __dsim_ddl_numeric_type_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_ddl_numeric_type, 1)
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_numeric_type, 2)
 static const flatbuffers_voffset_t __dsim_ddl_struct_field_required[] = {0 };
 __flatbuffers_build_table(flatbuffers_, dsim_ddl_struct_field, 3)
 static const flatbuffers_voffset_t __dsim_ddl_struct_type_required[] = {0 };
@@ -43,8 +43,8 @@ static const flatbuffers_voffset_t __dsim_ddl_storage_required[] = {0 };
 __flatbuffers_build_table(flatbuffers_, dsim_ddl_storage, 4)
 static const flatbuffers_voffset_t __dsim_ddl_root_required[] = {0 };
 __flatbuffers_build_table(flatbuffers_, dsim_ddl_root, 4)
-#define __dsim_ddl_numeric_type_formal_args , flatbuffers_bool_t v0
-#define __dsim_ddl_numeric_type_call_args , v0
+#define __dsim_ddl_numeric_type_formal_args , flatbuffers_bool_t v0, flatbuffers_bool_t v1
+#define __dsim_ddl_numeric_type_call_args , v0, v1
 static inline dsim_ddl_numeric_type_ref_t dsim_ddl_numeric_type_create(flatbuffers_builder_t *B __dsim_ddl_numeric_type_formal_args);
 #define __dsim_ddl_struct_field_formal_args , flatbuffers_string_ref_t v0, flatbuffers_string_ref_t v1, uint32_t v2
 #define __dsim_ddl_struct_field_call_args , v0, v1, v2
@@ -115,12 +115,14 @@ static inline dsim_ddl_storage_engine_union_ref_t dsim_ddl_storage_engine_as_NON
 static inline dsim_ddl_storage_engine_union_ref_t dsim_ddl_storage_engine_as_hash_storage(dsim_ddl_hash_storage_ref_t ref)
 { dsim_ddl_storage_engine_union_ref_t uref; uref.type = dsim_ddl_storage_engine_hash_storage; uref.hash_storage = ref; return uref; }
 
-__flatbuffers_build_scalar_field(0, flatbuffers_, dsim_ddl_numeric_type_is_float, flatbuffers_bool, flatbuffers_bool_t, 1, 1, 0)
+__flatbuffers_build_scalar_field(0, flatbuffers_, dsim_ddl_numeric_type_is_signed, flatbuffers_bool, flatbuffers_bool_t, 1, 1, 0)
+__flatbuffers_build_scalar_field(1, flatbuffers_, dsim_ddl_numeric_type_is_float, flatbuffers_bool, flatbuffers_bool_t, 1, 1, 0)
 
 static inline dsim_ddl_numeric_type_ref_t dsim_ddl_numeric_type_create(flatbuffers_builder_t *B __dsim_ddl_numeric_type_formal_args)
 {
     if (dsim_ddl_numeric_type_start(B)
-        || dsim_ddl_numeric_type_is_float_add(B, v0)) {
+        || dsim_ddl_numeric_type_is_signed_add(B, v0)
+        || dsim_ddl_numeric_type_is_float_add(B, v1)) {
         return 0;
     }
     return dsim_ddl_numeric_type_end(B);
@@ -167,12 +169,12 @@ static inline dsim_ddl_enum_type_ref_t dsim_ddl_enum_type_create(flatbuffers_bui
 }
 __flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_enum_type, dsim_ddl_enum_type_identifier, dsim_ddl_enum_type_type_identifier)
 
-__flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_reference_type_target)
+__flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_reference_type_storage)
 
 static inline dsim_ddl_reference_type_ref_t dsim_ddl_reference_type_create(flatbuffers_builder_t *B __dsim_ddl_reference_type_formal_args)
 {
     if (dsim_ddl_reference_type_start(B)
-        || dsim_ddl_reference_type_target_add(B, v0)) {
+        || dsim_ddl_reference_type_storage_add(B, v0)) {
         return 0;
     }
     return dsim_ddl_reference_type_end(B);

@@ -71,10 +71,15 @@ static inline dsim_ddl_numeric_type_table_t dsim_ddl_numeric_type_vec_at(dsim_dd
 __flatbuffers_offset_vec_at(dsim_ddl_numeric_type_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_numeric_type)
 
-static inline flatbuffers_bool_t dsim_ddl_numeric_type_is_float(dsim_ddl_numeric_type_table_t t)
+static inline flatbuffers_bool_t dsim_ddl_numeric_type_is_signed(dsim_ddl_numeric_type_table_t t)
 __flatbuffers_scalar_field(flatbuffers_bool, 0, 0, t)
-static inline int dsim_ddl_numeric_type_is_float_is_present(dsim_ddl_numeric_type_table_t t)
+static inline int dsim_ddl_numeric_type_is_signed_is_present(dsim_ddl_numeric_type_table_t t)
 __flatbuffers_field_present(0, t)
+
+static inline flatbuffers_bool_t dsim_ddl_numeric_type_is_float(dsim_ddl_numeric_type_table_t t)
+__flatbuffers_scalar_field(flatbuffers_bool, 1, 0, t)
+static inline int dsim_ddl_numeric_type_is_float_is_present(dsim_ddl_numeric_type_table_t t)
+__flatbuffers_field_present(1, t)
 
 
 struct dsim_ddl_struct_field_table { uint8_t unused__; };
@@ -157,9 +162,9 @@ static inline dsim_ddl_reference_type_table_t dsim_ddl_reference_type_vec_at(dsi
 __flatbuffers_offset_vec_at(dsim_ddl_reference_type_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_reference_type)
 
-static inline flatbuffers_string_t dsim_ddl_reference_type_target(dsim_ddl_reference_type_table_t t)
+static inline flatbuffers_string_t dsim_ddl_reference_type_storage(dsim_ddl_reference_type_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-static inline int dsim_ddl_reference_type_target_is_present(dsim_ddl_reference_type_table_t t)
+static inline int dsim_ddl_reference_type_storage_is_present(dsim_ddl_reference_type_table_t t)
 __flatbuffers_field_present(0, t)
 
 typedef uint8_t dsim_ddl_any_type_union_type_t;

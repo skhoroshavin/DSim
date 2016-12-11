@@ -46,8 +46,10 @@ static void dsim_process_number( struct flatcc_builder * b, dsim_ddl_type_table_
     dsim_ddl_type_align_add( b, align );
 
     dsim_ddl_type_data_numeric_type_start( b );
-    dsim_ddl_numeric_type_is_float_add( b, dsim_ddl_numeric_type_is_float(ntype) );
-
+    flatbuffers_bool_t is_signed = dsim_ddl_numeric_type_is_signed(ntype);
+    flatbuffers_bool_t is_float = dsim_ddl_numeric_type_is_float(ntype);
+    dsim_ddl_numeric_type_is_signed_add( b, is_signed || is_float );
+    dsim_ddl_numeric_type_is_float_add( b, is_float );
     dsim_ddl_type_data_numeric_type_end( b );
 }
 
@@ -126,7 +128,7 @@ static void dsim_process_reference( struct flatcc_builder *b, dsim_ddl_type_tabl
     dsim_ddl_type_align_add( b, 8 );
 
     dsim_ddl_type_data_reference_type_start( b );
-    dsim_ddl_reference_type_target_clone( b, dsim_ddl_reference_type_target(rtype) );
+    dsim_ddl_reference_type_storage_clone( b, dsim_ddl_reference_type_storage(rtype) );
     dsim_ddl_type_data_reference_type_end( b );
 }
 

@@ -19,7 +19,7 @@ static void dsim_storage_array_remove_fast( struct dsim_storage_array *sa, uint3
 
 static void dsim_storage_array_reset( struct dsim_storage_array *sa )
 {
-    _dsim_array_reset( &sa->array, dsim_ddl_type_size(sa->type) );
+    _dsim_array_reset( &sa->array );
 }
 
 void dsim_storage_block_init( struct dsim_storage_block *sb, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )

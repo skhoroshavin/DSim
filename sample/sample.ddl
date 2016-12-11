@@ -42,7 +42,7 @@
 
         { name: "wire_ref", data_type: reference_type,
             data: {
-                target: "wires"
+                storage: "wires"
             }
         },
 

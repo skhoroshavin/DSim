@@ -7,7 +7,8 @@ namespace dsim.ddl;
 
 table numeric_type
 {
-    is_float: bool = false;
+    is_signed: bool;
+    is_float: bool;
 }
 
 table struct_field
@@ -29,7 +30,7 @@ table enum_type
 
 table reference_type
 {
-    target: string;
+    storage: string;
 }
 
 union any_type
