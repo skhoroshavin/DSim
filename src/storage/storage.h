@@ -43,13 +43,15 @@ struct dsim_storage
 {
     const struct dsim_storage_operations * _ops;
     struct dsim_storage_log log;
+    const char * name;
     dsim_ddl_layout_table_t layout;
 };
 
 inline static void dsim_storage_init( struct dsim_storage *storage, const struct dsim_storage_operations *ops,
-                                      dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )
+                                      const char * name, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )
 {
     storage->_ops = ops;
+    storage->name = name;
     storage->layout = layout;
     dsim_storage_log_init( &storage->log, alloc );
 }

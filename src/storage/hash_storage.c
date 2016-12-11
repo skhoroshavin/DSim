@@ -142,9 +142,9 @@ struct dsim_storage_operations dsim_hash_storage_ops =
     .done  = dsim_hash_storage_done
 };
 
-void dsim_hash_storage_init( struct dsim_hash_storage *storage, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )
+void dsim_hash_storage_init( struct dsim_hash_storage *storage, const char *name, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )
 {
-    dsim_storage_init( &storage->storage, &dsim_hash_storage_ops, layout, alloc );
+    dsim_storage_init( &storage->storage, &dsim_hash_storage_ops, name, layout, alloc );
     dsim_hash_init( &storage->ids, alloc );
     dsim_storage_block_init( &storage->data, layout, alloc );
 }

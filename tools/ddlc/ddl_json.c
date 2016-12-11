@@ -3,6 +3,7 @@
 #include "reflection/ddl_builder.h"
 #include "reflection/ddl_json_parser.h"
 #include "reflection/ddl_registry.h"
+#include "reflection/ddl_utils.h"
 #include "utils/log.h"
 
 static void *dsim_ddl_load_json( const char *json_data, size_t json_size, size_t *size_out )
@@ -50,7 +51,7 @@ static void dsim_process_number( struct flatcc_builder * b, dsim_ddl_type_table_
     dsim_ddl_type_data_numeric_type_end( b );
 }
 
-static void dsim_process_struct( struct flatcc_builder *b, dsim_ddl_type_table_t type, dsim_ddl_type_vec_t prev_types )
+static void dsim_process_struct( struct flatcc_builder *b, dsim_ddl_type_table_t type, dsim_ddl_root_table_t prev_root )
 {
     dsim_ddl_struct_type_table_t stype = (dsim_ddl_struct_type_table_t)dsim_ddl_type_data( type );
 
@@ -72,9 +73,9 @@ static void dsim_process_struct( struct flatcc_builder *b, dsim_ddl_type_table_t
             offset = dsim_ddl_struct_field_offset(field);
         dsim_ddl_struct_field_offset_add( b, offset );
 
-        if( prev_types )
+        if( prev_root )
         {
-            dsim_ddl_type_table_t type = dsim_ddl_types_scan_by_name( prev_types, dsim_ddl_struct_field_type(field) );
+            dsim_ddl_type_table_t type = dsim_ddl_type_by_name( prev_root, dsim_ddl_struct_field_type(field) );
             offset += dsim_ddl_type_size(type);
             align = max( align, dsim_ddl_type_align(type) );
         }
@@ -129,7 +130,7 @@ static void dsim_process_reference( struct flatcc_builder *b, dsim_ddl_type_tabl
     dsim_ddl_type_data_reference_type_end( b );
 }
 
-static void dsim_process_type( struct flatcc_builder *b, dsim_ddl_type_table_t type, dsim_ddl_type_vec_t prev_types )
+static void dsim_process_type( struct flatcc_builder *b, dsim_ddl_type_table_t type, dsim_ddl_root_table_t prev_root )
 {
     dsim_ddl_type_name_clone( b, dsim_ddl_type_name(type) );
     if( dsim_ddl_type_ctype_is_present(type) )
@@ -141,7 +142,7 @@ static void dsim_process_type( struct flatcc_builder *b, dsim_ddl_type_table_t t
         dsim_process_number( b, type );
         break;
     case dsim_ddl_any_type_struct_type:
-        dsim_process_struct( b, type, prev_types );
+        dsim_process_struct( b, type, prev_root );
         break;
     case dsim_ddl_any_type_enum_type:
         dsim_process_enum( b, type );
@@ -152,7 +153,7 @@ static void dsim_process_type( struct flatcc_builder *b, dsim_ddl_type_table_t t
     }
 }
 
-static void dsim_process_types( struct flatcc_builder *b, dsim_ddl_type_vec_t types, dsim_ddl_type_vec_t prev_types )
+static void dsim_process_types( struct flatcc_builder *b, dsim_ddl_type_vec_t types, dsim_ddl_root_table_t prev_root )
 {
     dsim_ddl_root_types_start( b );
     for( size_t i = 0; i != dsim_ddl_type_vec_len(types); ++i )
@@ -160,7 +161,7 @@ static void dsim_process_types( struct flatcc_builder *b, dsim_ddl_type_vec_t ty
         dsim_ddl_type_table_t type = dsim_ddl_type_vec_at(types, i);
 
         dsim_ddl_root_types_push_start( b );
-        dsim_process_type( b, type, prev_types );
+        dsim_process_type( b, type, prev_root );
         dsim_ddl_root_types_push_end( b );
     }
     dsim_ddl_root_types_end( b );
@@ -220,12 +221,7 @@ static void dsim_process_storages( struct flatcc_builder *b, dsim_ddl_storage_ve
 
 static void *dsim_process_ddl( const void *raw_data, const void *prev_data, size_t *size_out )
 {
-    dsim_ddl_type_vec_t prev_types = 0;
-    if( prev_data )
-    {
-        dsim_ddl_root_table_t prev_ddl = dsim_ddl_root_as_root( prev_data );
-        prev_types = dsim_ddl_root_types( prev_ddl );
-    }
+    dsim_ddl_root_table_t prev_root = prev_data ? dsim_ddl_root_as_root(prev_data) : 0;
 
     struct flatcc_builder b;
     flatcc_builder_init( &b );
@@ -234,7 +230,7 @@ static void *dsim_process_ddl( const void *raw_data, const void *prev_data, size
     dsim_ddl_root_table_t root = dsim_ddl_root_as_root( raw_data );
     dsim_ddl_root_name_clone( &b, dsim_ddl_root_name(root) );
 
-    dsim_process_types( &b, dsim_ddl_root_types(root), prev_types );
+    dsim_process_types( &b, dsim_ddl_root_types(root), prev_root );
     dsim_process_layouts( &b, dsim_ddl_root_layouts(root) );
     dsim_process_storages( &b, dsim_ddl_root_storages(root) );
 

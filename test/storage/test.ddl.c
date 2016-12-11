@@ -8,8 +8,8 @@ static const char dsim_ddl_test_data[] = {
     -44, 0, 0, 0, 64, 0, 0, 0, 4, 0, 0, 0, 1, 0, 0, 0,
     4, 0, 0, 0, -102, -3, -1, -1, 32, 0, 0, 0, 16, 0, 0, 0,
     1, 0, 0, 0, 4, 0, 0, 0, -16, -3, -1, -1, 4, 0, 0, 0,
-    116, 101, 115, 116, 0, 0, 0, 0, 7, 0, 0, 0, 115, 116, 111, 114,
-    97, 103, 101, 0, 1, 0, 0, 0, 4, 0, 0, 0, -6, -3, -1, -1,
+    116, 101, 115, 116, 0, 0, 0, 0, 4, 0, 0, 0, 116, 101, 115, 116,
+    0, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0, 0, -6, -3, -1, -1,
     120, 0, 0, 0, 4, 0, 0, 0, 3, 0, 0, 0, 76, 0, 0, 0,
     40, 0, 0, 0, 4, 0, 0, 0, 22, -2, -1, -1, 20, 0, 0, 0,
     4, 0, 0, 0, 4, 0, 0, 0, 118, 101, 99, 52, 0, 0, 0, 0,
@@ -49,9 +49,6 @@ static const char dsim_ddl_test_data[] = {
     16, 0
 };
 
-static struct dsim_hash_storage strg_storage;
-struct dsim_storage * storage = &strg_storage.storage;
-
 static struct _ddl_test _ddl;
 const struct _ddl_test *const ddl_test = &_ddl;
 
@@ -63,12 +60,9 @@ void dsim_ddl_init_test()
     _ddl.type_float = dsim_ddl_type( "float" );
     _ddl.type_vec4 = dsim_ddl_type( "vec4" );
     _ddl.layout_test = dsim_ddl_layout( "test" );
-
-    dsim_hash_storage_init( &strg_storage, _ddl.layout_test, &dsim_default_allocator );
+    _ddl.storage_test = dsim_ddl_storage( "test" );
 }
 void dsim_ddl_done_test()
 {
     dsim_ddl_registry_reset();
-
-    dsim_storage_done( storage );
 }

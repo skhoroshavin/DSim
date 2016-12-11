@@ -122,15 +122,6 @@ static const char dsim_ddl_sample_data[] = {
     20, 0, 4, 0, 8, 0, 12, 0, 16, 0
 };
 
-static struct dsim_hash_storage strg_wires;
-struct dsim_storage * wires = &strg_wires.storage;
-
-static struct dsim_hash_storage strg_logic;
-struct dsim_storage * logic = &strg_logic.storage;
-
-static struct dsim_hash_storage strg_delay;
-struct dsim_storage * delay = &strg_delay.storage;
-
 static struct _ddl_sample _ddl;
 const struct _ddl_sample *const ddl_sample = &_ddl;
 
@@ -152,16 +143,11 @@ void dsim_ddl_init_sample()
     _ddl.layout_wire = dsim_ddl_layout( "wire" );
     _ddl.layout_logic = dsim_ddl_layout( "logic" );
     _ddl.layout_delay = dsim_ddl_layout( "delay" );
-
-    dsim_hash_storage_init( &strg_wires, _ddl.layout_wire, &dsim_default_allocator );
-    dsim_hash_storage_init( &strg_logic, _ddl.layout_logic, &dsim_default_allocator );
-    dsim_hash_storage_init( &strg_delay, _ddl.layout_delay, &dsim_default_allocator );
+    _ddl.storage_wires = dsim_ddl_storage( "wires" );
+    _ddl.storage_logic = dsim_ddl_storage( "logic" );
+    _ddl.storage_delay = dsim_ddl_storage( "delay" );
 }
 void dsim_ddl_done_sample()
 {
     dsim_ddl_registry_reset();
-
-    dsim_storage_done( wires );
-    dsim_storage_done( logic );
-    dsim_storage_done( delay );
 }

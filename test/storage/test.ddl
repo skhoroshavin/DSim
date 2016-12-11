@@ -29,6 +29,6 @@
     ],
 
     storages: [
-        { name: "storage", layout: "test" }
+        { name: "test", layout: "test" }
     ]
 }
