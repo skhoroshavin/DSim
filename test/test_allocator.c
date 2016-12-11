@@ -3,7 +3,7 @@
 
 #include "unity_fixture.h"
 
-static void * test_allocate( struct dsim_allocator *self, size_t size )
+static void *test_allocate( struct dsim_allocator *self, size_t size )
 {
     dsim_unused(self);
     return unity_malloc( size );
@@ -15,7 +15,7 @@ static void test_deallocate( struct dsim_allocator *self, void *data )
     unity_free( data );
 }
 
-static void * test_reallocate( struct dsim_allocator *self, void *data, size_t size )
+static void *test_reallocate( struct dsim_allocator *self, void *data, size_t size )
 {
     dsim_unused(self);
     return unity_realloc( data, size );

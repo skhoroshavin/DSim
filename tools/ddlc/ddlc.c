@@ -15,7 +15,7 @@
 
 #include <stdio.h>
 
-static void * load_json_ddl( const char * filename, size_t * size_out )
+static void *load_json_ddl( const char *filename, size_t *size_out )
 {
     struct dsim_array_char json = dsim_array_static_init( &dsim_default_allocator );
     dsim_read_file( filename, &json );
@@ -35,7 +35,7 @@ int main( int argc, char *argv[] )
     struct dsim_string bin_name = dsim_string_static_init(&dsim_default_allocator);
     dsim_string_append( &bin_name, argv[1] );
     dsim_string_append( &bin_name, ".bin" );
-    FILE * f = fopen( bin_name.data, "w" );
+    FILE *f = fopen( bin_name.data, "w" );
     dsim_string_reset( &bin_name );
     fwrite( data, 1, size, f );
     fclose( f );

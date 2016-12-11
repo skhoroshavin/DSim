@@ -63,7 +63,7 @@ static void test_reallocate_twin( struct dsim_allocator *alloc )
 static void test_reallocate_less( struct dsim_allocator *alloc )
 {
     const uint32_t test_data[] = { 23, 65, 12, 98, 0, 3, 53 };
-    void * ptr = dsim_allocate( alloc, sizeof(test_data) );
+    void *ptr = dsim_allocate( alloc, sizeof(test_data) );
     memcpy( ptr, test_data, sizeof(test_data) );
 
     ptr = dsim_reallocate( alloc, ptr, sizeof(test_data)-13 );

@@ -8,7 +8,7 @@
 
 static void _dsim_ddl_generate_h( const char *h_name, void *data )
 {
-    FILE * f = fopen( h_name, "w" );
+    FILE *f = fopen( h_name, "w" );
 
     dsim_ddl_root_table_t root = dsim_ddl_root_as_root( data );
 
@@ -92,7 +92,7 @@ static void _dsim_ddl_generate_h( const char *h_name, void *data )
     for( size_t i = 0; i != dsim_ddl_storage_vec_len(storages); ++i )
     {
         dsim_ddl_storage_table_t storage = dsim_ddl_storage_vec_at(storages, i);
-        fprintf( f, "    struct dsim_storage * storage_%s;\n", dsim_ddl_storage_name(storage) );
+        fprintf( f, "    struct dsim_storage *storage_%s;\n", dsim_ddl_storage_name(storage) );
     }
     fprintf( f, "};\n" );
     fprintf( f, "extern const struct _ddl_%s *const ddl_%s;\n", dsim_ddl_root_name(root), dsim_ddl_root_name(root) );
@@ -111,7 +111,7 @@ static void _dsim_ddl_generate_h( const char *h_name, void *data )
             const char *array_name = dsim_ddl_array_name(array);
 
             dsim_ddl_type_table_t type = dsim_ddl_type_by_name( root, dsim_ddl_array_type(array) );
-            const char * ctype = dsim_ddl_type_ctype(type);
+            const char *ctype = dsim_ddl_type_ctype(type);
             if( !ctype ) ctype = dsim_ddl_type_name(type);
 
             fprintf( f, "inline static %s *%s_%s_%s_data( uint32_t block ) { return (%s *)dsim_storage_data( ddl_%s->storage_%s, block, %zd ); }\n",
@@ -127,7 +127,7 @@ static void _dsim_ddl_generate_h( const char *h_name, void *data )
     fclose( f );
 }
 
-static void dump_c_array( FILE * f, const char * data, size_t size )
+static void dump_c_array( FILE *f, const char *data, size_t size )
 {
     for( size_t i = 0; i < size; ++i )
     {
@@ -146,7 +146,7 @@ static void dump_c_array( FILE * f, const char * data, size_t size )
 
 static void _dsim_ddl_generate_c( const char *h_name, const char *c_name, void *data, size_t size )
 {
-    FILE * f = fopen( c_name, "w" );
+    FILE *f = fopen( c_name, "w" );
 
     dsim_ddl_root_table_t root = dsim_ddl_root_as_root( data );
 

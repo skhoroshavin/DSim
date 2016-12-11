@@ -24,7 +24,7 @@ static void run_all_tests()
     run_test_hash_storage();
 }
 
-int main( int argc, const char * argv[] )
+int main( int argc, const char *argv[] )
 {
     srand( time(0) );
     return UnityMain( argc, argv, run_all_tests );

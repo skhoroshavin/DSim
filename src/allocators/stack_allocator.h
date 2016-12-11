@@ -7,7 +7,7 @@ struct dsim_stack_allocator
 {
     struct dsim_allocator alloc;
 
-    struct dsim_allocator * base_alloc;
+    struct dsim_allocator *base_alloc;
     void *data;
     size_t allocated;
     size_t capacity;

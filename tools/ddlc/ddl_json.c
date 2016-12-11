@@ -28,7 +28,7 @@ finally:
     return buf;
 }
 
-static void dsim_process_number( struct flatcc_builder * b, dsim_ddl_type_table_t type )
+static void dsim_process_number( struct flatcc_builder *b, dsim_ddl_type_table_t type )
 {
     dsim_ddl_numeric_type_table_t ntype = (dsim_ddl_numeric_type_table_t)dsim_ddl_type_data( type );
 

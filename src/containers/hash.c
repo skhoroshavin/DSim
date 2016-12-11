@@ -117,7 +117,7 @@ void dsim_hash_push_back( struct dsim_hash *h, uint64_t key )
     _dsim_hash_key_insert( h, h->keys.count-1 );
 }
 
-void dsim_hash_push_back_n( struct dsim_hash *h, const uint64_t * keys, uint32_t count )
+void dsim_hash_push_back_n( struct dsim_hash *h, const uint64_t *keys, uint32_t count )
 {
     if( h->keys.count + count > h->keys.capacity )
         dsim_hash_reserve( h, dsim_next_pow_2(h->keys.count + count) );

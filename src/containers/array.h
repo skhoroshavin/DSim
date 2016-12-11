@@ -7,11 +7,11 @@ DSIM_BEGIN_HEADER
 
 struct _dsim_array
 {
-    union { void * data; uint8_t * at; };
+    union { void *data; uint8_t *at; };
     uint32_t count;
     uint32_t capacity;
 
-    struct dsim_allocator * _alloc;
+    struct dsim_allocator *_alloc;
 };
 
 #define dsim_array_static_init(alloc) { \
@@ -32,10 +32,10 @@ void _dsim_array_reset( struct _dsim_array *a );
 #define DSIM_DEFINE_ARRAY(type,short_type) \
     struct dsim_array_##short_type \
     { \
-        union { type * data; type * at; }; \
+        union { type *data; type *at; }; \
         uint32_t count; \
         uint32_t capacity; \
-        struct dsim_allocator * _alloc; \
+        struct dsim_allocator *_alloc; \
     }; \
     inline static void dsim_array_##short_type##_init( struct dsim_array_##short_type *a, struct dsim_allocator *alloc ) \
     { a->data = 0; a->count = 0; a->capacity = 0; a->_alloc = alloc; } \
@@ -45,7 +45,7 @@ void _dsim_array_reset( struct _dsim_array *a );
     { _dsim_array_resize( (struct _dsim_array*)a, count, sizeof(type) ); } \
     inline static void dsim_array_##short_type##_push_back( struct dsim_array_##short_type *a, type value ) \
     { if( a->capacity == a->count ) _dsim_array_grow( (struct _dsim_array*)a, 8, sizeof(type) ); a->at[a->count] = value; ++a->count; } \
-    inline static void dsim_array_##short_type##_push_back_n( struct dsim_array_##short_type *a, const type * data, uint32_t count ) \
+    inline static void dsim_array_##short_type##_push_back_n( struct dsim_array_##short_type *a, const type *data, uint32_t count ) \
     { _dsim_array_push_back( (struct _dsim_array*)a, data, count, sizeof(type) ); } \
     inline static void dsim_array_##short_type##_pop_back( struct dsim_array_##short_type *a ) \
     { assert(a->count); --a->count; } \

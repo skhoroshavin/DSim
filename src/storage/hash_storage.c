@@ -52,7 +52,7 @@ static dsim_storage_index dsim_hash_storage_find( const struct dsim_storage *sel
     return result;
 }
 
-static void dsim_hash_storage_find_range( const struct dsim_storage *self, uint64_t start_id, uint32_t count, struct dsim_array_storage_range * result )
+static void dsim_hash_storage_find_range( const struct dsim_storage *self, uint64_t start_id, uint32_t count, struct dsim_array_storage_range *result )
 {
     struct dsim_storage_range range =
     {

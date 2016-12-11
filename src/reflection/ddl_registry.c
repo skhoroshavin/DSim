@@ -32,18 +32,18 @@ dsim_ddl_layout_table_t dsim_ddl_layout( const char *name )
     return 0;
 }
 
-struct dsim_storage * dsim_ddl_storage( const char *name )
+struct dsim_storage *dsim_ddl_storage( const char *name )
 {
     for( uint32_t i = 0; i != ddl_storages.count; ++i )
     {
-        struct dsim_storage * storage = ddl_storages.at[i];
+        struct dsim_storage *storage = ddl_storages.at[i];
         if( strcmp( storage->name, name ) == 0 )
             return storage;
     }
     return 0;
 }
 
-void dsim_ddl_register( const void * data )
+void dsim_ddl_register( const void *data )
 {
     dsim_array_cptr_push_back( &ddl_roots, data );
 
@@ -60,7 +60,7 @@ void dsim_ddl_register( const void * data )
         {
         case dsim_ddl_storage_engine_hash_storage:
         {
-            struct dsim_hash_storage * hash = (struct dsim_hash_storage*)dsim_allocate( &dsim_default_allocator, sizeof(struct dsim_hash_storage) );
+            struct dsim_hash_storage *hash = (struct dsim_hash_storage*)dsim_allocate( &dsim_default_allocator, sizeof(struct dsim_hash_storage) );
             dsim_hash_storage_init( hash, name, layout, &dsim_default_allocator );
             dsim_array_storage_ptr_push_back( &ddl_storages, &hash->storage );
             break;

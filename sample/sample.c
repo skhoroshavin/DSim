@@ -6,14 +6,14 @@
 #include "utils/file.h"
 #include "utils/log.h"
 
-int main( int argc, const char * argv[] )
+int main( int argc, const char *argv[] )
 {
     dsim_unused(argc);
     dsim_unused(argv);
 
     dsim_ddl_init_sample();
 
-    lua_State * l = luaL_newstate();
+    lua_State *l = luaL_newstate();
     luaopen_base( l );
 
     dsim_lua_register_storage( l, ddl_sample->storage_wires, "wires" );

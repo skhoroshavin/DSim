@@ -28,11 +28,11 @@ struct dsim_storage_operations
     uint32_t (*block_count)( const struct dsim_storage *self );
     uint32_t (*block_size)( const struct dsim_storage *self, uint32_t block );
 
-    const uint64_t * (*id_data)( const struct dsim_storage *self, uint32_t block );
-    void *           (*data)( struct dsim_storage *self, uint32_t block, uint32_t i );
+    const uint64_t *(*id_data)( const struct dsim_storage *self, uint32_t block );
+    void*           (*data)( struct dsim_storage *self, uint32_t block, uint32_t i );
 
     dsim_storage_index (*find)( const struct dsim_storage *self, uint64_t id );
-    void             (*find_range)( const struct dsim_storage *self, uint64_t start_id, uint32_t count, struct dsim_array_storage_range * result );
+    void               (*find_range)( const struct dsim_storage *self, uint64_t start_id, uint32_t count, struct dsim_array_storage_range *result );
 
     void     (*insert)( struct dsim_storage *self, uint64_t start_id, uint32_t count );
     void     (*remove)( struct dsim_storage *self, uint64_t start_id, uint32_t count );
@@ -41,14 +41,14 @@ struct dsim_storage_operations
 
 struct dsim_storage
 {
-    const struct dsim_storage_operations * _ops;
+    const struct dsim_storage_operations *_ops;
     struct dsim_storage_log log;
-    const char * name;
+    const char *name;
     dsim_ddl_layout_table_t layout;
 };
 
 inline static void dsim_storage_init( struct dsim_storage *storage, const struct dsim_storage_operations *ops,
-                                      const char * name, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )
+                                      const char *name, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )
 {
     storage->_ops = ops;
     storage->name = name;
@@ -71,7 +71,7 @@ inline static void *dsim_storage_data( struct dsim_storage *storage, uint32_t bl
 
 inline static dsim_storage_index dsim_storage_find( const struct dsim_storage *storage, uint64_t id )
 { return storage->_ops->find( storage, id ); }
-inline static void dsim_storage_find_range( const struct dsim_storage *storage, uint64_t start_id, uint32_t count, struct dsim_array_storage_range * result )
+inline static void dsim_storage_find_range( const struct dsim_storage *storage, uint64_t start_id, uint32_t count, struct dsim_array_storage_range *result )
 { storage->_ops->find_range( storage, start_id, count, result ); }
 inline static void dsim_storage_insert( struct dsim_storage *storage, uint64_t start_id, uint32_t count )
 { storage->_ops->insert( storage, start_id, count ); }

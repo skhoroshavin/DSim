@@ -8,7 +8,7 @@ static void stack_initialize( struct dsim_stack_allocator *alloc )
     alloc->data = dsim_allocate( alloc->base_alloc, alloc->capacity );
 }
 
-static void * stack_allocate( struct dsim_allocator *self, size_t size )
+static void *stack_allocate( struct dsim_allocator *self, size_t size )
 {
     struct dsim_stack_allocator *alloc = container_of(self, struct dsim_stack_allocator, alloc);
 
@@ -27,7 +27,7 @@ static void * stack_allocate( struct dsim_allocator *self, size_t size )
     return data;
 }
 
-static void * stack_reallocate( struct dsim_allocator *self, void *data, size_t size )
+static void *stack_reallocate( struct dsim_allocator *self, void *data, size_t size )
 {
     if( data == 0 )
         return stack_allocate( self, size );
@@ -57,7 +57,7 @@ static void stack_deallocate( struct dsim_allocator *self, void *data )
     if( data == 0 )
         return;
 
-    struct dsim_stack_allocator * alloc = container_of(self, struct dsim_stack_allocator, alloc);
+    struct dsim_stack_allocator *alloc = container_of(self, struct dsim_stack_allocator, alloc);
 
     if( data == alloc->last_data )
     {

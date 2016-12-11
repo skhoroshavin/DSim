@@ -48,9 +48,9 @@ struct _ddl_sample
     dsim_ddl_layout_table_t layout_wire;
     dsim_ddl_layout_table_t layout_logic;
     dsim_ddl_layout_table_t layout_delay;
-    struct dsim_storage * storage_wires;
-    struct dsim_storage * storage_logic;
-    struct dsim_storage * storage_delay;
+    struct dsim_storage *storage_wires;
+    struct dsim_storage *storage_logic;
+    struct dsim_storage *storage_delay;
 };
 extern const struct _ddl_sample *const ddl_sample;
 

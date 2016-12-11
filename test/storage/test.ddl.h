@@ -17,7 +17,7 @@ struct _ddl_test
     dsim_ddl_type_table_t type_float;
     dsim_ddl_type_table_t type_vec4;
     dsim_ddl_layout_table_t layout_test;
-    struct dsim_storage * storage_test;
+    struct dsim_storage *storage_test;
 };
 extern const struct _ddl_test *const ddl_test;
 

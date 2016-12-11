@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <memory.h>
 
-static void * default_allocate( struct dsim_allocator *self, size_t size )
+static void *default_allocate( struct dsim_allocator *self, size_t size )
 {
     dsim_unused(self);
     return malloc( size );
@@ -15,7 +15,7 @@ static void default_deallocate( struct dsim_allocator *self, void *data )
     free( data );
 }
 
-static void * default_reallocate( struct dsim_allocator *self, void *data, size_t size )
+static void *default_reallocate( struct dsim_allocator *self, void *data, size_t size )
 {
     dsim_unused(self);
     return realloc( data, size );

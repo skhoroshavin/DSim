@@ -20,7 +20,7 @@ static uint64_t more_large[LARGE_COUNT];
  * Utility
  */
 
-static uint64_t rand_not_in_array( uint64_t max_value, const uint64_t * values, uint32_t count )
+static uint64_t rand_not_in_array( uint64_t max_value, const uint64_t *values, uint32_t count )
 {
     while( 1 )
     {
@@ -32,13 +32,13 @@ static uint64_t rand_not_in_array( uint64_t max_value, const uint64_t * values, 
     }
 }
 
-//static void fill_unique_rand( uint64_t max_value, uint64_t * values, uint32_t count )
+//static void fill_unique_rand( uint64_t max_value, uint64_t *values, uint32_t count )
 //{
 //    for( uint32_t i = 0; i < count; ++i )
 //        values[i] = rand_not_in_array( max_value, values, i );
 //}
 
-static int _less_uint64( const void * pa, const void * pb )
+static int _less_uint64( const void *pa, const void *pb )
 {
     uint64_t a = *((uint64_t*)pa);
     uint64_t b = *((uint64_t*)pb);

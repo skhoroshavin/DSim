@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void dsim_info( const char * fmt, ... )
+void dsim_info( const char *fmt, ... )
 {
     va_list args;
     va_start (args, fmt);
@@ -15,7 +15,7 @@ void dsim_info( const char * fmt, ... )
     va_end (args);
 }
 
-void dsim_warning( const char * fmt, ... )
+void dsim_warning( const char *fmt, ... )
 {
     va_list args;
     va_start (args, fmt);
@@ -25,7 +25,7 @@ void dsim_warning( const char * fmt, ... )
     va_end (args);
 }
 
-void dsim_error( const char * fmt, ... )
+void dsim_error( const char *fmt, ... )
 {
     va_list args;
     va_start (args, fmt);
@@ -35,7 +35,7 @@ void dsim_error( const char * fmt, ... )
     va_end (args);
 }
 
-void dsim_fatal( const char * fmt, ... )
+void dsim_fatal( const char *fmt, ... )
 {
     va_list args;
     va_start (args, fmt);

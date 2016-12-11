@@ -16,7 +16,7 @@ void dsim_string_reserve( struct dsim_string *s, uint32_t count )
     s->capacity = count+1;
 }
 
-void dsim_string_append( struct dsim_string *s, const char * data )
+void dsim_string_append( struct dsim_string *s, const char *data )
 {
     size_t count = strlen(data);
     if( s->size + count + 1 > s->capacity )
