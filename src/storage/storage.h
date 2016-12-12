@@ -47,9 +47,6 @@ inline static void dsim_storage_init( struct dsim_storage *storage, const struct
     dsim_storage_log_init( &storage->log, alloc );
 }
 
-inline static uint32_t dsim_storage_array_count( const struct dsim_storage *storage )
-{ return dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(storage->layout) ); }
-
 inline static uint32_t dsim_storage_block_count( const struct dsim_storage *storage )
 { return storage->_ops->block_count( storage ); }
 inline static uint32_t dsim_storage_block_size( const struct dsim_storage *storage, uint32_t block )

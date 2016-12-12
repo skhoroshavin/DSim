@@ -60,6 +60,7 @@ inline static void sample_wires_remove( const uint64_t *ids, uint32_t count )
 { dsim_storage_remove( ddl_sample->storage_wires, ids, count ); }
 inline static dsim_storage_index sample_wires_find( uint64_t id )
 { return dsim_storage_find( ddl_sample->storage_wires, id ); }
+inline static const uint64_t *sample_wires_id_data( uint32_t block ){ return (const uint64_t *)dsim_storage_id_data( ddl_sample->storage_wires, block ); }
 inline static const uint8_t *sample_wires_state_data( uint32_t block ){ return (const uint8_t *)dsim_storage_data( ddl_sample->storage_wires, block, 0 ); }
 inline static void sample_logic_insert( const uint64_t *ids, const wire_ref *input_1, const wire_ref *input_2, const wire_ref *output, const logic_type *type, uint32_t count )
 { const void *_data[] = { input_1, input_2, output, type }; dsim_storage_insert( ddl_sample->storage_logic, ids, _data, count ); }
@@ -67,6 +68,7 @@ inline static void sample_logic_remove( const uint64_t *ids, uint32_t count )
 { dsim_storage_remove( ddl_sample->storage_logic, ids, count ); }
 inline static dsim_storage_index sample_logic_find( uint64_t id )
 { return dsim_storage_find( ddl_sample->storage_logic, id ); }
+inline static const uint64_t *sample_logic_id_data( uint32_t block ){ return (const uint64_t *)dsim_storage_id_data( ddl_sample->storage_logic, block ); }
 inline static const wire_ref *sample_logic_input_1_data( uint32_t block ){ return (const wire_ref *)dsim_storage_data( ddl_sample->storage_logic, block, 0 ); }
 inline static const wire_ref *sample_logic_input_2_data( uint32_t block ){ return (const wire_ref *)dsim_storage_data( ddl_sample->storage_logic, block, 1 ); }
 inline static const wire_ref *sample_logic_output_data( uint32_t block ){ return (const wire_ref *)dsim_storage_data( ddl_sample->storage_logic, block, 2 ); }
@@ -77,6 +79,7 @@ inline static void sample_delay_remove( const uint64_t *ids, uint32_t count )
 { dsim_storage_remove( ddl_sample->storage_delay, ids, count ); }
 inline static dsim_storage_index sample_delay_find( uint64_t id )
 { return dsim_storage_find( ddl_sample->storage_delay, id ); }
+inline static const uint64_t *sample_delay_id_data( uint32_t block ){ return (const uint64_t *)dsim_storage_id_data( ddl_sample->storage_delay, block ); }
 inline static const wire_ref *sample_delay_input_data( uint32_t block ){ return (const wire_ref *)dsim_storage_data( ddl_sample->storage_delay, block, 0 ); }
 inline static const wire_ref *sample_delay_output_data( uint32_t block ){ return (const wire_ref *)dsim_storage_data( ddl_sample->storage_delay, block, 1 ); }
 inline static const float *sample_delay_delay_data( uint32_t block ){ return (const float *)dsim_storage_data( ddl_sample->storage_delay, block, 2 ); }

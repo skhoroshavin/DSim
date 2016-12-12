@@ -135,6 +135,10 @@ static void _dsim_ddl_generate_h( const char *h_name, void *data )
         fprintf( f, "inline static dsim_storage_index %s_%s_find( uint64_t id )\n", root_name, storage_name );
         fprintf( f, "{ return dsim_storage_find( ddl_%s->storage_%s, id ); }\n", root_name, storage_name );
 
+        fprintf( f, "inline static const uint64_t *%s_%s_id_data( uint32_t block )"
+                    "{ return (const uint64_t *)dsim_storage_id_data( ddl_%s->storage_%s, block ); }\n",
+                 root_name, storage_name, root_name, storage_name );
+
         for( size_t j = 0; j != dsim_ddl_array_vec_len(arrays); ++j )
         {
             dsim_ddl_array_table_t array = dsim_ddl_array_vec_at(arrays, j);

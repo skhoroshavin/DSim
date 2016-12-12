@@ -36,7 +36,7 @@ static const void *dsim_hash_storage_data( struct dsim_storage *self, uint32_t b
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
 
     assert( block == 0 ); // LCOV_EXCL_BR_LINE
-    assert( i < dsim_storage_array_count(self) ); // LCOV_EXCL_BR_LINE TODO
+    assert( i < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ) ); // LCOV_EXCL_BR_LINE
     return s->data.arrays[i].array.data;
 }
 

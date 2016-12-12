@@ -19,7 +19,7 @@
 
     layouts: [
         {
-            name: "test",
+            name: "layout",
             arrays: [
                 { name: "i", type: "uint8" },
                 { name: "f", type: "float" },
@@ -29,6 +29,6 @@
     ],
 
     storages: [
-        { name: "test", layout: "test" }
+        { name: "storage", layout: "layout" }
     ]
 }

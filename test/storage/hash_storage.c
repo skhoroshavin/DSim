@@ -7,7 +7,7 @@
 
 static void test_hash_storage_scheme()
 {
-    TEST_ASSERT_EQUAL( dsim_storage_block_count( ddl_test->storage_test ), 1 );
+    TEST_ASSERT_EQUAL( dsim_storage_block_count( ddl_test->storage_storage ), 1 );
 }
 
 inline static void check_index( dsim_storage_index ti, uint32_t block, uint32_t index )
@@ -18,28 +18,30 @@ inline static void check_index( dsim_storage_index ti, uint32_t block, uint32_t 
 
 static void test_hash_storage_empty()
 {
-    TEST_ASSERT_EQUAL( dsim_storage_block_size( ddl_test->storage_test, 0 ), 0 );
+    TEST_ASSERT_EQUAL( dsim_storage_block_size( ddl_test->storage_storage, 0 ), 0 );
 
-    TEST_ASSERT_NULL( dsim_storage_id_data( ddl_test->storage_test, 0 ) );
-    for( uint32_t i = 0; i < dsim_storage_array_count( ddl_test->storage_test ); ++i )
-        TEST_ASSERT_NULL( dsim_storage_data( ddl_test->storage_test, 0, i ) );
+    TEST_ASSERT_NULL( test_storage_id_data( 0 ) );
+    TEST_ASSERT_NULL( test_storage_i_data( 0 ) );
+    TEST_ASSERT_NULL( test_storage_f_data( 0 ) );
+    TEST_ASSERT_NULL( test_storage_v_data( 0 ) );
 
-    check_index( test_test_find( 0 ),  0, DSIM_INVALID_INDEX );
-    check_index( test_test_find( 1 ),  0, DSIM_INVALID_INDEX );
-    check_index( test_test_find( 25 ), 0, DSIM_INVALID_INDEX );
-    check_index( test_test_find( 30 ), 0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 0 ),  0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 1 ),  0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 25 ), 0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 30 ), 0, DSIM_INVALID_INDEX );
 
-    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.version, 0 );
-    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.count, 0 );
+    TEST_ASSERT_EQUAL( ddl_test->storage_storage->log.version, 0 );
+    TEST_ASSERT_EQUAL( ddl_test->storage_storage->log.commands.count, 0 );
 }
 
 static void test_hash_storage_count( uint32_t count )
 {
-    TEST_ASSERT_EQUAL( dsim_storage_block_size( ddl_test->storage_test, 0 ), count );
+    TEST_ASSERT_EQUAL( dsim_storage_block_size( ddl_test->storage_storage, 0 ), count );
 
-    TEST_ASSERT_NOT_NULL( dsim_storage_id_data( ddl_test->storage_test, 0 ) );
-    for( uint32_t i = 0; i < dsim_storage_array_count( ddl_test->storage_test ); ++i )
-        TEST_ASSERT_NOT_NULL( dsim_storage_data( ddl_test->storage_test, 0, i ) );
+    TEST_ASSERT_NOT_NULL( test_storage_id_data( 0 ) );
+    TEST_ASSERT_NOT_NULL( test_storage_i_data( 0 ) );
+    TEST_ASSERT_NOT_NULL( test_storage_f_data( 0 ) );
+    TEST_ASSERT_NOT_NULL( test_storage_v_data( 0 ) );
 }
 
 /*
@@ -67,13 +69,11 @@ TEST(hash_storage_empty, assert_empty)
 TEST(hash_storage_empty, insert)
 {
     const uint64_t ids[] = { 100, 101, 102, 103 };
-    test_test_insert( ids, 0, 0, 0, count_of(ids) );
+    test_storage_insert( ids, 0, 0, 0, count_of(ids) );
 
     test_hash_storage_scheme();
     test_hash_storage_count( count_of(ids) );
-
-    for( size_t i = 0; i < count_of(ids); ++i )
-        TEST_ASSERT_EQUAL( dsim_storage_id_data( ddl_test->storage_test, 0 )[i], 100 + i );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_id_data( 0 ), ids, sizeof(ids) );
 
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.count, 1 );
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );
@@ -111,15 +111,15 @@ static const vec4     test_data_v[10] = {
 
 static void test_hash_storage_data()
 {
-    TEST_ASSERT_EQUAL_MEMORY( test_test_i_data( 0 ), test_data_i, sizeof(test_data_i) );
-    TEST_ASSERT_EQUAL_MEMORY( test_test_f_data( 0 ), test_data_f, sizeof(test_data_f) );
-    TEST_ASSERT_EQUAL_MEMORY( test_test_v_data( 0 ), test_data_v, sizeof(test_data_v) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_data( 0 ), test_data_i, sizeof(test_data_i) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ), test_data_f, sizeof(test_data_f) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ), test_data_v, sizeof(test_data_v) );
 
-    check_index( test_test_find( 0 ),   0, DSIM_INVALID_INDEX );
-    check_index( test_test_find( 1 ),   0, DSIM_INVALID_INDEX );
-    check_index( test_test_find( 20 ),  0, 0 );
-    check_index( test_test_find( 27 ),  0, 7 );
-    check_index( test_test_find( 324 ), 0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 0 ),   0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 1 ),   0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 20 ),  0, 0 );
+    check_index( test_storage_find( 27 ),  0, 7 );
+    check_index( test_storage_find( 324 ), 0, DSIM_INVALID_INDEX );
 }
 
 TEST_GROUP(hash_storage_non_empty);
@@ -132,7 +132,7 @@ TEST_SETUP(hash_storage_non_empty)
     TEST_ASSERT_EQUAL( count_of(test_data_f), 10 );
     TEST_ASSERT_EQUAL( count_of(test_data_v), 10 );
 
-    test_test_insert( test_data_ids, test_data_i, test_data_f, test_data_v, count_of(test_data_ids) );
+    test_storage_insert( test_data_ids, test_data_i, test_data_f, test_data_v, count_of(test_data_ids) );
 }
 
 TEST_TEAR_DOWN(hash_storage_non_empty)
@@ -156,15 +156,15 @@ TEST(hash_storage_non_empty, assert_non_empty)
 TEST(hash_storage_non_empty, insert_more)
 {
     const uint64_t ids[] = { 15, 16, 17 };
-    test_test_insert( ids, 0, 0, 0, count_of(ids) );
+    test_storage_insert( ids, 0, 0, 0, count_of(ids) );
 
     test_hash_storage_scheme();
     test_hash_storage_count( 13 );
     test_hash_storage_data();
 
-    check_index( test_test_find( 15 ), 0, 10 );
-    check_index( test_test_find( 17 ), 0, 12 );
-    check_index( test_test_find( 18 ), 0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 15 ), 0, 10 );
+    check_index( test_storage_find( 17 ), 0, 12 );
+    check_index( test_storage_find( 18 ), 0, DSIM_INVALID_INDEX );
 
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.count, 2 );
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );
@@ -180,30 +180,30 @@ TEST(hash_storage_non_empty, insert_more)
 TEST(hash_storage_non_empty, remove_fast)
 {
     const uint64_t ids[] = { 22, 23, 24 };
-    test_test_remove( ids, count_of(ids) );
+    test_storage_remove( ids, count_of(ids) );
 
     test_hash_storage_scheme();
     test_hash_storage_count( 7 );
 
-    TEST_ASSERT_EQUAL_MEMORY( test_test_i_data( 0 ),     test_data_i,          2*sizeof(test_data_i[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_test_i_data( 0 ) + 2, test_data_i + 10 - 3, 3*sizeof(test_data_i[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_test_i_data( 0 ) + 5, test_data_i + 5,      2*sizeof(test_data_i[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_data( 0 ),     test_data_i,          2*sizeof(test_data_i[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_data( 0 ) + 2, test_data_i + 10 - 3, 3*sizeof(test_data_i[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_data( 0 ) + 5, test_data_i + 5,      2*sizeof(test_data_i[0]) );
 
-    TEST_ASSERT_EQUAL_MEMORY( test_test_f_data( 0 ),     test_data_f,          2*sizeof(test_data_f[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_test_f_data( 0 ) + 2, test_data_f + 10 - 3, 3*sizeof(test_data_f[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_test_f_data( 0 ) + 5, test_data_f + 5,      2*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ),     test_data_f,          2*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ) + 2, test_data_f + 10 - 3, 3*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ) + 5, test_data_f + 5,      2*sizeof(test_data_f[0]) );
 
-    TEST_ASSERT_EQUAL_MEMORY( test_test_v_data( 0 ),     test_data_v,          2*sizeof(test_data_v[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_test_v_data( 0 ) + 2, test_data_v + 10 - 3, 3*sizeof(test_data_v[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_test_v_data( 0 ) + 5, test_data_v + 5,      2*sizeof(test_data_v[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ),     test_data_v,          2*sizeof(test_data_v[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ) + 2, test_data_v + 10 - 3, 3*sizeof(test_data_v[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ) + 5, test_data_v + 5,      2*sizeof(test_data_v[0]) );
 
-    check_index( test_test_find( 0 ) , 0, DSIM_INVALID_INDEX );
-    check_index( test_test_find( 15 ), 0, DSIM_INVALID_INDEX );
-    check_index( test_test_find( 20 ), 0, 0 );
-    check_index( test_test_find( 21 ), 0, 1 );
-    check_index( test_test_find( 23 ), 0, DSIM_INVALID_INDEX );
-    check_index( test_test_find( 26 ), 0, 6 );
-    check_index( test_test_find( 28 ), 0, 3 );
+    check_index( test_storage_find( 0 ) , 0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 15 ), 0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 20 ), 0, 0 );
+    check_index( test_storage_find( 21 ), 0, 1 );
+    check_index( test_storage_find( 23 ), 0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 26 ), 0, 6 );
+    check_index( test_storage_find( 28 ), 0, 3 );
 
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.count, 2 );
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );
@@ -219,27 +219,27 @@ TEST(hash_storage_non_empty, remove_fast)
 TEST(hash_storage_non_empty, remove_ordered)
 {
     const uint64_t ids[] = { 23, 24, 25, 26 };
-    test_test_remove( ids, count_of(ids) );
+    test_storage_remove( ids, count_of(ids) );
 
     test_hash_storage_scheme();
     test_hash_storage_count( 6 );
 
-    TEST_ASSERT_EQUAL_MEMORY( test_test_i_data( 0 ),     test_data_i,     3*sizeof(test_data_i[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_test_i_data( 0 ) + 3, test_data_i + 7, 3*sizeof(test_data_i[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_data( 0 ),     test_data_i,     3*sizeof(test_data_i[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_data( 0 ) + 3, test_data_i + 7, 3*sizeof(test_data_i[0]) );
 
-    TEST_ASSERT_EQUAL_MEMORY( test_test_f_data( 0 ),     test_data_f,     3*sizeof(test_data_f[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_test_f_data( 0 ) + 3, test_data_f + 7, 3*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ),     test_data_f,     3*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ) + 3, test_data_f + 7, 3*sizeof(test_data_f[0]) );
 
-    TEST_ASSERT_EQUAL_MEMORY( test_test_v_data( 0 ),     test_data_v,     3*sizeof(test_data_v[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_test_v_data( 0 ) + 3, test_data_v + 7, 3*sizeof(test_data_v[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ),     test_data_v,     3*sizeof(test_data_v[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ) + 3, test_data_v + 7, 3*sizeof(test_data_v[0]) );
 
-    check_index( test_test_find( 0 ), 0, DSIM_INVALID_INDEX );
-    check_index( test_test_find( 15 ), 0, DSIM_INVALID_INDEX );
-    check_index( test_test_find( 20 ), 0, 0 );
-    check_index( test_test_find( 22 ), 0, 2 );
-    check_index( test_test_find( 24 ), 0, DSIM_INVALID_INDEX );
-    check_index( test_test_find( 27 ), 0, 3 );
-    check_index( test_test_find( 29 ), 0, 5 );
+    check_index( test_storage_find( 0 ), 0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 15 ), 0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 20 ), 0, 0 );
+    check_index( test_storage_find( 22 ), 0, 2 );
+    check_index( test_storage_find( 24 ), 0, DSIM_INVALID_INDEX );
+    check_index( test_storage_find( 27 ), 0, 3 );
+    check_index( test_storage_find( 29 ), 0, 5 );
 
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.count, 2 );
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );
