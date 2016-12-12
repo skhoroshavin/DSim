@@ -20,21 +20,15 @@ int main( int argc, const char *argv[] )
     dsim_lua_register_storage( l, ddl_sample->storage_logic, "logic" );
     dsim_lua_register_storage( l, ddl_sample->storage_logic, "delay" );
 
-    dsim_storage_insert( ddl_sample->storage_wires, 1, 16 );
-    memset( sample_wires_state_data( 0 ), 0, 16 );
+    const uint64_t wire_ids[]    = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    const uint8_t  wire_states[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    sample_wires_insert( wire_ids, wire_states, count_of(wire_ids) );
 
-    dsim_storage_insert( ddl_sample->storage_logic, 1, 3 );
-    sample_logic_input_1_data( 0 )[0].id = 1;
-    sample_logic_input_2_data( 0 )[0].id = 2;
-    sample_logic_output_data ( 0 )[0].id = 3;
-
-    sample_logic_input_1_data( 0 )[1].id = 4;
-    sample_logic_input_2_data( 0 )[1].id = 5;
-    sample_logic_output_data ( 0 )[1].id = 6;
-
-    sample_logic_input_1_data( 0 )[2].id = 3;
-    sample_logic_input_2_data( 0 )[2].id = 6;
-    sample_logic_output_data ( 0 )[2].id = 7;
+    const uint64_t logic_ids[] = { 1, 2, 3 };
+    const wire_ref logic_in1[] = { {1}, {2}, {3} };
+    const wire_ref logic_in2[] = { {4}, {5}, {6} };
+    const wire_ref logic_out[] = { {3}, {6}, {7} };
+    sample_logic_insert( logic_ids, logic_in1, logic_in2, logic_out, 0, count_of(logic_ids) );
 
     if( luaL_dofile( l, "sample.lua" ) )
         printf( "Error: %s\n", lua_tostring( l, -1 ) );

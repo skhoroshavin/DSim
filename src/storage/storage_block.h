@@ -19,5 +19,6 @@ struct dsim_storage_block
 
 void dsim_storage_block_init( struct dsim_storage_block *sb, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc );
 void dsim_storage_block_resize( struct dsim_storage_block *sb, uint32_t count );
+void dsim_storage_block_push_back( struct dsim_storage_block *sb, const void *const *data, uint32_t count );
 void dsim_storage_block_remove_fast( struct dsim_storage_block *sb, uint32_t pos, uint32_t count );
 void dsim_storage_block_done( struct dsim_storage_block *sb );

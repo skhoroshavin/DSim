@@ -21,9 +21,16 @@ struct _ddl_test
 };
 extern const struct _ddl_test *const ddl_test;
 
-inline static uint8_t *test_test_i_data( uint32_t block ) { return (uint8_t *)dsim_storage_data( ddl_test->storage_test, block, 0 ); }
-inline static float *test_test_f_data( uint32_t block ) { return (float *)dsim_storage_data( ddl_test->storage_test, block, 1 ); }
-inline static vec4 *test_test_v_data( uint32_t block ) { return (vec4 *)dsim_storage_data( ddl_test->storage_test, block, 2 ); }
+inline static void test_test_insert( const uint64_t *ids, const uint8_t *i, const float *f, const vec4 *v, uint32_t count )
+{ const void *_data[] = { i, f, v }; dsim_storage_insert( ddl_test->storage_test, ids, _data, count ); }
+inline static void test_test_remove( const uint64_t *ids, uint32_t count )
+{ dsim_storage_remove( ddl_test->storage_test, ids, count ); }
+inline static dsim_storage_index test_test_find( uint64_t id )
+{ return dsim_storage_find( ddl_test->storage_test, id ); }
+inline static const uint8_t *test_test_i_data( uint32_t block ){ return (const uint8_t *)dsim_storage_data( ddl_test->storage_test, block, 0 ); }
+inline static const float *test_test_f_data( uint32_t block ){ return (const float *)dsim_storage_data( ddl_test->storage_test, block, 1 ); }
+inline static const vec4 *test_test_v_data( uint32_t block ){ return (const vec4 *)dsim_storage_data( ddl_test->storage_test, block, 2 ); }
+
 void dsim_ddl_init_test();
 void dsim_ddl_done_test();
 

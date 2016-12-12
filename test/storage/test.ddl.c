@@ -62,7 +62,9 @@ void dsim_ddl_init_test()
     _ddl.layout_test = dsim_ddl_layout( "test" );
     _ddl.storage_test = dsim_ddl_storage( "test" );
 }
+
 void dsim_ddl_done_test()
 {
     dsim_ddl_registry_reset();
 }
+

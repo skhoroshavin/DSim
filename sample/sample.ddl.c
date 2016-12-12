@@ -147,7 +147,9 @@ void dsim_ddl_init_sample()
     _ddl.storage_logic = dsim_ddl_storage( "logic" );
     _ddl.storage_delay = dsim_ddl_storage( "delay" );
 }
+
 void dsim_ddl_done_sample()
 {
     dsim_ddl_registry_reset();
 }
+
