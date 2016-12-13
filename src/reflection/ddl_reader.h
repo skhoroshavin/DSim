@@ -55,9 +55,8 @@ typedef flatbuffers_uoffset_t *dsim_ddl_root_mutable_vec_t;
 
 
 
-/************************************************************************\
- *  * Type definitions                                                     *
- * \*********************************************************************** */
+/** //////////////////////////////////////////////////////////////////////
+ * ////////////////////////////////////////////////////////////////////// */
 struct dsim_ddl_numeric_type_table { uint8_t unused__; };
 
 #ifndef dsim_ddl_numeric_type_identifier
@@ -229,9 +228,8 @@ static inline int dsim_ddl_type_data_is_present(dsim_ddl_type_table_t t)
 __flatbuffers_field_present(4, t)
 
 
-/************************************************************************\
- *  * Layout definitions                                                   *
- * \*********************************************************************** */
+/** //////////////////////////////////////////////////////////////////////
+ * ////////////////////////////////////////////////////////////////////// */
 struct dsim_ddl_array_table { uint8_t unused__; };
 
 #ifndef dsim_ddl_array_identifier
@@ -279,9 +277,8 @@ __flatbuffers_vector_field(dsim_ddl_array_vec_t, 1, t, 0)
 static inline int dsim_ddl_layout_arrays_is_present(dsim_ddl_layout_table_t t)
 __flatbuffers_field_present(1, t)
 
-/************************************************************************\
- *  * Storage definitions                                                  *
- * \*********************************************************************** */
+/** //////////////////////////////////////////////////////////////////////
+ * ////////////////////////////////////////////////////////////////////// */
 typedef uint8_t dsim_ddl_storage_engine_union_type_t;
 __flatbuffers_define_integer_type(dsim_ddl_storage_engine, dsim_ddl_storage_engine_union_type_t, 8)
 #define dsim_ddl_storage_engine_NONE ((dsim_ddl_storage_engine_union_type_t)0U)
@@ -342,9 +339,8 @@ static inline int dsim_ddl_storage_engine_is_present(dsim_ddl_storage_table_t t)
 __flatbuffers_field_present(2, t)
 
 
-/************************************************************************\
- *  * DDL root                                                             *
- * \*********************************************************************** */
+/** //////////////////////////////////////////////////////////////////////
+ * ////////////////////////////////////////////////////////////////////// */
 struct dsim_ddl_root_table { uint8_t unused__; };
 
 #ifndef dsim_ddl_root_identifier
