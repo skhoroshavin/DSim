@@ -53,6 +53,28 @@ flatbuffers_voffset_t offset = 0;\
 }
 #define __flatbuffers_vector_field(T, ID, t, r) __flatbuffers_offset_field(T, ID, t, r, sizeof(flatbuffers_uoffset_t))
 #define __flatbuffers_table_field(T, ID, t, r) __flatbuffers_offset_field(T, ID, t, r, 0)
+#define __flatbuffers_define_search_by_string_field(N, NK) \
+/* Note: find only works on vectors sorted by this field. */\
+static inline size_t N ## _vec_find_by_ ## NK(N ## _vec_t vec, const char *s)\
+__flatbuffers_find_by_string_field(N ## _ ## NK, vec, N ## _vec_at, N ## _vec_len, s)\
+static inline size_t N ## _vec_find_n_by_ ## NK(N ## _vec_t vec, const char *s, int n)\
+__flatbuffers_find_by_string_n_field(N ## _ ## NK, vec, N ## _vec_at, N ## _vec_len, s, n)\
+static inline size_t N ## _vec_scan_by_ ## NK(N ## _vec_t vec, const char *s)\
+__flatbuffers_scan_by_string_field(0, N ## _vec_len(vec), N ## _ ## NK, vec, N ## _vec_at, N ## _vec_len, s)\
+static inline size_t N ## _vec_scan_n_by_ ## NK(N ## _vec_t vec, const char *s, int n)\
+__flatbuffers_scan_by_string_n_field(0, N ## _vec_len(vec), N ## _ ## NK, vec, N ## _vec_at, N ## _vec_len, s, n)\
+static inline size_t N ## _vec_scan_at_by_ ## NK(N ## _vec_t vec, size_t pos, const char *s)\
+__flatbuffers_scan_by_string_field(pos, N ## _vec_len(vec), N ## _ ## NK, vec, N ## _vec_at, N ## _vec_len, s)\
+static inline size_t N ## _vec_scan_n_at_by_ ## NK(N ## _vec_t vec, size_t pos, const char *s, int n)\
+__flatbuffers_scan_by_string_n_field(pos, N ## _vec_len(vec), N ## _ ## NK, vec, N ## _vec_at, N ## _vec_len, s, n)\
+static inline size_t N ## _vec_scan_range_by_ ## NK(N ## _vec_t vec, size_t begin, size_t end, const char *s)\
+__flatbuffers_scan_by_string_field(begin, __flatbuffers_min(end, N ## _vec_len(vec)), N ## _ ## NK, vec, N ## _vec_at, N ## _vec_len, s)\
+static inline size_t N ## _vec_scan_n_range_by_ ## NK(N ## _vec_t vec, size_t begin, size_t end, const char *s, int n)\
+__flatbuffers_scan_by_string_n_field(begin, __flatbuffers_min( end, N ## _vec_len(vec) ), N ## _ ## NK, vec, N ## _vec_at, N ## _vec_len, s, n)\
+static inline size_t N ## _vec_scan_next_by_ ## NK(N ## _vec_t vec, size_t pos, const char *s)\
+{ if (flatbuffers_not_found == pos) return flatbuffers_not_found; return N ## _vec_scan_at_by_ ## NK(vec, pos+1, s); }\
+static inline size_t N ## _vec_scan_n_next_by_ ## NK(N ## _vec_t vec, size_t pos, const char *s, int n)\
+{ if (flatbuffers_not_found == pos) return flatbuffers_not_found; return N ## _vec_scan_n_at_by_ ## NK(vec, pos+1, s, n); }
 #define __flatbuffers_vec_len(vec)\
 { return (vec) ? (size_t)__flatbuffers_uoffset_read_from_pe((flatbuffers_uoffset_t *)vec - 1) : 0; }
 #define __flatbuffers_string_len(s) __flatbuffers_vec_len(s)
@@ -153,14 +175,18 @@ __flatbuffers_scan_by_scalar_field(0, N ## _vec_len(vec), N ## _ ## NK, vec, N #
 static inline size_t N ## _vec_scan_at_by_ ## NK(N ## _vec_t vec, size_t pos, TK key)\
 __flatbuffers_scan_by_scalar_field(pos, N ## _vec_len(vec), N ## _ ## NK, vec, N ## _vec_at, N ## _vec_len, key, TK)\
 static inline size_t N ## _vec_scan_range_by_ ## NK(N ## _vec_t vec, size_t begin, size_t end, TK key)\
-__flatbuffers_scan_by_scalar_field(begin, __flatbuffers_min(end, N ## _vec_len(vec)), N ## _ ## NK, vec, N ## _vec_at, N ## _vec_len, key, TK)
+__flatbuffers_scan_by_scalar_field(begin, __flatbuffers_min(end, N ## _vec_len(vec)), N ## _ ## NK, vec, N ## _vec_at, N ## _vec_len, key, TK)\
+static inline size_t N ## _vec_scan_next_by_ ## NK(N ## _vec_t vec, size_t pos, TK key)\
+{ if (pos == flatbuffers_not_found) return flatbuffers_not_found; return N ## _vec_scan_at_by_ ## NK(vec, pos+1, key); }
 #define __flatbuffers_define_scalar_scan(N, T)\
 static inline size_t N ## _vec_scan(N ## _vec_t vec, T key)\
 __flatbuffers_scan_by_scalar_field(0, N ## _vec_len(vec), __flatbuffers_identity, vec, N ## _vec_at, N ## _vec_len, key, T)\
 static inline size_t N ## _vec_scan_at(N ## _vec_t vec, size_t pos, T key)\
 __flatbuffers_scan_by_scalar_field(pos, N ## _vec_len(vec), __flatbuffers_identity, vec, N ## _vec_at, N ## _vec_len, key, T)\
 static inline size_t N ## _vec_scan_range(N ## _vec_t vec, size_t begin, size_t end, T key)\
-__flatbuffers_scan_by_scalar_field(begin, __flatbuffers_min(end, N ## _vec_len(vec)), __flatbuffers_identity, vec, N ## _vec_at, N ## _vec_len, key, T)
+__flatbuffers_scan_by_scalar_field(begin, __flatbuffers_min(end, N ## _vec_len(vec)), __flatbuffers_identity, vec, N ## _vec_at, N ## _vec_len, key, T)\
+static inline size_t N ## _vec_scan_next(N ## _vec_t vec, size_t pos, T key)\
+{ if (pos == flatbuffers_not_found) return flatbuffers_not_found; return N ## _vec_scan_at(vec, pos+1, key); }
 #define __flatbuffers_heap_sort(N, X, A, E, L, TK, TE, D, S)\
 static inline void __ ## N ## X ## __heap_sift_down(\
         N ## _mutable_vec_t vec, size_t start, size_t end)\
