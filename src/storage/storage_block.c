@@ -17,6 +17,14 @@ static void dsim_storage_array_push_back( struct dsim_storage_array *sa, const v
     _dsim_array_push_back( &sa->array, data, count, dsim_ddl_type_size(sa->type) );
 }
 
+static void dsim_storage_array_update( struct dsim_storage_array *sa, const void *data, uint32_t src_offset, uint32_t dst_offset, uint32_t count )
+{
+    size_t elem_size = dsim_ddl_type_size(sa->type);
+    memcpy( (char *)&sa->array.data + dst_offset*elem_size,
+            (const char *)data + src_offset*elem_size,
+            count*elem_size );
+}
+
 static void dsim_storage_array_remove_fast( struct dsim_storage_array *sa, uint32_t pos, uint32_t count )
 {
     _dsim_array_remove_fast( &sa->array, pos, count, dsim_ddl_type_size(sa->type) );
@@ -61,6 +69,17 @@ void dsim_storage_block_push_back( struct dsim_storage_block *sb, const void *co
             dsim_storage_array_push_back( sb->arrays + i, data[i], count );
         else
             dsim_storage_array_resize( sb->arrays + i, sb->arrays[i].array.count + count );
+    }
+}
+
+void dsim_storage_block_update( struct dsim_storage_block *sb, const void *const *data, uint32_t src_offset, uint32_t dst_offset, uint32_t count )
+{
+    dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(sb->layout);
+    size_t array_count = dsim_ddl_array_vec_len(arrays);
+    for( uint32_t i = 0; i < array_count; ++i )
+    {
+        if( !data[i] ) continue;
+        dsim_storage_array_update( sb->arrays + i, data[i], src_offset, dst_offset, count );
     }
 }
 

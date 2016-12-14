@@ -65,6 +65,35 @@ static void dsim_hash_storage_insert( struct dsim_storage *self, const uint64_t 
     //dsim_storage_log_cmd_push_back( &self->log, 0, start_id, count );
 }
 
+static void dsim_hash_storage_update( struct dsim_storage *self, const uint64_t *ids, const void *const *data, uint32_t count )
+{
+    struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
+
+    size_t i = 0;
+    while( i < count )
+    {
+        uint32_t begin = dsim_hash_find( &s->ids, ids[i] );
+        ++i;
+        if( begin == DSIM_INVALID_INDEX )
+        {
+            dsim_warning( "Trying to update nonexistant ID in storage %s", self->name );
+            continue;
+        }
+        uint32_t end = begin+1;
+        while( i < count )
+        {
+            if( s->ids.keys.at[end] != ids[i] )
+                break;
+            ++end;
+            ++i;
+        }
+
+        dsim_storage_block_update( &s->data, data, i, begin, end-begin );
+    }
+
+    //dsim_storage_log_cmd_push_back( &self->log, 0, start_id, count );
+}
+
 static void dsim_hash_storage_remove( struct dsim_storage *self, const uint64_t *ids, uint32_t count )
 {
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
@@ -114,7 +143,9 @@ struct dsim_storage_operations dsim_hash_storage_ops =
     .find       = dsim_hash_storage_find,
 
     .insert = dsim_hash_storage_insert,
+    .update = dsim_hash_storage_update,
     .remove = dsim_hash_storage_remove,
+
     .done  = dsim_hash_storage_done
 };
 

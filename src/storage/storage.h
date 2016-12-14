@@ -25,6 +25,7 @@ struct dsim_storage_operations
     dsim_storage_index (*find)( const struct dsim_storage *self, uint64_t id );
 
     void     (*insert)( struct dsim_storage *self, const uint64_t *ids, const void *const *data, uint32_t count );
+    void     (*update)( struct dsim_storage *self, const uint64_t *ids, const void *const *data, uint32_t count );
     void     (*remove)( struct dsim_storage *self, const uint64_t *ids, uint32_t count );
 
     void     (*done)( struct dsim_storage *self );
@@ -60,6 +61,8 @@ inline static dsim_storage_index dsim_storage_find( const struct dsim_storage *s
 { return storage->_ops->find( storage, id ); }
 inline static void dsim_storage_insert( struct dsim_storage *storage, const uint64_t *ids, const void *const *data, uint32_t count )
 { storage->_ops->insert( storage, ids, data, count ); }
+inline static void dsim_storage_update( struct dsim_storage *storage, const uint64_t *ids, const void *const *data, uint32_t count )
+{ storage->_ops->update( storage, ids, data, count ); }
 inline static void dsim_storage_remove( struct dsim_storage *storage, const uint64_t *ids, uint32_t count )
 { storage->_ops->remove( storage, ids, count ); }
 inline static void dsim_storage_done( struct dsim_storage *storage )
