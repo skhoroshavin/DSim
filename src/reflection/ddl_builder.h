@@ -145,6 +145,7 @@ static inline dsim_ddl_struct_field_ref_t dsim_ddl_struct_field_create(flatbuffe
 }
 __flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_struct_field, dsim_ddl_struct_field_identifier, dsim_ddl_struct_field_type_identifier)
 
+/* vector has keyed elements */
 __flatbuffers_build_table_vector_field(0, flatbuffers_, dsim_ddl_struct_type_fields, dsim_ddl_struct_field)
 
 static inline dsim_ddl_struct_type_ref_t dsim_ddl_struct_type_create(flatbuffers_builder_t *B __dsim_ddl_struct_type_formal_args)
@@ -221,6 +222,7 @@ static inline dsim_ddl_array_ref_t dsim_ddl_array_create(flatbuffers_builder_t *
 __flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_array, dsim_ddl_array_identifier, dsim_ddl_array_type_identifier)
 
 __flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_layout_name)
+/* vector has keyed elements */
 __flatbuffers_build_table_vector_field(1, flatbuffers_, dsim_ddl_layout_arrays, dsim_ddl_array)
 
 static inline dsim_ddl_layout_ref_t dsim_ddl_layout_create(flatbuffers_builder_t *B __dsim_ddl_layout_formal_args)
@@ -263,8 +265,11 @@ static inline dsim_ddl_storage_ref_t dsim_ddl_storage_create(flatbuffers_builder
 __flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_storage, dsim_ddl_storage_identifier, dsim_ddl_storage_type_identifier)
 
 __flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_root_name)
+/* vector has keyed elements */
 __flatbuffers_build_table_vector_field(1, flatbuffers_, dsim_ddl_root_types, dsim_ddl_type)
+/* vector has keyed elements */
 __flatbuffers_build_table_vector_field(2, flatbuffers_, dsim_ddl_root_layouts, dsim_ddl_layout)
+/* vector has keyed elements */
 __flatbuffers_build_table_vector_field(3, flatbuffers_, dsim_ddl_root_storages, dsim_ddl_storage)
 
 static inline dsim_ddl_root_ref_t dsim_ddl_root_create(flatbuffers_builder_t *B __dsim_ddl_root_formal_args)
