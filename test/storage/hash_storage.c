@@ -10,11 +10,7 @@ static void test_hash_storage_scheme()
     TEST_ASSERT_EQUAL( dsim_storage_block_count( ddl_test->storage_storage ), 1 );
 }
 
-inline static void check_index( dsim_storage_index ti, uint32_t block, uint32_t index )
-{
-    TEST_ASSERT_EQUAL( ti.block, block );
-    TEST_ASSERT_EQUAL( ti.index, index );
-}
+#define not_found { DSIM_INVALID_INDEX, DSIM_INVALID_INDEX }
 
 static void test_hash_storage_empty()
 {
@@ -25,10 +21,11 @@ static void test_hash_storage_empty()
     TEST_ASSERT_NULL( test_storage_f_data( 0 ) );
     TEST_ASSERT_NULL( test_storage_v_data( 0 ) );
 
-    check_index( test_storage_find( 0 ),  0, DSIM_INVALID_INDEX );
-    check_index( test_storage_find( 1 ),  0, DSIM_INVALID_INDEX );
-    check_index( test_storage_find( 25 ), 0, DSIM_INVALID_INDEX );
-    check_index( test_storage_find( 30 ), 0, DSIM_INVALID_INDEX );
+    uint64_t test_ids[] = { 0, 1, 25, 30 };
+    dsim_storage_addr expected_addr[] = { not_found, not_found, not_found, not_found };
+    dsim_storage_addr addr[count_of(test_ids)];
+    test_storage_select( test_ids, addr, count_of(test_ids) );
+    TEST_ASSERT_EQUAL_MEMORY( addr, expected_addr, sizeof(addr) );
 
     TEST_ASSERT_EQUAL( ddl_test->storage_storage->log.version, 0 );
     TEST_ASSERT_EQUAL( ddl_test->storage_storage->log.commands.count, 0 );
@@ -115,11 +112,11 @@ static void test_hash_storage_data()
     TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ), test_data_f, sizeof(test_data_f) );
     TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ), test_data_v, sizeof(test_data_v) );
 
-    check_index( test_storage_find( 0 ),   0, DSIM_INVALID_INDEX );
-    check_index( test_storage_find( 1 ),   0, DSIM_INVALID_INDEX );
-    check_index( test_storage_find( 20 ),  0, 0 );
-    check_index( test_storage_find( 27 ),  0, 7 );
-    check_index( test_storage_find( 324 ), 0, DSIM_INVALID_INDEX );
+    uint64_t test_ids[] = { 0, 1, 20, 27, 324 };
+    dsim_storage_addr expected_addr[] = { not_found, not_found, { 0, 0 }, { 0, 7 }, not_found };
+    dsim_storage_addr addr[count_of(test_ids)];
+    test_storage_select( test_ids, addr, count_of(test_ids) );
+    TEST_ASSERT_EQUAL_MEMORY( addr, expected_addr, sizeof(addr) );
 }
 
 TEST_GROUP(hash_storage_non_empty);
@@ -162,9 +159,11 @@ TEST(hash_storage_non_empty, insert_more)
     test_hash_storage_count( 13 );
     test_hash_storage_data();
 
-    check_index( test_storage_find( 15 ), 0, 10 );
-    check_index( test_storage_find( 17 ), 0, 12 );
-    check_index( test_storage_find( 18 ), 0, DSIM_INVALID_INDEX );
+    uint64_t test_ids[] = { 15, 17, 18 };
+    dsim_storage_addr expected_addr[] = { { 0, 10 }, { 0, 12 }, not_found };
+    dsim_storage_addr addr[count_of(test_ids)];
+    test_storage_select( test_ids, addr, count_of(test_ids) );
+    TEST_ASSERT_EQUAL_MEMORY( addr, expected_addr, sizeof(addr) );
 
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.count, 2 );
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );
@@ -197,13 +196,11 @@ TEST(hash_storage_non_empty, remove_fast)
     TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ) + 2, test_data_v + 10 - 3, 3*sizeof(test_data_v[0]) );
     TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ) + 5, test_data_v + 5,      2*sizeof(test_data_v[0]) );
 
-    check_index( test_storage_find( 0 ) , 0, DSIM_INVALID_INDEX );
-    check_index( test_storage_find( 15 ), 0, DSIM_INVALID_INDEX );
-    check_index( test_storage_find( 20 ), 0, 0 );
-    check_index( test_storage_find( 21 ), 0, 1 );
-    check_index( test_storage_find( 23 ), 0, DSIM_INVALID_INDEX );
-    check_index( test_storage_find( 26 ), 0, 6 );
-    check_index( test_storage_find( 28 ), 0, 3 );
+    uint64_t test_ids[] = { 0, 15, 20, 21, 23, 26, 28 };
+    dsim_storage_addr expected_addr[] = { not_found, not_found, { 0, 0 }, { 0, 1 }, not_found, { 0, 6 }, { 0, 3 } };
+    dsim_storage_addr addr[count_of(test_ids)];
+    test_storage_select( test_ids, addr, count_of(test_ids) );
+    TEST_ASSERT_EQUAL_MEMORY( addr, expected_addr, sizeof(addr) );
 
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.count, 2 );
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );
@@ -233,13 +230,11 @@ TEST(hash_storage_non_empty, remove_ordered)
     TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ),     test_data_v,     3*sizeof(test_data_v[0]) );
     TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ) + 3, test_data_v + 7, 3*sizeof(test_data_v[0]) );
 
-    check_index( test_storage_find( 0 ), 0, DSIM_INVALID_INDEX );
-    check_index( test_storage_find( 15 ), 0, DSIM_INVALID_INDEX );
-    check_index( test_storage_find( 20 ), 0, 0 );
-    check_index( test_storage_find( 22 ), 0, 2 );
-    check_index( test_storage_find( 24 ), 0, DSIM_INVALID_INDEX );
-    check_index( test_storage_find( 27 ), 0, 3 );
-    check_index( test_storage_find( 29 ), 0, 5 );
+    uint64_t test_ids[] = { 0, 15, 20, 22, 24, 27, 29 };
+    dsim_storage_addr expected_addr[] = { not_found, not_found, { 0, 0 }, { 0, 2 }, not_found, { 0, 3 }, { 0, 5 } };
+    dsim_storage_addr addr[count_of(test_ids)];
+    test_storage_select( test_ids, addr, count_of(test_ids) );
+    TEST_ASSERT_EQUAL_MEMORY( addr, expected_addr, sizeof(addr) );
 
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.count, 2 );
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );

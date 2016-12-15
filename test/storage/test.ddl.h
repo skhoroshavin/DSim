@@ -31,8 +31,8 @@ inline static void test_storage_update( const uint64_t *ids, const uint8_t *i, c
 { const void *_data[] = { i, f, v }; dsim_storage_update( ddl_test->storage_storage, ids, _data, count ); }
 inline static void test_storage_remove( const uint64_t *ids, uint32_t count )
 { dsim_storage_remove( ddl_test->storage_storage, ids, count ); }
-inline static dsim_storage_index test_storage_find( uint64_t id )
-{ return dsim_storage_find( ddl_test->storage_storage, id ); }
+inline static void test_storage_select( const uint64_t *ids, dsim_storage_addr *addr, uint32_t count )
+{ dsim_storage_select_buf( ddl_test->storage_storage, ids, addr, count ); }
 
 inline static const uint64_t *test_storage_id_data( uint32_t block ){ return (const uint64_t *)dsim_storage_id_data( ddl_test->storage_storage, block ); }
 inline static const uint8_t *test_storage_i_data( uint32_t block ){ return (const uint8_t *)dsim_storage_data( ddl_test->storage_storage, block, 0 ); }

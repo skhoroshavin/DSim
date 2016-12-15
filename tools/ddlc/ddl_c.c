@@ -157,8 +157,8 @@ static void _dsim_ddl_generate_h( const char *h_name, void *data )
         fprintf( f, "inline static void %s_%s_remove( const uint64_t *ids, uint32_t count )\n", root_name, storage_name );
         fprintf( f, "{ dsim_storage_remove( ddl_%s->storage_%s, ids, count ); }\n", root_name, storage_name );
 
-        fprintf( f, "inline static dsim_storage_index %s_%s_find( uint64_t id )\n", root_name, storage_name );
-        fprintf( f, "{ return dsim_storage_find( ddl_%s->storage_%s, id ); }\n", root_name, storage_name );
+        fprintf( f, "inline static void %s_%s_select( const uint64_t *ids, dsim_storage_addr *addr, uint32_t count )\n", root_name, storage_name );
+        fprintf( f, "{ dsim_storage_select_buf( ddl_%s->storage_%s, ids, addr, count ); }\n", root_name, storage_name );
 
         fprintf( f, "\n" );
 

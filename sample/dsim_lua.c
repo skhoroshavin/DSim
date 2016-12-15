@@ -126,11 +126,12 @@ static int lua_storage_set_by_id( lua_State *l )
         return 0;
 
     uint64_t id = lua_tonumber( l, 2 );
-    dsim_storage_index idx = dsim_storage_find( s, id );
+    dsim_storage_addr addr;
+    dsim_storage_select_buf( s, &id, &addr, 1 );
 
     dsim_ddl_type_table_t type = dsim_storage_array_type( s, arr );
     uint32_t size = dsim_ddl_type_size(type);
-    char *data = (char*)dsim_storage_data( s, idx.block, arr ) + size * idx.index;
+    char *data = (char*)dsim_storage_data( s, addr.block, arr ) + size * addr.index;
 
     dsim_lua_read( l, 3, type, data );
 
@@ -146,11 +147,12 @@ static int lua_storage_get_by_id( lua_State *l )
         return 0;
 
     uint64_t id = lua_tonumber( l, 2 );
-    dsim_storage_index idx = dsim_storage_find( s, id );
+    dsim_storage_addr addr;
+    dsim_storage_select_buf( s, &id, &addr, 1 );
 
     dsim_ddl_type_table_t type = dsim_storage_array_type( s, arr );
     uint32_t size = dsim_ddl_type_size(type);
-    char *data = (char*)dsim_storage_data( s, idx.block, arr ) + size * idx.index;
+    char *data = (char*)dsim_storage_data( s, addr.block, arr ) + size * addr.index;
 
     dsim_lua_push( l, type, data );
 
