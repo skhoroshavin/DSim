@@ -55,7 +55,7 @@ static void dsim_hash_storage_select( struct dsim_storage *self, const uint64_t 
             continue;
         }
         uint32_t end = begin+1;
-        while( i < count )
+        while( (i < count) && (end < s->ids.keys.count) )
         {
             if( s->ids.keys.at[end] != ids[i] )
                 break;
