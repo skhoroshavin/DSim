@@ -126,13 +126,15 @@ static void dsim_hash_storage_select( struct dsim_storage *self, const uint64_t 
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
 
     size_t i = 0;
+    size_t pos = 0;
     while( i < count )
     {
         uint32_t begin = dsim_hash_find( &s->ids, ids[i] );
         ++i;
         if( begin == DSIM_INVALID_INDEX )
         {
-            cb( context, DSIM_INVALID_INDEX, DSIM_INVALID_INDEX, 1 );
+            cb( context, pos, DSIM_INVALID_INDEX, DSIM_INVALID_INDEX, 1 );
+            pos = i;
             continue;
         }
         uint32_t end = begin+1;
@@ -144,7 +146,8 @@ static void dsim_hash_storage_select( struct dsim_storage *self, const uint64_t 
             ++i;
         }
 
-        cb( context, 0, begin, end-begin );
+        cb( context, pos, 0, begin, end-begin );
+        pos = i;
     }
 }
 
@@ -167,16 +170,14 @@ struct _hash_update_context
     struct dsim_hash_storage *s;
     const uint64_t *ids;
     const void *const *data;
-    size_t pos;
 };
 
-static void _hash_update_process( void *context, uint32_t block, uint32_t pos, uint32_t count )
+static void _hash_update_process( void *context, uint32_t pos, uint32_t block, uint32_t block_pos, uint32_t count )
 {
     struct _hash_update_context *ctx = (struct _hash_update_context*)context;
 
     if( pos != DSIM_INVALID_INDEX )
-        dsim_storage_block_update( &ctx->s->data, ctx->data, ctx->pos, pos, count );
-    ctx->pos += count;
+        dsim_storage_block_update( &ctx->s->data, ctx->data, pos, block_pos, count );
 }
 
 static void dsim_hash_storage_update( struct dsim_storage *self, const uint64_t *ids, const void *const *data, uint32_t count )
@@ -187,7 +188,7 @@ static void dsim_hash_storage_update( struct dsim_storage *self, const uint64_t 
 
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
 
-    struct _hash_update_context ctx = { s, ids, data, 0 };
+    struct _hash_update_context ctx = { s, ids, data };
     dsim_hash_storage_select( self, ids, count, _hash_update_process, &ctx );
 }
 
@@ -197,14 +198,15 @@ struct _hash_remove_context
     const uint64_t *ids;
 };
 
-static void _hash_remove_process( void *context, uint32_t block, uint32_t pos, uint32_t count )
+static void _hash_remove_process( void *context, uint32_t pos, uint32_t block, uint32_t block_pos, uint32_t count )
 {
+    dsim_unused( pos );
     struct _hash_remove_context *ctx = (struct _hash_remove_context*)context;
 
     if( pos != DSIM_INVALID_INDEX )
     {
-        dsim_hash_remove_fast( &ctx->s->ids, pos, count );
-        dsim_storage_block_remove_fast( &ctx->s->data, pos, count );
+        dsim_hash_remove_fast( &ctx->s->ids, block_pos, count );
+        dsim_storage_block_remove_fast( &ctx->s->data, block_pos, count );
     }
 }
 

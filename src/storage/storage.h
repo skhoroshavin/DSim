@@ -6,7 +6,7 @@
 
 DSIM_BEGIN_HEADER
 
-typedef void (*dsim_storage_select_cb)( void *context, uint32_t block, uint32_t pos, uint32_t count );
+typedef void (*dsim_storage_select_cb)( void *context, uint32_t pos, uint32_t block, uint32_t block_pos, uint32_t count );
 
 struct dsim_storage;
 
