@@ -131,9 +131,9 @@ static int lua_storage_set_by_id( lua_State *l )
 
     dsim_ddl_type_table_t type = dsim_storage_array_type( s, arr );
     uint32_t size = dsim_ddl_type_size(type);
-    char *data = (char*)dsim_storage_data( s, addr.block, arr ) + size * addr.index;
-
+    char *data = (char*)dsim_storage_write_direct_begin( s, addr.block, arr ) + size * addr.index;
     dsim_lua_read( l, 3, type, data );
+    dsim_storage_write_direct_end( s, addr.block, arr );
 
     return 0;
 }
@@ -152,9 +152,9 @@ static int lua_storage_get_by_id( lua_State *l )
 
     dsim_ddl_type_table_t type = dsim_storage_array_type( s, arr );
     uint32_t size = dsim_ddl_type_size(type);
-    char *data = (char*)dsim_storage_data( s, addr.block, arr ) + size * addr.index;
-
+    char *data = (char*)dsim_storage_read_begin( s, addr.block, arr ) + size * addr.index;
     dsim_lua_push( l, type, data );
+    dsim_storage_read_end( s, addr.block, arr );
 
     return 1;
 }

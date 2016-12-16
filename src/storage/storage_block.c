@@ -1,40 +1,6 @@
 
 #include "storage_block.h"
 
-static void dsim_storage_array_init( struct dsim_storage_array *sa, dsim_ddl_type_table_t type, struct dsim_allocator *alloc )
-{
-    sa->type = type;
-    _dsim_array_init( &sa->array, alloc );
-}
-
-static void dsim_storage_array_resize( struct dsim_storage_array *sa, uint32_t count )
-{
-    _dsim_array_resize( &sa->array, count, dsim_ddl_type_size(sa->type) );
-}
-
-static void dsim_storage_array_push_back( struct dsim_storage_array *sa, const void *data, uint32_t count )
-{
-    _dsim_array_push_back( &sa->array, data, count, dsim_ddl_type_size(sa->type) );
-}
-
-static void dsim_storage_array_update( struct dsim_storage_array *sa, const void *data, uint32_t src_offset, uint32_t dst_offset, uint32_t count )
-{
-    size_t elem_size = dsim_ddl_type_size(sa->type);
-    memcpy( (char *)&sa->array.data + dst_offset*elem_size,
-            (const char *)data + src_offset*elem_size,
-            count*elem_size );
-}
-
-static void dsim_storage_array_remove_fast( struct dsim_storage_array *sa, uint32_t pos, uint32_t count )
-{
-    _dsim_array_remove_fast( &sa->array, pos, count, dsim_ddl_type_size(sa->type) );
-}
-
-static void dsim_storage_array_reset( struct dsim_storage_array *sa )
-{
-    _dsim_array_reset( &sa->array );
-}
-
 void dsim_storage_block_init( struct dsim_storage_block *sb, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )
 {
     sb->layout = layout;
@@ -49,6 +15,16 @@ void dsim_storage_block_init( struct dsim_storage_block *sb, dsim_ddl_layout_tab
         dsim_ddl_type_table_t type = dsim_ddl_type( dsim_ddl_array_type(array) );
         dsim_storage_array_init( sb->arrays + i, type, alloc );
     }
+}
+
+int dsim_storage_block_can_modify( const struct dsim_storage_block *sb )
+{
+    dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(sb->layout);
+    size_t array_count = dsim_ddl_array_vec_len(arrays);
+    for( uint32_t i = 0; i < array_count; ++i )
+        if( !dsim_storage_array_can_modify( sb->arrays + i) )
+            return 0;
+    return 1;
 }
 
 void dsim_storage_block_resize( struct dsim_storage_block *sb, uint32_t count )
@@ -68,7 +44,7 @@ void dsim_storage_block_push_back( struct dsim_storage_block *sb, const void *co
         if( data[i] )
             dsim_storage_array_push_back( sb->arrays + i, data[i], count );
         else
-            dsim_storage_array_resize( sb->arrays + i, sb->arrays[i].array.count + count );
+            dsim_storage_array_resize( sb->arrays + i, sb->arrays[i].current.count + count );
     }
 }
 

@@ -66,9 +66,19 @@ inline static void sample_wires_remove( const uint64_t *ids, uint32_t count )
 { dsim_storage_remove( ddl_sample->storage_wires, ids, count ); }
 inline static void sample_wires_select( const uint64_t *ids, dsim_storage_addr *addr, uint32_t count )
 { dsim_storage_select_buf( ddl_sample->storage_wires, ids, addr, count ); }
+inline static int sample_wires_can_modify( uint32_t arr )
+{ return dsim_storage_can_modify( ddl_sample->storage_wires, 0, arr ); }
 
-inline static const uint64_t *sample_wires_id_data( uint32_t block ){ return (const uint64_t *)dsim_storage_id_data( ddl_sample->storage_wires, block ); }
-inline static const uint8_t *sample_wires_state_data( uint32_t block ){ return (const uint8_t *)dsim_storage_data( ddl_sample->storage_wires, block, 0 ); }
+inline static const uint64_t *sample_wires_id_data()
+{ return (const uint64_t *)dsim_storage_id_data( ddl_sample->storage_wires, 0 ); }
+
+inline static const uint8_t *sample_wires_state_read_begin() { return (const uint8_t *)dsim_storage_read_begin( ddl_sample->storage_wires, 0, 0 ); }
+inline static void sample_wires_state_read_end() { dsim_storage_read_end( ddl_sample->storage_wires, 0, 0 ); }
+inline static uint8_t *sample_wires_state_write_direct_begin() { return (uint8_t *)dsim_storage_write_direct_begin( ddl_sample->storage_wires, 0, 0 ); }
+inline static void sample_wires_state_write_direct_end() { dsim_storage_write_direct_end( ddl_sample->storage_wires, 0, 0 ); }
+inline static uint8_t *sample_wires_state_write_buffered_begin() { return (uint8_t *)dsim_storage_write_buffered_begin( ddl_sample->storage_wires, 0, 0 ); }
+inline static void sample_wires_state_write_buffered_end() { dsim_storage_write_buffered_end( ddl_sample->storage_wires, 0, 0 ); }
+
 
 /////////////////////////////////////////////////////////////
 // sample logic
@@ -82,12 +92,40 @@ inline static void sample_logic_remove( const uint64_t *ids, uint32_t count )
 { dsim_storage_remove( ddl_sample->storage_logic, ids, count ); }
 inline static void sample_logic_select( const uint64_t *ids, dsim_storage_addr *addr, uint32_t count )
 { dsim_storage_select_buf( ddl_sample->storage_logic, ids, addr, count ); }
+inline static int sample_logic_can_modify( uint32_t arr )
+{ return dsim_storage_can_modify( ddl_sample->storage_logic, 0, arr ); }
 
-inline static const uint64_t *sample_logic_id_data( uint32_t block ){ return (const uint64_t *)dsim_storage_id_data( ddl_sample->storage_logic, block ); }
-inline static const wire_ref *sample_logic_input_1_data( uint32_t block ){ return (const wire_ref *)dsim_storage_data( ddl_sample->storage_logic, block, 0 ); }
-inline static const wire_ref *sample_logic_input_2_data( uint32_t block ){ return (const wire_ref *)dsim_storage_data( ddl_sample->storage_logic, block, 1 ); }
-inline static const wire_ref *sample_logic_output_data( uint32_t block ){ return (const wire_ref *)dsim_storage_data( ddl_sample->storage_logic, block, 2 ); }
-inline static const logic_type *sample_logic_type_data( uint32_t block ){ return (const logic_type *)dsim_storage_data( ddl_sample->storage_logic, block, 3 ); }
+inline static const uint64_t *sample_logic_id_data()
+{ return (const uint64_t *)dsim_storage_id_data( ddl_sample->storage_logic, 0 ); }
+
+inline static const wire_ref *sample_logic_input_1_read_begin() { return (const wire_ref *)dsim_storage_read_begin( ddl_sample->storage_logic, 0, 0 ); }
+inline static void sample_logic_input_1_read_end() { dsim_storage_read_end( ddl_sample->storage_logic, 0, 0 ); }
+inline static wire_ref *sample_logic_input_1_write_direct_begin() { return (wire_ref *)dsim_storage_write_direct_begin( ddl_sample->storage_logic, 0, 0 ); }
+inline static void sample_logic_input_1_write_direct_end() { dsim_storage_write_direct_end( ddl_sample->storage_logic, 0, 0 ); }
+inline static wire_ref *sample_logic_input_1_write_buffered_begin() { return (wire_ref *)dsim_storage_write_buffered_begin( ddl_sample->storage_logic, 0, 0 ); }
+inline static void sample_logic_input_1_write_buffered_end() { dsim_storage_write_buffered_end( ddl_sample->storage_logic, 0, 0 ); }
+
+inline static const wire_ref *sample_logic_input_2_read_begin() { return (const wire_ref *)dsim_storage_read_begin( ddl_sample->storage_logic, 0, 1 ); }
+inline static void sample_logic_input_2_read_end() { dsim_storage_read_end( ddl_sample->storage_logic, 0, 1 ); }
+inline static wire_ref *sample_logic_input_2_write_direct_begin() { return (wire_ref *)dsim_storage_write_direct_begin( ddl_sample->storage_logic, 0, 1 ); }
+inline static void sample_logic_input_2_write_direct_end() { dsim_storage_write_direct_end( ddl_sample->storage_logic, 0, 1 ); }
+inline static wire_ref *sample_logic_input_2_write_buffered_begin() { return (wire_ref *)dsim_storage_write_buffered_begin( ddl_sample->storage_logic, 0, 1 ); }
+inline static void sample_logic_input_2_write_buffered_end() { dsim_storage_write_buffered_end( ddl_sample->storage_logic, 0, 1 ); }
+
+inline static const wire_ref *sample_logic_output_read_begin() { return (const wire_ref *)dsim_storage_read_begin( ddl_sample->storage_logic, 0, 2 ); }
+inline static void sample_logic_output_read_end() { dsim_storage_read_end( ddl_sample->storage_logic, 0, 2 ); }
+inline static wire_ref *sample_logic_output_write_direct_begin() { return (wire_ref *)dsim_storage_write_direct_begin( ddl_sample->storage_logic, 0, 2 ); }
+inline static void sample_logic_output_write_direct_end() { dsim_storage_write_direct_end( ddl_sample->storage_logic, 0, 2 ); }
+inline static wire_ref *sample_logic_output_write_buffered_begin() { return (wire_ref *)dsim_storage_write_buffered_begin( ddl_sample->storage_logic, 0, 2 ); }
+inline static void sample_logic_output_write_buffered_end() { dsim_storage_write_buffered_end( ddl_sample->storage_logic, 0, 2 ); }
+
+inline static const logic_type *sample_logic_type_read_begin() { return (const logic_type *)dsim_storage_read_begin( ddl_sample->storage_logic, 0, 3 ); }
+inline static void sample_logic_type_read_end() { dsim_storage_read_end( ddl_sample->storage_logic, 0, 3 ); }
+inline static logic_type *sample_logic_type_write_direct_begin() { return (logic_type *)dsim_storage_write_direct_begin( ddl_sample->storage_logic, 0, 3 ); }
+inline static void sample_logic_type_write_direct_end() { dsim_storage_write_direct_end( ddl_sample->storage_logic, 0, 3 ); }
+inline static logic_type *sample_logic_type_write_buffered_begin() { return (logic_type *)dsim_storage_write_buffered_begin( ddl_sample->storage_logic, 0, 3 ); }
+inline static void sample_logic_type_write_buffered_end() { dsim_storage_write_buffered_end( ddl_sample->storage_logic, 0, 3 ); }
+
 
 /////////////////////////////////////////////////////////////
 // sample delay
@@ -101,11 +139,33 @@ inline static void sample_delay_remove( const uint64_t *ids, uint32_t count )
 { dsim_storage_remove( ddl_sample->storage_delay, ids, count ); }
 inline static void sample_delay_select( const uint64_t *ids, dsim_storage_addr *addr, uint32_t count )
 { dsim_storage_select_buf( ddl_sample->storage_delay, ids, addr, count ); }
+inline static int sample_delay_can_modify( uint32_t arr )
+{ return dsim_storage_can_modify( ddl_sample->storage_delay, 0, arr ); }
 
-inline static const uint64_t *sample_delay_id_data( uint32_t block ){ return (const uint64_t *)dsim_storage_id_data( ddl_sample->storage_delay, block ); }
-inline static const wire_ref *sample_delay_input_data( uint32_t block ){ return (const wire_ref *)dsim_storage_data( ddl_sample->storage_delay, block, 0 ); }
-inline static const wire_ref *sample_delay_output_data( uint32_t block ){ return (const wire_ref *)dsim_storage_data( ddl_sample->storage_delay, block, 1 ); }
-inline static const float *sample_delay_delay_data( uint32_t block ){ return (const float *)dsim_storage_data( ddl_sample->storage_delay, block, 2 ); }
+inline static const uint64_t *sample_delay_id_data()
+{ return (const uint64_t *)dsim_storage_id_data( ddl_sample->storage_delay, 0 ); }
+
+inline static const wire_ref *sample_delay_input_read_begin() { return (const wire_ref *)dsim_storage_read_begin( ddl_sample->storage_delay, 0, 0 ); }
+inline static void sample_delay_input_read_end() { dsim_storage_read_end( ddl_sample->storage_delay, 0, 0 ); }
+inline static wire_ref *sample_delay_input_write_direct_begin() { return (wire_ref *)dsim_storage_write_direct_begin( ddl_sample->storage_delay, 0, 0 ); }
+inline static void sample_delay_input_write_direct_end() { dsim_storage_write_direct_end( ddl_sample->storage_delay, 0, 0 ); }
+inline static wire_ref *sample_delay_input_write_buffered_begin() { return (wire_ref *)dsim_storage_write_buffered_begin( ddl_sample->storage_delay, 0, 0 ); }
+inline static void sample_delay_input_write_buffered_end() { dsim_storage_write_buffered_end( ddl_sample->storage_delay, 0, 0 ); }
+
+inline static const wire_ref *sample_delay_output_read_begin() { return (const wire_ref *)dsim_storage_read_begin( ddl_sample->storage_delay, 0, 1 ); }
+inline static void sample_delay_output_read_end() { dsim_storage_read_end( ddl_sample->storage_delay, 0, 1 ); }
+inline static wire_ref *sample_delay_output_write_direct_begin() { return (wire_ref *)dsim_storage_write_direct_begin( ddl_sample->storage_delay, 0, 1 ); }
+inline static void sample_delay_output_write_direct_end() { dsim_storage_write_direct_end( ddl_sample->storage_delay, 0, 1 ); }
+inline static wire_ref *sample_delay_output_write_buffered_begin() { return (wire_ref *)dsim_storage_write_buffered_begin( ddl_sample->storage_delay, 0, 1 ); }
+inline static void sample_delay_output_write_buffered_end() { dsim_storage_write_buffered_end( ddl_sample->storage_delay, 0, 1 ); }
+
+inline static const float *sample_delay_delay_read_begin() { return (const float *)dsim_storage_read_begin( ddl_sample->storage_delay, 0, 2 ); }
+inline static void sample_delay_delay_read_end() { dsim_storage_read_end( ddl_sample->storage_delay, 0, 2 ); }
+inline static float *sample_delay_delay_write_direct_begin() { return (float *)dsim_storage_write_direct_begin( ddl_sample->storage_delay, 0, 2 ); }
+inline static void sample_delay_delay_write_direct_end() { dsim_storage_write_direct_end( ddl_sample->storage_delay, 0, 2 ); }
+inline static float *sample_delay_delay_write_buffered_begin() { return (float *)dsim_storage_write_buffered_begin( ddl_sample->storage_delay, 0, 2 ); }
+inline static void sample_delay_delay_write_buffered_end() { dsim_storage_write_buffered_end( ddl_sample->storage_delay, 0, 2 ); }
+
 
 
 void dsim_ddl_init_sample();

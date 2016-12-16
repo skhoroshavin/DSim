@@ -16,10 +16,10 @@ static void test_hash_storage_empty()
 {
     TEST_ASSERT_EQUAL( dsim_storage_block_size( ddl_test->storage_storage, 0 ), 0 );
 
-    TEST_ASSERT_NULL( test_storage_id_data( 0 ) );
-    TEST_ASSERT_NULL( test_storage_i_data( 0 ) );
-    TEST_ASSERT_NULL( test_storage_f_data( 0 ) );
-    TEST_ASSERT_NULL( test_storage_v_data( 0 ) );
+    TEST_ASSERT_NULL( test_storage_id_data() );
+    TEST_ASSERT_NULL( test_storage_i_read_begin() ); test_storage_i_read_end();
+    TEST_ASSERT_NULL( test_storage_f_read_begin() ); test_storage_f_read_end();
+    TEST_ASSERT_NULL( test_storage_v_read_begin() ); test_storage_v_read_end();
 
     uint64_t test_ids[] = { 0, 1, 25, 30 };
     dsim_storage_addr expected_addr[] = { not_found, not_found, not_found, not_found };
@@ -35,10 +35,10 @@ static void test_hash_storage_count( uint32_t count )
 {
     TEST_ASSERT_EQUAL( dsim_storage_block_size( ddl_test->storage_storage, 0 ), count );
 
-    TEST_ASSERT_NOT_NULL( test_storage_id_data( 0 ) );
-    TEST_ASSERT_NOT_NULL( test_storage_i_data( 0 ) );
-    TEST_ASSERT_NOT_NULL( test_storage_f_data( 0 ) );
-    TEST_ASSERT_NOT_NULL( test_storage_v_data( 0 ) );
+    TEST_ASSERT_NOT_NULL( test_storage_id_data() );
+    TEST_ASSERT_NOT_NULL( test_storage_i_read_begin() ); test_storage_i_read_end();
+    TEST_ASSERT_NOT_NULL( test_storage_f_read_begin() ); test_storage_f_read_end();
+    TEST_ASSERT_NOT_NULL( test_storage_v_read_begin() ); test_storage_v_read_end();
 }
 
 /*
@@ -70,7 +70,7 @@ TEST(hash_storage_empty, insert)
 
     test_hash_storage_scheme();
     test_hash_storage_count( count_of(ids) );
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_id_data( 0 ), ids, sizeof(ids) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_id_data(), ids, sizeof(ids) );
 
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.count, 1 );
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );
@@ -108,9 +108,9 @@ static const vec4     test_data_v[10] = {
 
 static void test_hash_storage_data()
 {
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_data( 0 ), test_data_i, sizeof(test_data_i) );
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ), test_data_f, sizeof(test_data_f) );
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ), test_data_v, sizeof(test_data_v) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_read_begin(), test_data_i, sizeof(test_data_i) ); test_storage_i_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_read_begin(), test_data_f, sizeof(test_data_f) ); test_storage_f_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_read_begin(), test_data_v, sizeof(test_data_v) ); test_storage_v_read_end();
 
     uint64_t test_ids[] = { 0, 1, 20, 27, 324 };
     dsim_storage_addr expected_addr[] = { not_found, not_found, { 0, 0 }, { 0, 7 }, not_found };
@@ -184,17 +184,17 @@ TEST(hash_storage_non_empty, remove_fast)
     test_hash_storage_scheme();
     test_hash_storage_count( 7 );
 
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_data( 0 ),     test_data_i,          2*sizeof(test_data_i[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_data( 0 ) + 2, test_data_i + 10 - 3, 3*sizeof(test_data_i[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_data( 0 ) + 5, test_data_i + 5,      2*sizeof(test_data_i[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_read_begin(),     test_data_i,          2*sizeof(test_data_i[0]) ); test_storage_i_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_read_begin() + 2, test_data_i + 10 - 3, 3*sizeof(test_data_i[0]) ); test_storage_i_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_read_begin() + 5, test_data_i + 5,      2*sizeof(test_data_i[0]) ); test_storage_i_read_end();
 
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ),     test_data_f,          2*sizeof(test_data_f[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ) + 2, test_data_f + 10 - 3, 3*sizeof(test_data_f[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ) + 5, test_data_f + 5,      2*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_read_begin(),     test_data_f,          2*sizeof(test_data_f[0]) ); test_storage_f_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_read_begin() + 2, test_data_f + 10 - 3, 3*sizeof(test_data_f[0]) ); test_storage_f_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_read_begin() + 5, test_data_f + 5,      2*sizeof(test_data_f[0]) ); test_storage_f_read_end();
 
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ),     test_data_v,          2*sizeof(test_data_v[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ) + 2, test_data_v + 10 - 3, 3*sizeof(test_data_v[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ) + 5, test_data_v + 5,      2*sizeof(test_data_v[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_read_begin(),     test_data_v,          2*sizeof(test_data_v[0]) ); test_storage_v_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_read_begin() + 2, test_data_v + 10 - 3, 3*sizeof(test_data_v[0]) ); test_storage_v_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_read_begin() + 5, test_data_v + 5,      2*sizeof(test_data_v[0]) ); test_storage_v_read_end();
 
     uint64_t test_ids[] = { 0, 15, 20, 21, 23, 26, 28 };
     dsim_storage_addr expected_addr[] = { not_found, not_found, { 0, 0 }, { 0, 1 }, not_found, { 0, 6 }, { 0, 3 } };
@@ -221,14 +221,14 @@ TEST(hash_storage_non_empty, remove_ordered)
     test_hash_storage_scheme();
     test_hash_storage_count( 6 );
 
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_data( 0 ),     test_data_i,     3*sizeof(test_data_i[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_data( 0 ) + 3, test_data_i + 7, 3*sizeof(test_data_i[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_read_begin(),     test_data_i,     3*sizeof(test_data_i[0]) ); test_storage_i_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_read_begin() + 3, test_data_i + 7, 3*sizeof(test_data_i[0]) ); test_storage_i_read_end();
 
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ),     test_data_f,     3*sizeof(test_data_f[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_data( 0 ) + 3, test_data_f + 7, 3*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_read_begin(),     test_data_f,     3*sizeof(test_data_f[0]) ); test_storage_f_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_f_read_begin() + 3, test_data_f + 7, 3*sizeof(test_data_f[0]) ); test_storage_f_read_end();
 
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ),     test_data_v,     3*sizeof(test_data_v[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_data( 0 ) + 3, test_data_v + 7, 3*sizeof(test_data_v[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_read_begin(),     test_data_v,     3*sizeof(test_data_v[0]) ); test_storage_v_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_read_begin() + 3, test_data_v + 7, 3*sizeof(test_data_v[0]) ); test_storage_v_read_end();
 
     uint64_t test_ids[] = { 0, 15, 20, 22, 24, 27, 29 };
     dsim_storage_addr expected_addr[] = { not_found, not_found, { 0, 0 }, { 0, 2 }, not_found, { 0, 3 }, { 0, 5 } };

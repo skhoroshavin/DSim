@@ -33,11 +33,33 @@ inline static void test_storage_remove( const uint64_t *ids, uint32_t count )
 { dsim_storage_remove( ddl_test->storage_storage, ids, count ); }
 inline static void test_storage_select( const uint64_t *ids, dsim_storage_addr *addr, uint32_t count )
 { dsim_storage_select_buf( ddl_test->storage_storage, ids, addr, count ); }
+inline static int test_storage_can_modify( uint32_t arr )
+{ return dsim_storage_can_modify( ddl_test->storage_storage, 0, arr ); }
 
-inline static const uint64_t *test_storage_id_data( uint32_t block ){ return (const uint64_t *)dsim_storage_id_data( ddl_test->storage_storage, block ); }
-inline static const uint8_t *test_storage_i_data( uint32_t block ){ return (const uint8_t *)dsim_storage_data( ddl_test->storage_storage, block, 0 ); }
-inline static const float *test_storage_f_data( uint32_t block ){ return (const float *)dsim_storage_data( ddl_test->storage_storage, block, 1 ); }
-inline static const vec4 *test_storage_v_data( uint32_t block ){ return (const vec4 *)dsim_storage_data( ddl_test->storage_storage, block, 2 ); }
+inline static const uint64_t *test_storage_id_data()
+{ return (const uint64_t *)dsim_storage_id_data( ddl_test->storage_storage, 0 ); }
+
+inline static const uint8_t *test_storage_i_read_begin() { return (const uint8_t *)dsim_storage_read_begin( ddl_test->storage_storage, 0, 0 ); }
+inline static void test_storage_i_read_end() { dsim_storage_read_end( ddl_test->storage_storage, 0, 0 ); }
+inline static uint8_t *test_storage_i_write_direct_begin() { return (uint8_t *)dsim_storage_write_direct_begin( ddl_test->storage_storage, 0, 0 ); }
+inline static void test_storage_i_write_direct_end() { dsim_storage_write_direct_end( ddl_test->storage_storage, 0, 0 ); }
+inline static uint8_t *test_storage_i_write_buffered_begin() { return (uint8_t *)dsim_storage_write_buffered_begin( ddl_test->storage_storage, 0, 0 ); }
+inline static void test_storage_i_write_buffered_end() { dsim_storage_write_buffered_end( ddl_test->storage_storage, 0, 0 ); }
+
+inline static const float *test_storage_f_read_begin() { return (const float *)dsim_storage_read_begin( ddl_test->storage_storage, 0, 1 ); }
+inline static void test_storage_f_read_end() { dsim_storage_read_end( ddl_test->storage_storage, 0, 1 ); }
+inline static float *test_storage_f_write_direct_begin() { return (float *)dsim_storage_write_direct_begin( ddl_test->storage_storage, 0, 1 ); }
+inline static void test_storage_f_write_direct_end() { dsim_storage_write_direct_end( ddl_test->storage_storage, 0, 1 ); }
+inline static float *test_storage_f_write_buffered_begin() { return (float *)dsim_storage_write_buffered_begin( ddl_test->storage_storage, 0, 1 ); }
+inline static void test_storage_f_write_buffered_end() { dsim_storage_write_buffered_end( ddl_test->storage_storage, 0, 1 ); }
+
+inline static const vec4 *test_storage_v_read_begin() { return (const vec4 *)dsim_storage_read_begin( ddl_test->storage_storage, 0, 2 ); }
+inline static void test_storage_v_read_end() { dsim_storage_read_end( ddl_test->storage_storage, 0, 2 ); }
+inline static vec4 *test_storage_v_write_direct_begin() { return (vec4 *)dsim_storage_write_direct_begin( ddl_test->storage_storage, 0, 2 ); }
+inline static void test_storage_v_write_direct_end() { dsim_storage_write_direct_end( ddl_test->storage_storage, 0, 2 ); }
+inline static vec4 *test_storage_v_write_buffered_begin() { return (vec4 *)dsim_storage_write_buffered_begin( ddl_test->storage_storage, 0, 2 ); }
+inline static void test_storage_v_write_buffered_end() { dsim_storage_write_buffered_end( ddl_test->storage_storage, 0, 2 ); }
+
 
 
 void dsim_ddl_init_test();

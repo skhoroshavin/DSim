@@ -160,11 +160,15 @@ static void _dsim_ddl_generate_h( const char *h_name, void *data )
         fprintf( f, "inline static void %s_%s_select( const uint64_t *ids, dsim_storage_addr *addr, uint32_t count )\n", root_name, storage_name );
         fprintf( f, "{ dsim_storage_select_buf( ddl_%s->storage_%s, ids, addr, count ); }\n", root_name, storage_name );
 
+        fprintf( f, "inline static int %s_%s_can_modify( uint32_t arr )\n", root_name, storage_name );
+        fprintf( f, "{ return dsim_storage_can_modify( ddl_%s->storage_%s, 0, arr ); }\n", root_name, storage_name );
+
         fprintf( f, "\n" );
 
-        fprintf( f, "inline static const uint64_t *%s_%s_id_data( uint32_t block )"
-                    "{ return (const uint64_t *)dsim_storage_id_data( ddl_%s->storage_%s, block ); }\n",
+        fprintf( f, "inline static const uint64_t *%s_%s_id_data()\n"
+                    "{ return (const uint64_t *)dsim_storage_id_data( ddl_%s->storage_%s, 0 ); }\n",
                  root_name, storage_name, root_name, storage_name );
+        fprintf( f, "\n" );
 
         for( size_t j = 0; j != dsim_ddl_array_vec_len(arrays); ++j )
         {
@@ -175,9 +179,19 @@ static void _dsim_ddl_generate_h( const char *h_name, void *data )
             const char *ctype = dsim_ddl_type_ctype(type);
             if( !ctype ) ctype = dsim_ddl_type_name(type);
 
-            fprintf( f, "inline static const %s *%s_%s_%s_data( uint32_t block )"
-                        "{ return (const %s *)dsim_storage_data( ddl_%s->storage_%s, block, %zd ); }\n",
+            fprintf( f, "inline static const %s *%s_%s_%s_read_begin() { return (const %s *)dsim_storage_read_begin( ddl_%s->storage_%s, 0, %zd ); }\n",
                      ctype, root_name, storage_name, array_name, ctype, root_name, storage_name, j );
+            fprintf( f, "inline static void %s_%s_%s_read_end() { dsim_storage_read_end( ddl_%s->storage_%s, 0, %zd ); }\n",
+                     root_name, storage_name, array_name, root_name, storage_name, j );
+            fprintf( f, "inline static %s *%s_%s_%s_write_direct_begin() { return (%s *)dsim_storage_write_direct_begin( ddl_%s->storage_%s, 0, %zd ); }\n",
+                     ctype, root_name, storage_name, array_name, ctype, root_name, storage_name, j );
+            fprintf( f, "inline static void %s_%s_%s_write_direct_end() { dsim_storage_write_direct_end( ddl_%s->storage_%s, 0, %zd ); }\n",
+                     root_name, storage_name, array_name, root_name, storage_name, j );
+            fprintf( f, "inline static %s *%s_%s_%s_write_buffered_begin() { return (%s *)dsim_storage_write_buffered_begin( ddl_%s->storage_%s, 0, %zd ); }\n",
+                     ctype, root_name, storage_name, array_name, ctype, root_name, storage_name, j );
+            fprintf( f, "inline static void %s_%s_%s_write_buffered_end() { dsim_storage_write_buffered_end( ddl_%s->storage_%s, 0, %zd ); }\n",
+                     root_name, storage_name, array_name, root_name, storage_name, j );
+            fprintf( f, "\n" );
         }
         fprintf( f, "\n" );
     }

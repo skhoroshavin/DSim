@@ -29,6 +29,73 @@ static const uint64_t *dsim_hash_storage_id_data( const struct dsim_storage *sel
     return s->ids.keys.data;
 }
 
+const void *dsim_hash_storage_read_begin( struct dsim_storage *self, uint32_t block, uint32_t arr )
+{
+    dsim_unused(block);
+
+    const struct dsim_hash_storage *s = container_of( self, const struct dsim_hash_storage, storage );
+
+    assert( block == 0 ); // LCOV_EXCL_BR_LINE
+    assert( arr < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ) ); // LCOV_EXCL_BR_LINE
+    return dsim_storage_array_read_begin( s->data.arrays + arr );
+
+}
+
+void dsim_hash_storage_read_end( struct dsim_storage *self, uint32_t block, uint32_t arr )
+{
+    dsim_unused(block);
+
+    const struct dsim_hash_storage *s = container_of( self, const struct dsim_hash_storage, storage );
+
+    assert( block == 0 ); // LCOV_EXCL_BR_LINE
+    assert( arr < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ) ); // LCOV_EXCL_BR_LINE
+    dsim_storage_array_read_end( s->data.arrays + arr );
+}
+
+void *dsim_hash_storage_write_direct_begin( struct dsim_storage *self, uint32_t block, uint32_t arr )
+{
+    dsim_unused(block);
+
+    const struct dsim_hash_storage *s = container_of( self, const struct dsim_hash_storage, storage );
+
+    assert( block == 0 ); // LCOV_EXCL_BR_LINE
+    assert( arr < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ) ); // LCOV_EXCL_BR_LINE
+    return dsim_storage_array_write_direct_begin( s->data.arrays + arr );
+}
+
+void dsim_hash_storage_write_direct_end( struct dsim_storage *self, uint32_t block, uint32_t arr )
+{
+    dsim_unused(block);
+
+    const struct dsim_hash_storage *s = container_of( self, const struct dsim_hash_storage, storage );
+
+    assert( block == 0 ); // LCOV_EXCL_BR_LINE
+    assert( arr < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ) ); // LCOV_EXCL_BR_LINE
+    dsim_storage_array_write_direct_end( s->data.arrays + arr );
+}
+
+void *dsim_hash_storage_write_buffered_begin( struct dsim_storage *self, uint32_t block, uint32_t arr )
+{
+    dsim_unused(block);
+
+    const struct dsim_hash_storage *s = container_of( self, const struct dsim_hash_storage, storage );
+
+    assert( block == 0 ); // LCOV_EXCL_BR_LINE
+    assert( arr < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ) ); // LCOV_EXCL_BR_LINE
+    return dsim_storage_array_write_buffered_begin( s->data.arrays + arr );
+}
+
+void dsim_hash_storage_write_buffered_end( struct dsim_storage *self, uint32_t block, uint32_t arr )
+{
+    dsim_unused(block);
+
+    const struct dsim_hash_storage *s = container_of( self, const struct dsim_hash_storage, storage );
+
+    assert( block == 0 ); // LCOV_EXCL_BR_LINE
+    assert( arr < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ) ); // LCOV_EXCL_BR_LINE
+    dsim_storage_array_write_buffered_end( s->data.arrays + arr );
+}
+
 static const void *dsim_hash_storage_data( struct dsim_storage *self, uint32_t block, uint32_t i )
 {
     dsim_unused(block);
@@ -37,7 +104,21 @@ static const void *dsim_hash_storage_data( struct dsim_storage *self, uint32_t b
 
     assert( block == 0 ); // LCOV_EXCL_BR_LINE
     assert( i < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ) ); // LCOV_EXCL_BR_LINE
-    return s->data.arrays[i].array.data;
+    return s->data.arrays[i].current.data;
+}
+
+static int dsim_hash_storage_can_modify( const struct dsim_storage *self, uint32_t block, uint32_t arr )
+{
+    dsim_unused(block);
+
+    struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
+    if( arr == DSIM_INVALID_INDEX )
+        return dsim_storage_block_can_modify( &s->data );
+    if( !s->data.arrays )
+        return 1;
+
+    assert( arr < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ) );
+    return dsim_storage_array_can_modify( s->data.arrays + arr );
 }
 
 static void dsim_hash_storage_select( struct dsim_storage *self, const uint64_t *ids, uint32_t count, dsim_storage_select_cb cb, void *context )
@@ -69,6 +150,7 @@ static void dsim_hash_storage_select( struct dsim_storage *self, const uint64_t 
 
 static void dsim_hash_storage_insert( struct dsim_storage *self, const uint64_t *ids, const void *const *data, uint32_t count )
 {
+    assert( dsim_hash_storage_can_modify( self, DSIM_INVALID_INDEX, DSIM_INVALID_INDEX ) );
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
 
     dsim_hash_push_back_n( &s->ids, ids, count );
@@ -99,6 +181,10 @@ static void _hash_update_process( void *context, uint32_t block, uint32_t pos, u
 
 static void dsim_hash_storage_update( struct dsim_storage *self, const uint64_t *ids, const void *const *data, uint32_t count )
 {
+    for( size_t i = 0; i < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ); ++i )
+        if( data[i] )
+            assert( dsim_hash_storage_can_modify( self, DSIM_INVALID_INDEX, i ) );
+
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
 
     struct _hash_update_context ctx = { s, ids, data, 0 };
@@ -124,6 +210,7 @@ static void _hash_remove_process( void *context, uint32_t block, uint32_t pos, u
 
 static void dsim_hash_storage_remove( struct dsim_storage *self, const uint64_t *ids, uint32_t count )
 {
+    assert( dsim_hash_storage_can_modify( self, DSIM_INVALID_INDEX, DSIM_INVALID_INDEX ) );
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
 
     struct _hash_remove_context ctx = { s, ids };
@@ -143,15 +230,21 @@ struct dsim_storage_operations dsim_hash_storage_ops =
     .block_count = dsim_hash_storage_block_count,
     .block_size = dsim_hash_storage_block_size,
 
-    .id_data = dsim_hash_storage_id_data,
-    .data = dsim_hash_storage_data,
+    .id_data              = dsim_hash_storage_id_data,
+    .read_begin           = dsim_hash_storage_read_begin,
+    .read_end             = dsim_hash_storage_read_end,
+    .write_direct_begin   = dsim_hash_storage_write_direct_begin,
+    .write_direct_end     = dsim_hash_storage_write_direct_end,
+    .write_buffered_begin = dsim_hash_storage_write_buffered_begin,
+    .write_buffered_end   = dsim_hash_storage_write_buffered_end,
 
+    .can_modify = dsim_hash_storage_can_modify,
     .select = dsim_hash_storage_select,
     .insert = dsim_hash_storage_insert,
     .update = dsim_hash_storage_update,
     .remove = dsim_hash_storage_remove,
 
-    .done  = dsim_hash_storage_done
+    .done = dsim_hash_storage_done
 };
 
 void dsim_hash_storage_init( struct dsim_hash_storage *storage, const char *name, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )
