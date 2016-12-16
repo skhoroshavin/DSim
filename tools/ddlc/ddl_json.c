@@ -128,7 +128,8 @@ static void dsim_process_reference( struct flatcc_builder *b, dsim_ddl_type_tabl
     dsim_ddl_type_align_add( b, 8 );
 
     dsim_ddl_type_data_reference_type_start( b );
-    dsim_ddl_reference_type_storage_clone( b, dsim_ddl_reference_type_storage(rtype) );
+    dsim_ddl_reference_type_storages_start( b );
+    dsim_ddl_reference_type_storages_end( b );
     dsim_ddl_type_data_reference_type_end( b );
 }
 
@@ -207,6 +208,7 @@ static void dsim_process_storages( struct flatcc_builder *b, dsim_ddl_storage_ve
         dsim_ddl_root_storages_push_start( b );
         dsim_ddl_storage_name_clone( b, dsim_ddl_storage_name(storage) );
         dsim_ddl_storage_layout_clone( b, dsim_ddl_storage_layout(storage) );
+        dsim_ddl_storage_ref_type_clone( b, dsim_ddl_storage_ref_type(storage) );
         switch( dsim_ddl_storage_engine_type(storage) )
         {
         case dsim_ddl_storage_engine_NONE:

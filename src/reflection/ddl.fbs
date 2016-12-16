@@ -30,7 +30,7 @@ table enum_type
 
 table reference_type
 {
-    storage: string;
+    storages: [string];
 }
 
 union any_type
@@ -78,6 +78,7 @@ table storage
 {
     name: string (key);
     layout: string;
+    ref_type: string;
     engine: storage_engine;
 }
 

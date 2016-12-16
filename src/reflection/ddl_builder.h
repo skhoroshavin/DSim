@@ -40,7 +40,7 @@ __flatbuffers_build_table(flatbuffers_, dsim_ddl_layout, 2)
 static const flatbuffers_voffset_t __dsim_ddl_hash_storage_required[] = {0 };
 __flatbuffers_build_table(flatbuffers_, dsim_ddl_hash_storage, 0)
 static const flatbuffers_voffset_t __dsim_ddl_storage_required[] = {0 };
-__flatbuffers_build_table(flatbuffers_, dsim_ddl_storage, 4)
+__flatbuffers_build_table(flatbuffers_, dsim_ddl_storage, 5)
 static const flatbuffers_voffset_t __dsim_ddl_root_required[] = {0 };
 __flatbuffers_build_table(flatbuffers_, dsim_ddl_root, 4)
 #define __dsim_ddl_numeric_type_formal_args , flatbuffers_bool_t v0, flatbuffers_bool_t v1
@@ -55,7 +55,7 @@ static inline dsim_ddl_struct_type_ref_t dsim_ddl_struct_type_create(flatbuffers
 #define __dsim_ddl_enum_type_formal_args , flatbuffers_string_vec_ref_t v0
 #define __dsim_ddl_enum_type_call_args , v0
 static inline dsim_ddl_enum_type_ref_t dsim_ddl_enum_type_create(flatbuffers_builder_t *B __dsim_ddl_enum_type_formal_args);
-#define __dsim_ddl_reference_type_formal_args , flatbuffers_string_ref_t v0
+#define __dsim_ddl_reference_type_formal_args , flatbuffers_string_vec_ref_t v0
 #define __dsim_ddl_reference_type_call_args , v0
 static inline dsim_ddl_reference_type_ref_t dsim_ddl_reference_type_create(flatbuffers_builder_t *B __dsim_ddl_reference_type_formal_args);
 #define __dsim_ddl_type_formal_args ,\
@@ -72,8 +72,8 @@ static inline dsim_ddl_layout_ref_t dsim_ddl_layout_create(flatbuffers_builder_t
 #define __dsim_ddl_hash_storage_formal_args 
 #define __dsim_ddl_hash_storage_call_args 
 static inline dsim_ddl_hash_storage_ref_t dsim_ddl_hash_storage_create(flatbuffers_builder_t *B __dsim_ddl_hash_storage_formal_args);
-#define __dsim_ddl_storage_formal_args , flatbuffers_string_ref_t v0, flatbuffers_string_ref_t v1, dsim_ddl_storage_engine_union_ref_t v3
-#define __dsim_ddl_storage_call_args , v0, v1, v3
+#define __dsim_ddl_storage_formal_args , flatbuffers_string_ref_t v0, flatbuffers_string_ref_t v1, flatbuffers_string_ref_t v2, dsim_ddl_storage_engine_union_ref_t v4
+#define __dsim_ddl_storage_call_args , v0, v1, v2, v4
 static inline dsim_ddl_storage_ref_t dsim_ddl_storage_create(flatbuffers_builder_t *B __dsim_ddl_storage_formal_args);
 #define __dsim_ddl_root_formal_args , flatbuffers_string_ref_t v0, dsim_ddl_type_vec_ref_t v1, dsim_ddl_layout_vec_ref_t v2, dsim_ddl_storage_vec_ref_t v3
 #define __dsim_ddl_root_call_args , v0, v1, v2, v3
@@ -170,12 +170,12 @@ static inline dsim_ddl_enum_type_ref_t dsim_ddl_enum_type_create(flatbuffers_bui
 }
 __flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_enum_type, dsim_ddl_enum_type_identifier, dsim_ddl_enum_type_type_identifier)
 
-__flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_reference_type_storage)
+__flatbuffers_build_string_vector_field(0, flatbuffers_, dsim_ddl_reference_type_storages)
 
 static inline dsim_ddl_reference_type_ref_t dsim_ddl_reference_type_create(flatbuffers_builder_t *B __dsim_ddl_reference_type_formal_args)
 {
     if (dsim_ddl_reference_type_start(B)
-        || dsim_ddl_reference_type_storage_add(B, v0)) {
+        || dsim_ddl_reference_type_storages_add(B, v0)) {
         return 0;
     }
     return dsim_ddl_reference_type_end(B);
@@ -248,7 +248,8 @@ __flatbuffers_build_table_prolog(flatbuffers_, dsim_ddl_hash_storage, dsim_ddl_h
 
 __flatbuffers_build_string_field(0, flatbuffers_, dsim_ddl_storage_name)
 __flatbuffers_build_string_field(1, flatbuffers_, dsim_ddl_storage_layout)
-__flatbuffers_build_union_field(3, flatbuffers_, dsim_ddl_storage_engine, dsim_ddl_storage_engine)
+__flatbuffers_build_string_field(2, flatbuffers_, dsim_ddl_storage_ref_type)
+__flatbuffers_build_union_field(4, flatbuffers_, dsim_ddl_storage_engine, dsim_ddl_storage_engine)
 __flatbuffers_build_union_member_field(flatbuffers_, dsim_ddl_storage_engine, dsim_ddl_storage_engine, hash_storage, dsim_ddl_hash_storage)
 
 static inline dsim_ddl_storage_ref_t dsim_ddl_storage_create(flatbuffers_builder_t *B __dsim_ddl_storage_formal_args)
@@ -256,8 +257,9 @@ static inline dsim_ddl_storage_ref_t dsim_ddl_storage_create(flatbuffers_builder
     if (dsim_ddl_storage_start(B)
         || dsim_ddl_storage_name_add(B, v0)
         || dsim_ddl_storage_layout_add(B, v1)
-        || dsim_ddl_storage_engine_add_member(B, v3)
-        || dsim_ddl_storage_engine_add_type(B, v3.type)) {
+        || dsim_ddl_storage_ref_type_add(B, v2)
+        || dsim_ddl_storage_engine_add_member(B, v4)
+        || dsim_ddl_storage_engine_add_type(B, v4.type)) {
         return 0;
     }
     return dsim_ddl_storage_end(B);

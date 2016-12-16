@@ -40,11 +40,7 @@
             }
         },
 
-        { name: "wire_ref", data_type: reference_type,
-            data: {
-                storage: "wires"
-            }
-        },
+        { name: "wire_ref", data_type: reference_type, data: { } },
 
         { name: "logic_type", data_type: enum_type,
             data: {
@@ -82,7 +78,7 @@
     ],
 
     storages: [
-        { name: "wires", layout: "wire"  },
+        { name: "wires", layout: "wire", ref_type: "wire_ref" },
         { name: "logic", layout: "logic" },
         { name: "delay", layout: "delay" }
     ]

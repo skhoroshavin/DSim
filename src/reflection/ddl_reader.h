@@ -96,18 +96,11 @@ __flatbuffers_table_as_root(dsim_ddl_struct_field)
 
 static inline flatbuffers_string_t dsim_ddl_struct_field_name(dsim_ddl_struct_field_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-__flatbuffers_define_search_by_string_field(dsim_ddl_struct_field, name)
+__flatbuffers_define_find_by_string_field(dsim_ddl_struct_field, name)
+__flatbuffers_define_scan_by_string_field(dsim_ddl_struct_field, name)
 __flatbuffers_define_sort_by_string_field(dsim_ddl_struct_field, name)
-#define dsim_ddl_struct_field_vec_find dsim_ddl_struct_field_vec_find_by_name
-#define dsim_ddl_struct_field_vec_find_n dsim_ddl_struct_field_vec_find_n_by_name
-#define dsim_ddl_struct_field_vec_scan dsim_ddl_struct_field_vec_scan_by_name
-#define dsim_ddl_struct_field_vec_scan_n dsim_ddl_struct_field_vec_scan_n_by_name
-#define dsim_ddl_struct_field_vec_scan_at dsim_ddl_struct_field_vec_scan_at_by_name
-#define dsim_ddl_struct_field_vec_scan_n_at dsim_ddl_struct_field_vec_scan_n_at_by_name
-#define dsim_ddl_struct_field_vec_scan_range dsim_ddl_struct_field_vec_scan_range_by_name
-#define dsim_ddl_struct_field_vec_scan_n_range dsim_ddl_struct_field_vec_scan_n_range_by_name
-#define dsim_ddl_struct_field_vec_scan_next dsim_ddl_struct_field_vec_scan_next_by_name
-#define dsim_ddl_struct_field_vec_scan_n_next dsim_ddl_struct_field_vec_scan_n_next_by_name
+__flatbuffers_define_default_find_by_string_field(dsim_ddl_struct_field, name)
+__flatbuffers_define_default_scan_by_string_field(dsim_ddl_struct_field, name)
 #define dsim_ddl_struct_field_vec_sort dsim_ddl_struct_field_vec_sort_by_name
 static inline int dsim_ddl_struct_field_name_is_present(dsim_ddl_struct_field_table_t t)
 __flatbuffers_field_present(0, t)
@@ -174,9 +167,9 @@ static inline dsim_ddl_reference_type_table_t dsim_ddl_reference_type_vec_at(dsi
 __flatbuffers_offset_vec_at(dsim_ddl_reference_type_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_reference_type)
 
-static inline flatbuffers_string_t dsim_ddl_reference_type_storage(dsim_ddl_reference_type_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-static inline int dsim_ddl_reference_type_storage_is_present(dsim_ddl_reference_type_table_t t)
+static inline flatbuffers_string_vec_t dsim_ddl_reference_type_storages(dsim_ddl_reference_type_table_t t)
+__flatbuffers_vector_field(flatbuffers_string_vec_t, 0, t, 0)
+static inline int dsim_ddl_reference_type_storages_is_present(dsim_ddl_reference_type_table_t t)
 __flatbuffers_field_present(0, t)
 
 typedef uint8_t dsim_ddl_any_type_union_type_t;
@@ -215,18 +208,11 @@ __flatbuffers_table_as_root(dsim_ddl_type)
 
 static inline flatbuffers_string_t dsim_ddl_type_name(dsim_ddl_type_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-__flatbuffers_define_search_by_string_field(dsim_ddl_type, name)
+__flatbuffers_define_find_by_string_field(dsim_ddl_type, name)
+__flatbuffers_define_scan_by_string_field(dsim_ddl_type, name)
 __flatbuffers_define_sort_by_string_field(dsim_ddl_type, name)
-#define dsim_ddl_type_vec_find dsim_ddl_type_vec_find_by_name
-#define dsim_ddl_type_vec_find_n dsim_ddl_type_vec_find_n_by_name
-#define dsim_ddl_type_vec_scan dsim_ddl_type_vec_scan_by_name
-#define dsim_ddl_type_vec_scan_n dsim_ddl_type_vec_scan_n_by_name
-#define dsim_ddl_type_vec_scan_at dsim_ddl_type_vec_scan_at_by_name
-#define dsim_ddl_type_vec_scan_n_at dsim_ddl_type_vec_scan_n_at_by_name
-#define dsim_ddl_type_vec_scan_range dsim_ddl_type_vec_scan_range_by_name
-#define dsim_ddl_type_vec_scan_n_range dsim_ddl_type_vec_scan_n_range_by_name
-#define dsim_ddl_type_vec_scan_next dsim_ddl_type_vec_scan_next_by_name
-#define dsim_ddl_type_vec_scan_n_next dsim_ddl_type_vec_scan_n_next_by_name
+__flatbuffers_define_default_find_by_string_field(dsim_ddl_type, name)
+__flatbuffers_define_default_scan_by_string_field(dsim_ddl_type, name)
 #define dsim_ddl_type_vec_sort dsim_ddl_type_vec_sort_by_name
 static inline int dsim_ddl_type_name_is_present(dsim_ddl_type_table_t t)
 __flatbuffers_field_present(0, t)
@@ -271,18 +257,11 @@ __flatbuffers_table_as_root(dsim_ddl_array)
 
 static inline flatbuffers_string_t dsim_ddl_array_name(dsim_ddl_array_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-__flatbuffers_define_search_by_string_field(dsim_ddl_array, name)
+__flatbuffers_define_find_by_string_field(dsim_ddl_array, name)
+__flatbuffers_define_scan_by_string_field(dsim_ddl_array, name)
 __flatbuffers_define_sort_by_string_field(dsim_ddl_array, name)
-#define dsim_ddl_array_vec_find dsim_ddl_array_vec_find_by_name
-#define dsim_ddl_array_vec_find_n dsim_ddl_array_vec_find_n_by_name
-#define dsim_ddl_array_vec_scan dsim_ddl_array_vec_scan_by_name
-#define dsim_ddl_array_vec_scan_n dsim_ddl_array_vec_scan_n_by_name
-#define dsim_ddl_array_vec_scan_at dsim_ddl_array_vec_scan_at_by_name
-#define dsim_ddl_array_vec_scan_n_at dsim_ddl_array_vec_scan_n_at_by_name
-#define dsim_ddl_array_vec_scan_range dsim_ddl_array_vec_scan_range_by_name
-#define dsim_ddl_array_vec_scan_n_range dsim_ddl_array_vec_scan_n_range_by_name
-#define dsim_ddl_array_vec_scan_next dsim_ddl_array_vec_scan_next_by_name
-#define dsim_ddl_array_vec_scan_n_next dsim_ddl_array_vec_scan_n_next_by_name
+__flatbuffers_define_default_find_by_string_field(dsim_ddl_array, name)
+__flatbuffers_define_default_scan_by_string_field(dsim_ddl_array, name)
 #define dsim_ddl_array_vec_sort dsim_ddl_array_vec_sort_by_name
 static inline int dsim_ddl_array_name_is_present(dsim_ddl_array_table_t t)
 __flatbuffers_field_present(0, t)
@@ -308,18 +287,11 @@ __flatbuffers_table_as_root(dsim_ddl_layout)
 
 static inline flatbuffers_string_t dsim_ddl_layout_name(dsim_ddl_layout_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-__flatbuffers_define_search_by_string_field(dsim_ddl_layout, name)
+__flatbuffers_define_find_by_string_field(dsim_ddl_layout, name)
+__flatbuffers_define_scan_by_string_field(dsim_ddl_layout, name)
 __flatbuffers_define_sort_by_string_field(dsim_ddl_layout, name)
-#define dsim_ddl_layout_vec_find dsim_ddl_layout_vec_find_by_name
-#define dsim_ddl_layout_vec_find_n dsim_ddl_layout_vec_find_n_by_name
-#define dsim_ddl_layout_vec_scan dsim_ddl_layout_vec_scan_by_name
-#define dsim_ddl_layout_vec_scan_n dsim_ddl_layout_vec_scan_n_by_name
-#define dsim_ddl_layout_vec_scan_at dsim_ddl_layout_vec_scan_at_by_name
-#define dsim_ddl_layout_vec_scan_n_at dsim_ddl_layout_vec_scan_n_at_by_name
-#define dsim_ddl_layout_vec_scan_range dsim_ddl_layout_vec_scan_range_by_name
-#define dsim_ddl_layout_vec_scan_n_range dsim_ddl_layout_vec_scan_n_range_by_name
-#define dsim_ddl_layout_vec_scan_next dsim_ddl_layout_vec_scan_next_by_name
-#define dsim_ddl_layout_vec_scan_n_next dsim_ddl_layout_vec_scan_n_next_by_name
+__flatbuffers_define_default_find_by_string_field(dsim_ddl_layout, name)
+__flatbuffers_define_default_scan_by_string_field(dsim_ddl_layout, name)
 #define dsim_ddl_layout_vec_sort dsim_ddl_layout_vec_sort_by_name
 static inline int dsim_ddl_layout_name_is_present(dsim_ddl_layout_table_t t)
 __flatbuffers_field_present(0, t)
@@ -375,18 +347,11 @@ __flatbuffers_table_as_root(dsim_ddl_storage)
 
 static inline flatbuffers_string_t dsim_ddl_storage_name(dsim_ddl_storage_table_t t)
 __flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-__flatbuffers_define_search_by_string_field(dsim_ddl_storage, name)
+__flatbuffers_define_find_by_string_field(dsim_ddl_storage, name)
+__flatbuffers_define_scan_by_string_field(dsim_ddl_storage, name)
 __flatbuffers_define_sort_by_string_field(dsim_ddl_storage, name)
-#define dsim_ddl_storage_vec_find dsim_ddl_storage_vec_find_by_name
-#define dsim_ddl_storage_vec_find_n dsim_ddl_storage_vec_find_n_by_name
-#define dsim_ddl_storage_vec_scan dsim_ddl_storage_vec_scan_by_name
-#define dsim_ddl_storage_vec_scan_n dsim_ddl_storage_vec_scan_n_by_name
-#define dsim_ddl_storage_vec_scan_at dsim_ddl_storage_vec_scan_at_by_name
-#define dsim_ddl_storage_vec_scan_n_at dsim_ddl_storage_vec_scan_n_at_by_name
-#define dsim_ddl_storage_vec_scan_range dsim_ddl_storage_vec_scan_range_by_name
-#define dsim_ddl_storage_vec_scan_n_range dsim_ddl_storage_vec_scan_n_range_by_name
-#define dsim_ddl_storage_vec_scan_next dsim_ddl_storage_vec_scan_next_by_name
-#define dsim_ddl_storage_vec_scan_n_next dsim_ddl_storage_vec_scan_n_next_by_name
+__flatbuffers_define_default_find_by_string_field(dsim_ddl_storage, name)
+__flatbuffers_define_default_scan_by_string_field(dsim_ddl_storage, name)
 #define dsim_ddl_storage_vec_sort dsim_ddl_storage_vec_sort_by_name
 static inline int dsim_ddl_storage_name_is_present(dsim_ddl_storage_table_t t)
 __flatbuffers_field_present(0, t)
@@ -396,12 +361,17 @@ __flatbuffers_vector_field(flatbuffers_string_t, 1, t, 0)
 static inline int dsim_ddl_storage_layout_is_present(dsim_ddl_storage_table_t t)
 __flatbuffers_field_present(1, t)
 
-static inline dsim_ddl_storage_engine_union_type_t dsim_ddl_storage_engine_type(dsim_ddl_storage_table_t t)
-__flatbuffers_scalar_field(dsim_ddl_storage_engine, 2, 0, t)
-static inline flatbuffers_generic_table_t dsim_ddl_storage_engine(dsim_ddl_storage_table_t t)
-__flatbuffers_table_field(flatbuffers_generic_table_t, 3, t, 0)
-static inline int dsim_ddl_storage_engine_is_present(dsim_ddl_storage_table_t t)
+static inline flatbuffers_string_t dsim_ddl_storage_ref_type(dsim_ddl_storage_table_t t)
+__flatbuffers_vector_field(flatbuffers_string_t, 2, t, 0)
+static inline int dsim_ddl_storage_ref_type_is_present(dsim_ddl_storage_table_t t)
 __flatbuffers_field_present(2, t)
+
+static inline dsim_ddl_storage_engine_union_type_t dsim_ddl_storage_engine_type(dsim_ddl_storage_table_t t)
+__flatbuffers_scalar_field(dsim_ddl_storage_engine, 3, 0, t)
+static inline flatbuffers_generic_table_t dsim_ddl_storage_engine(dsim_ddl_storage_table_t t)
+__flatbuffers_table_field(flatbuffers_generic_table_t, 4, t, 0)
+static inline int dsim_ddl_storage_engine_is_present(dsim_ddl_storage_table_t t)
+__flatbuffers_field_present(3, t)
 
 
 /** //////////////////////////////////////////////////////////////////////

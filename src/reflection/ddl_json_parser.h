@@ -331,34 +331,42 @@ static const char *dsim_ddl_reference_type_parse_json_table(flatcc_json_parser_t
     while (more) {
         buf = flatcc_json_parser_symbol_start(ctx, buf, end);
         w = flatcc_json_parser_symbol_part(buf, end);
-        if ((w & 0xffffffffffffff00) == 0x73746f7261676500) { /* "storage" */
-            buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 7);
+        if (w == 0x73746f7261676573) { /* "storages" */
+            buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 8);
             if (mark != buf) {
-                buf = flatcc_json_parser_string_start(ctx, buf, end);
-                buf = flatcc_json_parser_string_part(ctx, (mark = buf), end);
-                if (buf != end && *buf == '\"') {
-                    ref = flatcc_builder_create_string(ctx->ctx, mark, buf - mark);
-                } else {
-                    if (flatcc_builder_start_string(ctx->ctx) ||
-                            0 == flatcc_builder_append_string(ctx->ctx, mark, buf - mark)) goto failed;
-                    while (buf != end && *buf != '\"') {
-                        buf = flatcc_json_parser_string_escape(ctx, buf, end, code);
-                        if (0 == flatcc_builder_append_string(ctx->ctx, code + 1, code[0])) goto failed;
-                        if (end != (buf = flatcc_json_parser_string_part(ctx, (mark = buf), end))) {
-                            if (0 == flatcc_builder_append_string(ctx->ctx, mark, buf - mark)) goto failed;
+                if (flatcc_builder_start_offset_vector(ctx->ctx)) goto failed;
+                buf = flatcc_json_parser_array_start(ctx, buf, end, &more);
+                while (more) {
+                    buf = flatcc_json_parser_string_start(ctx, buf, end);
+                    buf = flatcc_json_parser_string_part(ctx, (mark = buf), end);
+                    if (buf != end && *buf == '\"') {
+                        ref = flatcc_builder_create_string(ctx->ctx, mark, buf - mark);
+                    } else {
+                        if (flatcc_builder_start_string(ctx->ctx) ||
+                                0 == flatcc_builder_append_string(ctx->ctx, mark, buf - mark)) goto failed;
+                        while (buf != end && *buf != '\"') {
+                            buf = flatcc_json_parser_string_escape(ctx, buf, end, code);
+                            if (0 == flatcc_builder_append_string(ctx->ctx, code + 1, code[0])) goto failed;
+                            if (end != (buf = flatcc_json_parser_string_part(ctx, (mark = buf), end))) {
+                                if (0 == flatcc_builder_append_string(ctx->ctx, mark, buf - mark)) goto failed;
+                            }
                         }
+                        ref = flatcc_builder_end_string(ctx->ctx);
                     }
-                    ref = flatcc_builder_end_string(ctx->ctx);
+                    buf = flatcc_json_parser_string_end(ctx, buf, end);
+                    if (!(pref = flatcc_builder_extend_offset_vector(ctx->ctx, 1))) goto failed;
+                    *pref = ref;
+                    buf = flatcc_json_parser_array_end(ctx, buf, end, &more);
                 }
-                buf = flatcc_json_parser_string_end(ctx, buf, end);
+                ref = flatcc_builder_end_offset_vector(ctx->ctx);
                 if (!ref || !(pref = flatcc_builder_table_add_offset(ctx->ctx, 0))) goto failed;
                 *pref = ref;
             } else {
                 buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
             }
-        } else { /* "storage" */
+        } else { /* "storages" */
             buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
-        } /* "storage" */
+        } /* "storages" */
         buf = flatcc_json_parser_object_end(ctx, buf, end, &more);
     }
     return buf;
@@ -899,7 +907,7 @@ static const char *dsim_ddl_storage_parse_json_table(flatcc_json_parser_t *ctx, 
     uint64_t w;
     flatcc_json_parser_escape_buffer_t code;
 
-    if (flatcc_builder_start_table(ctx->ctx, 4)) goto failed;
+    if (flatcc_builder_start_table(ctx->ctx, 5)) goto failed;
     if (end == flatcc_json_parser_prepare_unions(ctx, buf, end, 2)) goto failed;
     buf = flatcc_json_parser_object_start(ctx, buf, end, &more);
     while (more) {
@@ -916,7 +924,7 @@ static const char *dsim_ddl_storage_parse_json_table(flatcc_json_parser_t *ctx, 
                                 dsim_ddl_storage_engine_parse_json_enum,
                                 ddl_local_dsim_ddl_json_parser_enum,
                                 ddl_global_json_parser_enum, 0 };
-                        buf = flatcc_json_parser_union_type(ctx, buf, end, 1, 3, symbolic_parsers, dsim_ddl_storage_engine_parse_json_union);
+                        buf = flatcc_json_parser_union_type(ctx, buf, end, 1, 4, symbolic_parsers, dsim_ddl_storage_engine_parse_json_union);
                     } else {
                         buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
                     }
@@ -927,7 +935,7 @@ static const char *dsim_ddl_storage_parse_json_table(flatcc_json_parser_t *ctx, 
                 if ((w & 0xffffffffffff0000) == 0x656e67696e650000) { /* "engine" */
                     buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 6);
                     if (mark != buf) {
-                        buf = flatcc_json_parser_union(ctx, buf, end, 1, 3, dsim_ddl_storage_engine_parse_json_union);
+                        buf = flatcc_json_parser_union(ctx, buf, end, 1, 4, dsim_ddl_storage_engine_parse_json_union);
                     } else {
                         buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
                     }
@@ -936,32 +944,7 @@ static const char *dsim_ddl_storage_parse_json_table(flatcc_json_parser_t *ctx, 
                 } /* "engine" */
             } /* prefix "engine_t" */
         } else { /* branch "layout" */
-            if ((w & 0xffffffff00000000) == 0x6e616d6500000000) { /* "name" */
-                buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 4);
-                if (mark != buf) {
-                    buf = flatcc_json_parser_string_start(ctx, buf, end);
-                    buf = flatcc_json_parser_string_part(ctx, (mark = buf), end);
-                    if (buf != end && *buf == '\"') {
-                        ref = flatcc_builder_create_string(ctx->ctx, mark, buf - mark);
-                    } else {
-                        if (flatcc_builder_start_string(ctx->ctx) ||
-                                0 == flatcc_builder_append_string(ctx->ctx, mark, buf - mark)) goto failed;
-                        while (buf != end && *buf != '\"') {
-                            buf = flatcc_json_parser_string_escape(ctx, buf, end, code);
-                            if (0 == flatcc_builder_append_string(ctx->ctx, code + 1, code[0])) goto failed;
-                            if (end != (buf = flatcc_json_parser_string_part(ctx, (mark = buf), end))) {
-                                if (0 == flatcc_builder_append_string(ctx->ctx, mark, buf - mark)) goto failed;
-                            }
-                        }
-                        ref = flatcc_builder_end_string(ctx->ctx);
-                    }
-                    buf = flatcc_json_parser_string_end(ctx, buf, end);
-                    if (!ref || !(pref = flatcc_builder_table_add_offset(ctx->ctx, 0))) goto failed;
-                    *pref = ref;
-                } else {
-                    buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
-                }
-            } else { /* "name" */
+            if (w < 0x6e616d6500000000) { /* branch "name" */
                 if ((w & 0xffffffffffff0000) == 0x6c61796f75740000) { /* "layout" */
                     buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 6);
                     if (mark != buf) {
@@ -990,7 +973,63 @@ static const char *dsim_ddl_storage_parse_json_table(flatcc_json_parser_t *ctx, 
                 } else { /* "layout" */
                     buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
                 } /* "layout" */
-            } /* "name" */
+            } else { /* branch "name" */
+                if (w == 0x7265665f74797065) { /* "ref_type" */
+                    buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 8);
+                    if (mark != buf) {
+                        buf = flatcc_json_parser_string_start(ctx, buf, end);
+                        buf = flatcc_json_parser_string_part(ctx, (mark = buf), end);
+                        if (buf != end && *buf == '\"') {
+                            ref = flatcc_builder_create_string(ctx->ctx, mark, buf - mark);
+                        } else {
+                            if (flatcc_builder_start_string(ctx->ctx) ||
+                                    0 == flatcc_builder_append_string(ctx->ctx, mark, buf - mark)) goto failed;
+                            while (buf != end && *buf != '\"') {
+                                buf = flatcc_json_parser_string_escape(ctx, buf, end, code);
+                                if (0 == flatcc_builder_append_string(ctx->ctx, code + 1, code[0])) goto failed;
+                                if (end != (buf = flatcc_json_parser_string_part(ctx, (mark = buf), end))) {
+                                    if (0 == flatcc_builder_append_string(ctx->ctx, mark, buf - mark)) goto failed;
+                                }
+                            }
+                            ref = flatcc_builder_end_string(ctx->ctx);
+                        }
+                        buf = flatcc_json_parser_string_end(ctx, buf, end);
+                        if (!ref || !(pref = flatcc_builder_table_add_offset(ctx->ctx, 2))) goto failed;
+                        *pref = ref;
+                    } else {
+                        buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
+                    }
+                } else { /* "ref_type" */
+                    if ((w & 0xffffffff00000000) == 0x6e616d6500000000) { /* "name" */
+                        buf = flatcc_json_parser_match_symbol(ctx, (mark = buf), end, 4);
+                        if (mark != buf) {
+                            buf = flatcc_json_parser_string_start(ctx, buf, end);
+                            buf = flatcc_json_parser_string_part(ctx, (mark = buf), end);
+                            if (buf != end && *buf == '\"') {
+                                ref = flatcc_builder_create_string(ctx->ctx, mark, buf - mark);
+                            } else {
+                                if (flatcc_builder_start_string(ctx->ctx) ||
+                                        0 == flatcc_builder_append_string(ctx->ctx, mark, buf - mark)) goto failed;
+                                while (buf != end && *buf != '\"') {
+                                    buf = flatcc_json_parser_string_escape(ctx, buf, end, code);
+                                    if (0 == flatcc_builder_append_string(ctx->ctx, code + 1, code[0])) goto failed;
+                                    if (end != (buf = flatcc_json_parser_string_part(ctx, (mark = buf), end))) {
+                                        if (0 == flatcc_builder_append_string(ctx->ctx, mark, buf - mark)) goto failed;
+                                    }
+                                }
+                                ref = flatcc_builder_end_string(ctx->ctx);
+                            }
+                            buf = flatcc_json_parser_string_end(ctx, buf, end);
+                            if (!ref || !(pref = flatcc_builder_table_add_offset(ctx->ctx, 0))) goto failed;
+                            *pref = ref;
+                        } else {
+                            buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
+                        }
+                    } else { /* "name" */
+                        buf = flatcc_json_parser_unmatched_symbol(ctx, buf, end);
+                    } /* "name" */
+                } /* "ref_type" */
+            } /* branch "name" */
         } /* branch "layout" */
         buf = flatcc_json_parser_object_end(ctx, buf, end, &more);
     }
