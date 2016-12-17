@@ -13,7 +13,7 @@ table numeric_type
 
 table struct_field
 {
-    name: string (key);
+    name: string;
     type: string;
     offset: uint;
 }
@@ -43,7 +43,7 @@ union any_type
 
 table type
 {
-    name:  string (key);
+    name:  string;
     ctype: string;
     size:  ubyte;
     align: ubyte;
@@ -56,13 +56,13 @@ table type
 
 table array
 {
-    name: string (key);
+    name: string;
     type: string;
 }
 
 table layout
 {
-    name: string (key);
+    name: string;
     arrays: [array];
 }
 
@@ -76,7 +76,7 @@ table hash_storage { }
 
 table storage
 {
-    name: string (key);
+    name: string;
     layout: string;
     ref_type: string;
     engine: storage_engine;
