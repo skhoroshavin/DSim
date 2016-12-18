@@ -35,7 +35,7 @@ void dsim_storage_array_update( struct dsim_storage_array *sa, const void *data,
     assert( dsim_storage_array_can_modify(sa) );
 
     size_t elem_size = dsim_ddl_type_size(sa->type);
-    memcpy( (char *)&sa->current.data + dst_offset*elem_size,
+    memcpy( (char *)sa->current.data + dst_offset*elem_size,
             (const char *)data + src_offset*elem_size,
             count*elem_size );
 }

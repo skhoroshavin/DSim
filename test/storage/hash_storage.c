@@ -247,12 +247,48 @@ TEST(hash_storage_non_empty, remove_ordered)
 //    TEST_ASSERT_EQUAL( ddl_test->storage_test->log.commands.at[1].count, 4 );
 }
 
+TEST(hash_storage_non_empty, update_ordered)
+{
+    const uint64_t ids[] = { 22, 23, 24 };
+    const float f_data[] = { 11, 22, 33 };
+    test_storage_update( ids, 0, f_data, 0, count_of(ids) );
+
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_read_begin(), test_data_i, sizeof(test_data_i) ); test_storage_i_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_read_begin(), test_data_v, sizeof(test_data_v) ); test_storage_v_read_end();
+
+    const float * f_test = test_storage_f_read_begin();
+    TEST_ASSERT_EQUAL_MEMORY( f_test,     test_data_f,     2*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( f_test + 2, f_data,          3*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( f_test + 5, test_data_f + 5, 5*sizeof(test_data_f[0]) );
+    test_storage_f_read_end();
+}
+
+TEST(hash_storage_non_empty, update_unordered)
+{
+    const uint64_t ids[] = { 24, 23, 22 };
+    const float f_data[] = { 11, 22, 33 };
+    test_storage_update( ids, 0, f_data, 0, count_of(ids) );
+
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_i_read_begin(), test_data_i, sizeof(test_data_i) ); test_storage_i_read_end();
+    TEST_ASSERT_EQUAL_MEMORY( test_storage_v_read_begin(), test_data_v, sizeof(test_data_v) ); test_storage_v_read_end();
+
+    const float * f_test = test_storage_f_read_begin();
+    TEST_ASSERT_EQUAL_MEMORY( f_test,     test_data_f,     2*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( f_test + 5, test_data_f + 5, 5*sizeof(test_data_f[0]) );
+    TEST_ASSERT_EQUAL( f_test[2], f_data[2] );
+    TEST_ASSERT_EQUAL( f_test[3], f_data[1] );
+    TEST_ASSERT_EQUAL( f_test[4], f_data[0] );
+    test_storage_f_read_end();
+}
+
 TEST_GROUP_RUNNER(hash_storage_non_empty)
 {
     RUN_TEST_CASE(hash_storage_non_empty, assert_non_empty);
     RUN_TEST_CASE(hash_storage_non_empty, insert_more);
     RUN_TEST_CASE(hash_storage_non_empty, remove_fast);
     RUN_TEST_CASE(hash_storage_non_empty, remove_ordered);
+    RUN_TEST_CASE(hash_storage_non_empty, update_ordered);
+    RUN_TEST_CASE(hash_storage_non_empty, update_unordered);
 }
 
 void run_test_hash_storage()
