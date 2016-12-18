@@ -4,6 +4,8 @@
 #include "containers/test_array.h"
 #include "containers/test_hash.h"
 
+#include "storage/test_storage_array.h"
+
 void run_test_common();
 
 void run_test_allocator();
@@ -19,6 +21,8 @@ static void run_all_tests()
 
     run_test_array();
     run_test_hash();
+
+    run_test_storage_array();
 
     run_test_storage_log();
     run_test_hash_storage();

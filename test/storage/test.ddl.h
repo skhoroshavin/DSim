@@ -14,6 +14,7 @@ typedef struct vec4 {
 struct _ddl_test
 {
     dsim_ddl_type_table_t type_uint8;
+    dsim_ddl_type_table_t type_uint64;
     dsim_ddl_type_table_t type_float;
     dsim_ddl_type_table_t type_vec4;
     dsim_ddl_layout_table_t layout_layout;
