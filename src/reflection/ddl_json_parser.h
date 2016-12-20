@@ -239,7 +239,7 @@ static const char *dsim_ddl_struct_type_parse_json_table(flatcc_json_parser_t *c
                 buf = flatcc_json_parser_array_start(ctx, buf, end, &more);
                 while (more) {
                     buf = dsim_ddl_struct_field_parse_json_table(ctx, buf, end);
-                    if (ctx->error) return buf; /* Quick fix, should be investigated further */
+                    if (buf == end) goto failed;
                     ref = flatcc_builder_end_table(ctx->ctx);
                     if (!(pref = flatcc_builder_extend_offset_vector(ctx->ctx, 1))) goto failed;
                     *pref = ref;
@@ -790,7 +790,7 @@ static const char *dsim_ddl_layout_parse_json_table(flatcc_json_parser_t *ctx, c
                     buf = flatcc_json_parser_array_start(ctx, buf, end, &more);
                     while (more) {
                         buf = dsim_ddl_array_parse_json_table(ctx, buf, end);
-                        if (ctx->error) return buf; /* Quick fix, should be investigated further */
+                        if (buf == end) goto failed;
                         ref = flatcc_builder_end_table(ctx->ctx);
                         if (!(pref = flatcc_builder_extend_offset_vector(ctx->ctx, 1))) goto failed;
                         *pref = ref;
@@ -1063,7 +1063,7 @@ static const char *dsim_ddl_root_parse_json_table(flatcc_json_parser_t *ctx, con
                     buf = flatcc_json_parser_array_start(ctx, buf, end, &more);
                     while (more) {
                         buf = dsim_ddl_layout_parse_json_table(ctx, buf, end);
-                        if (ctx->error) return buf; /* Quick fix, should be investigated further */
+                        if (buf == end) goto failed;
                         ref = flatcc_builder_end_table(ctx->ctx);
                         if (!(pref = flatcc_builder_extend_offset_vector(ctx->ctx, 1))) goto failed;
                         *pref = ref;
@@ -1116,7 +1116,7 @@ static const char *dsim_ddl_root_parse_json_table(flatcc_json_parser_t *ctx, con
                         buf = flatcc_json_parser_array_start(ctx, buf, end, &more);
                         while (more) {
                             buf = dsim_ddl_type_parse_json_table(ctx, buf, end);
-                            if (ctx->error) return buf; /* Quick fix, should be investigated further */
+                            if (buf == end) goto failed;
                             ref = flatcc_builder_end_table(ctx->ctx);
                             if (!(pref = flatcc_builder_extend_offset_vector(ctx->ctx, 1))) goto failed;
                             *pref = ref;
@@ -1136,7 +1136,7 @@ static const char *dsim_ddl_root_parse_json_table(flatcc_json_parser_t *ctx, con
                             buf = flatcc_json_parser_array_start(ctx, buf, end, &more);
                             while (more) {
                                 buf = dsim_ddl_storage_parse_json_table(ctx, buf, end);
-                                if (ctx->error) return buf; /* Quick fix, should be investigated further */
+                                if (buf == end) goto failed;
                                 ref = flatcc_builder_end_table(ctx->ctx);
                                 if (!(pref = flatcc_builder_extend_offset_vector(ctx->ctx, 1))) goto failed;
                                 *pref = ref;
