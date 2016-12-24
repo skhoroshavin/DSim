@@ -70,18 +70,8 @@ static inline dsim_ddl_numeric_type_table_t dsim_ddl_numeric_type_vec_at(dsim_dd
 __flatbuffers_offset_vec_at(dsim_ddl_numeric_type_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_numeric_type)
 
-static inline flatbuffers_bool_t dsim_ddl_numeric_type_is_signed(dsim_ddl_numeric_type_table_t t)
-__flatbuffers_scalar_field(flatbuffers_bool, 0, 0, t)
-__flatbuffers_define_scan_by_scalar_field(dsim_ddl_numeric_type, is_signed, flatbuffers_bool_t)
-static inline int dsim_ddl_numeric_type_is_signed_is_present(dsim_ddl_numeric_type_table_t t)
-__flatbuffers_field_present(0, t)
-
-static inline flatbuffers_bool_t dsim_ddl_numeric_type_is_float(dsim_ddl_numeric_type_table_t t)
-__flatbuffers_scalar_field(flatbuffers_bool, 1, 0, t)
-__flatbuffers_define_scan_by_scalar_field(dsim_ddl_numeric_type, is_float, flatbuffers_bool_t)
-static inline int dsim_ddl_numeric_type_is_float_is_present(dsim_ddl_numeric_type_table_t t)
-__flatbuffers_field_present(1, t)
-
+__flatbuffers_define_scalar_field(0, dsim_ddl_numeric_type, is_signed, flatbuffers_bool, flatbuffers_bool_t, 0)
+__flatbuffers_define_scalar_field(1, dsim_ddl_numeric_type, is_float, flatbuffers_bool, flatbuffers_bool_t, 0)
 
 struct dsim_ddl_struct_field_table { uint8_t unused__; };
 
@@ -96,24 +86,9 @@ static inline dsim_ddl_struct_field_table_t dsim_ddl_struct_field_vec_at(dsim_dd
 __flatbuffers_offset_vec_at(dsim_ddl_struct_field_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_struct_field)
 
-static inline flatbuffers_string_t dsim_ddl_struct_field_name(dsim_ddl_struct_field_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-__flatbuffers_define_scan_by_string_field(dsim_ddl_struct_field, name)
-static inline int dsim_ddl_struct_field_name_is_present(dsim_ddl_struct_field_table_t t)
-__flatbuffers_field_present(0, t)
-
-static inline flatbuffers_string_t dsim_ddl_struct_field_type(dsim_ddl_struct_field_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_t, 1, t, 0)
-__flatbuffers_define_scan_by_string_field(dsim_ddl_struct_field, type)
-static inline int dsim_ddl_struct_field_type_is_present(dsim_ddl_struct_field_table_t t)
-__flatbuffers_field_present(1, t)
-
-static inline uint32_t dsim_ddl_struct_field_offset(dsim_ddl_struct_field_table_t t)
-__flatbuffers_scalar_field(flatbuffers_uint32, 2, 0, t)
-__flatbuffers_define_scan_by_scalar_field(dsim_ddl_struct_field, offset, uint32_t)
-static inline int dsim_ddl_struct_field_offset_is_present(dsim_ddl_struct_field_table_t t)
-__flatbuffers_field_present(2, t)
-
+__flatbuffers_define_string_field(0, dsim_ddl_struct_field, name, 0)
+__flatbuffers_define_string_field(1, dsim_ddl_struct_field, type, 0)
+__flatbuffers_define_scalar_field(2, dsim_ddl_struct_field, offset, flatbuffers_uint32, uint32_t, 0)
 
 struct dsim_ddl_struct_type_table { uint8_t unused__; };
 
@@ -128,11 +103,7 @@ static inline dsim_ddl_struct_type_table_t dsim_ddl_struct_type_vec_at(dsim_ddl_
 __flatbuffers_offset_vec_at(dsim_ddl_struct_type_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_struct_type)
 
-static inline dsim_ddl_struct_field_vec_t dsim_ddl_struct_type_fields(dsim_ddl_struct_type_table_t t)
-__flatbuffers_vector_field(dsim_ddl_struct_field_vec_t, 0, t, 0)
-static inline int dsim_ddl_struct_type_fields_is_present(dsim_ddl_struct_type_table_t t)
-__flatbuffers_field_present(0, t)
-
+__flatbuffers_define_vector_field(0, dsim_ddl_struct_type, fields, dsim_ddl_struct_field_vec_t, 0)
 
 struct dsim_ddl_enum_type_table { uint8_t unused__; };
 
@@ -147,11 +118,7 @@ static inline dsim_ddl_enum_type_table_t dsim_ddl_enum_type_vec_at(dsim_ddl_enum
 __flatbuffers_offset_vec_at(dsim_ddl_enum_type_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_enum_type)
 
-static inline flatbuffers_string_vec_t dsim_ddl_enum_type_values(dsim_ddl_enum_type_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_vec_t, 0, t, 0)
-static inline int dsim_ddl_enum_type_values_is_present(dsim_ddl_enum_type_table_t t)
-__flatbuffers_field_present(0, t)
-
+__flatbuffers_define_vector_field(0, dsim_ddl_enum_type, values, flatbuffers_string_vec_t, 0)
 
 struct dsim_ddl_reference_type_table { uint8_t unused__; };
 
@@ -166,11 +133,7 @@ static inline dsim_ddl_reference_type_table_t dsim_ddl_reference_type_vec_at(dsi
 __flatbuffers_offset_vec_at(dsim_ddl_reference_type_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_reference_type)
 
-static inline flatbuffers_string_vec_t dsim_ddl_reference_type_storages(dsim_ddl_reference_type_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_vec_t, 0, t, 0)
-static inline int dsim_ddl_reference_type_storages_is_present(dsim_ddl_reference_type_table_t t)
-__flatbuffers_field_present(0, t)
-
+__flatbuffers_define_vector_field(0, dsim_ddl_reference_type, storages, flatbuffers_string_vec_t, 0)
 typedef uint8_t dsim_ddl_any_type_union_type_t;
 __flatbuffers_define_integer_type(dsim_ddl_any_type, dsim_ddl_any_type_union_type_t, 8)
 #define dsim_ddl_any_type_NONE ((dsim_ddl_any_type_union_type_t)0U)
@@ -205,37 +168,11 @@ static inline dsim_ddl_type_table_t dsim_ddl_type_vec_at(dsim_ddl_type_vec_t vec
 __flatbuffers_offset_vec_at(dsim_ddl_type_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_type)
 
-static inline flatbuffers_string_t dsim_ddl_type_name(dsim_ddl_type_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-__flatbuffers_define_scan_by_string_field(dsim_ddl_type, name)
-static inline int dsim_ddl_type_name_is_present(dsim_ddl_type_table_t t)
-__flatbuffers_field_present(0, t)
-
-static inline flatbuffers_string_t dsim_ddl_type_ctype(dsim_ddl_type_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_t, 1, t, 0)
-__flatbuffers_define_scan_by_string_field(dsim_ddl_type, ctype)
-static inline int dsim_ddl_type_ctype_is_present(dsim_ddl_type_table_t t)
-__flatbuffers_field_present(1, t)
-
-static inline uint8_t dsim_ddl_type_size(dsim_ddl_type_table_t t)
-__flatbuffers_scalar_field(flatbuffers_uint8, 2, 0, t)
-__flatbuffers_define_scan_by_scalar_field(dsim_ddl_type, size, uint8_t)
-static inline int dsim_ddl_type_size_is_present(dsim_ddl_type_table_t t)
-__flatbuffers_field_present(2, t)
-
-static inline uint8_t dsim_ddl_type_align(dsim_ddl_type_table_t t)
-__flatbuffers_scalar_field(flatbuffers_uint8, 3, 0, t)
-__flatbuffers_define_scan_by_scalar_field(dsim_ddl_type, align, uint8_t)
-static inline int dsim_ddl_type_align_is_present(dsim_ddl_type_table_t t)
-__flatbuffers_field_present(3, t)
-
-static inline dsim_ddl_any_type_union_type_t dsim_ddl_type_data_type(dsim_ddl_type_table_t t)
-__flatbuffers_scalar_field(dsim_ddl_any_type, 4, 0, t)
-static inline flatbuffers_generic_table_t dsim_ddl_type_data(dsim_ddl_type_table_t t)
-__flatbuffers_table_field(flatbuffers_generic_table_t, 5, t, 0)
-static inline int dsim_ddl_type_data_is_present(dsim_ddl_type_table_t t)
-__flatbuffers_field_present(4, t)
-
+__flatbuffers_define_string_field(0, dsim_ddl_type, name, 0)
+__flatbuffers_define_string_field(1, dsim_ddl_type, ctype, 0)
+__flatbuffers_define_scalar_field(2, dsim_ddl_type, size, flatbuffers_uint8, uint8_t, 0)
+__flatbuffers_define_scalar_field(3, dsim_ddl_type, align, flatbuffers_uint8, uint8_t, 0)
+__flatbuffers_define_union_field(5, dsim_ddl_type, data, 0)
 
 /** //////////////////////////////////////////////////////////////////////
  * ////////////////////////////////////////////////////////////////////// */
@@ -252,18 +189,8 @@ static inline dsim_ddl_array_table_t dsim_ddl_array_vec_at(dsim_ddl_array_vec_t 
 __flatbuffers_offset_vec_at(dsim_ddl_array_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_array)
 
-static inline flatbuffers_string_t dsim_ddl_array_name(dsim_ddl_array_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-__flatbuffers_define_scan_by_string_field(dsim_ddl_array, name)
-static inline int dsim_ddl_array_name_is_present(dsim_ddl_array_table_t t)
-__flatbuffers_field_present(0, t)
-
-static inline flatbuffers_string_t dsim_ddl_array_type(dsim_ddl_array_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_t, 1, t, 0)
-__flatbuffers_define_scan_by_string_field(dsim_ddl_array, type)
-static inline int dsim_ddl_array_type_is_present(dsim_ddl_array_table_t t)
-__flatbuffers_field_present(1, t)
-
+__flatbuffers_define_string_field(0, dsim_ddl_array, name, 0)
+__flatbuffers_define_string_field(1, dsim_ddl_array, type, 0)
 
 struct dsim_ddl_layout_table { uint8_t unused__; };
 
@@ -278,17 +205,8 @@ static inline dsim_ddl_layout_table_t dsim_ddl_layout_vec_at(dsim_ddl_layout_vec
 __flatbuffers_offset_vec_at(dsim_ddl_layout_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_layout)
 
-static inline flatbuffers_string_t dsim_ddl_layout_name(dsim_ddl_layout_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-__flatbuffers_define_scan_by_string_field(dsim_ddl_layout, name)
-static inline int dsim_ddl_layout_name_is_present(dsim_ddl_layout_table_t t)
-__flatbuffers_field_present(0, t)
-
-static inline dsim_ddl_array_vec_t dsim_ddl_layout_arrays(dsim_ddl_layout_table_t t)
-__flatbuffers_vector_field(dsim_ddl_array_vec_t, 1, t, 0)
-static inline int dsim_ddl_layout_arrays_is_present(dsim_ddl_layout_table_t t)
-__flatbuffers_field_present(1, t)
-
+__flatbuffers_define_string_field(0, dsim_ddl_layout, name, 0)
+__flatbuffers_define_vector_field(1, dsim_ddl_layout, arrays, dsim_ddl_array_vec_t, 0)
 /** //////////////////////////////////////////////////////////////////////
  * ////////////////////////////////////////////////////////////////////// */
 typedef uint8_t dsim_ddl_storage_engine_union_type_t;
@@ -333,31 +251,10 @@ static inline dsim_ddl_storage_table_t dsim_ddl_storage_vec_at(dsim_ddl_storage_
 __flatbuffers_offset_vec_at(dsim_ddl_storage_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_storage)
 
-static inline flatbuffers_string_t dsim_ddl_storage_name(dsim_ddl_storage_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-__flatbuffers_define_scan_by_string_field(dsim_ddl_storage, name)
-static inline int dsim_ddl_storage_name_is_present(dsim_ddl_storage_table_t t)
-__flatbuffers_field_present(0, t)
-
-static inline flatbuffers_string_t dsim_ddl_storage_layout(dsim_ddl_storage_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_t, 1, t, 0)
-__flatbuffers_define_scan_by_string_field(dsim_ddl_storage, layout)
-static inline int dsim_ddl_storage_layout_is_present(dsim_ddl_storage_table_t t)
-__flatbuffers_field_present(1, t)
-
-static inline flatbuffers_string_t dsim_ddl_storage_ref_type(dsim_ddl_storage_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_t, 2, t, 0)
-__flatbuffers_define_scan_by_string_field(dsim_ddl_storage, ref_type)
-static inline int dsim_ddl_storage_ref_type_is_present(dsim_ddl_storage_table_t t)
-__flatbuffers_field_present(2, t)
-
-static inline dsim_ddl_storage_engine_union_type_t dsim_ddl_storage_engine_type(dsim_ddl_storage_table_t t)
-__flatbuffers_scalar_field(dsim_ddl_storage_engine, 3, 0, t)
-static inline flatbuffers_generic_table_t dsim_ddl_storage_engine(dsim_ddl_storage_table_t t)
-__flatbuffers_table_field(flatbuffers_generic_table_t, 4, t, 0)
-static inline int dsim_ddl_storage_engine_is_present(dsim_ddl_storage_table_t t)
-__flatbuffers_field_present(3, t)
-
+__flatbuffers_define_string_field(0, dsim_ddl_storage, name, 0)
+__flatbuffers_define_string_field(1, dsim_ddl_storage, layout, 0)
+__flatbuffers_define_string_field(2, dsim_ddl_storage, ref_type, 0)
+__flatbuffers_define_union_field(4, dsim_ddl_storage, engine, 0)
 
 /** //////////////////////////////////////////////////////////////////////
  * ////////////////////////////////////////////////////////////////////// */
@@ -374,27 +271,10 @@ static inline dsim_ddl_root_table_t dsim_ddl_root_vec_at(dsim_ddl_root_vec_t vec
 __flatbuffers_offset_vec_at(dsim_ddl_root_table_t, vec, i, 0)
 __flatbuffers_table_as_root(dsim_ddl_root)
 
-static inline flatbuffers_string_t dsim_ddl_root_name(dsim_ddl_root_table_t t)
-__flatbuffers_vector_field(flatbuffers_string_t, 0, t, 0)
-__flatbuffers_define_scan_by_string_field(dsim_ddl_root, name)
-static inline int dsim_ddl_root_name_is_present(dsim_ddl_root_table_t t)
-__flatbuffers_field_present(0, t)
-
-static inline dsim_ddl_type_vec_t dsim_ddl_root_types(dsim_ddl_root_table_t t)
-__flatbuffers_vector_field(dsim_ddl_type_vec_t, 1, t, 0)
-static inline int dsim_ddl_root_types_is_present(dsim_ddl_root_table_t t)
-__flatbuffers_field_present(1, t)
-
-static inline dsim_ddl_layout_vec_t dsim_ddl_root_layouts(dsim_ddl_root_table_t t)
-__flatbuffers_vector_field(dsim_ddl_layout_vec_t, 2, t, 0)
-static inline int dsim_ddl_root_layouts_is_present(dsim_ddl_root_table_t t)
-__flatbuffers_field_present(2, t)
-
-static inline dsim_ddl_storage_vec_t dsim_ddl_root_storages(dsim_ddl_root_table_t t)
-__flatbuffers_vector_field(dsim_ddl_storage_vec_t, 3, t, 0)
-static inline int dsim_ddl_root_storages_is_present(dsim_ddl_root_table_t t)
-__flatbuffers_field_present(3, t)
-
+__flatbuffers_define_string_field(0, dsim_ddl_root, name, 0)
+__flatbuffers_define_vector_field(1, dsim_ddl_root, types, dsim_ddl_type_vec_t, 0)
+__flatbuffers_define_vector_field(2, dsim_ddl_root, layouts, dsim_ddl_layout_vec_t, 0)
+__flatbuffers_define_vector_field(3, dsim_ddl_root, storages, dsim_ddl_storage_vec_t, 0)
 
 #include "flatcc/portable/pdiagnostic_pop.h"
 #endif /* DDL_READER_H */
