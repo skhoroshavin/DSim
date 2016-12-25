@@ -9,8 +9,8 @@ static const char dsim_ddl_test_data[] = {
     4, 0, 0, 0, 64, -3, -1, -1, 52, 0, 0, 0, 36, 0, 0, 0,
     24, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 8, 0, 0, 0,
     0, 0, 0, 0, -92, -3, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0,
-    6, 0, 0, 0, 108, 97, 121, 111, 117, 116, 0, 0, 7, 0, 0, 0,
-    115, 116, 111, 114, 97, 103, 101, 0, 1, 0, 0, 0, 4, 0, 0, 0,
+    6, 0, 0, 0, 108, 97, 121, 111, 117, 116, 0, 0, 4, 0, 0, 0,
+    100, 97, 116, 97, 0, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0, 0,
     -76, -3, -1, -1, 120, 0, 0, 0, 4, 0, 0, 0, 3, 0, 0, 0,
     76, 0, 0, 0, 40, 0, 0, 0, 4, 0, 0, 0, -48, -3, -1, -1,
     20, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 118, 101, 99, 52,
@@ -66,7 +66,7 @@ void dsim_ddl_init_test()
     _ddl.type_float = dsim_ddl_type( "float" );
     _ddl.type_vec4 = dsim_ddl_type( "vec4" );
     _ddl.layout_layout = dsim_ddl_layout( "layout" );
-    _ddl.storage_storage = dsim_ddl_storage( "storage" );
+    _ddl.storage_data = dsim_ddl_storage( "data" );
 }
 
 void dsim_ddl_done_test()

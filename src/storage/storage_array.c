@@ -6,14 +6,14 @@ void dsim_storage_array_init( struct dsim_storage_array *sa, dsim_ddl_type_table
     sa->type = type;
     _dsim_array_init( &sa->current, alloc );
     _dsim_array_init( &sa->next, alloc );
-    sa->read_count = 0;
-    sa->write_direct = 0;
-    sa->write_buffered = 0;
+    sa->current_read_count = 0;
+    sa->next_read_count = 0;
+    sa->write_mode = DSIM_WRITE_NONE;
 }
 
 int dsim_storage_array_can_modify( const struct dsim_storage_array *sa )
 {
-    return !(sa->read_count || sa->write_buffered || sa->write_direct);
+    return !(sa->current_read_count || sa->next_read_count || sa->write_mode);
 }
 
 void dsim_storage_array_resize( struct dsim_storage_array *sa, uint32_t count )
@@ -55,57 +55,87 @@ void dsim_storage_array_reset( struct dsim_storage_array *sa )
     _dsim_array_reset( &sa->next );
 }
 
-const void *dsim_storage_array_read_begin( struct dsim_storage_array *sa )
+const void *dsim_storage_array_begin_read( struct dsim_storage_array *sa )
 {
-    if( sa->write_direct )
+    if( sa->write_mode == DSIM_WRITE_DIRECT )
         return 0;
 
-    ++sa->read_count;
+    ++sa->current_read_count;
     return sa->current.data;
 }
 
-void dsim_storage_array_read_end( struct dsim_storage_array *sa )
+int dsim_storage_array_end_read( struct dsim_storage_array *sa, const void *data )
 {
-    assert( sa->read_count );
-    --sa->read_count;
-}
-
-void *dsim_storage_array_write_direct_begin( struct dsim_storage_array *sa )
-{
-    if( !dsim_storage_array_can_modify(sa) )
-        return 0;
-
-    sa->write_direct = 1;
-    return sa->current.data;
-}
-
-void dsim_storage_array_write_direct_end( struct dsim_storage_array *sa )
-{
-    assert( sa->write_direct );
-    sa->write_direct = 0;
-}
-
-void *dsim_storage_array_write_buffered_begin( struct dsim_storage_array *sa )
-{
-    if( sa->write_buffered || sa->write_direct )
-        return 0;
-
-    sa->write_buffered = 1;
-    if( sa->next.count != sa->current.count )
+    if( data == sa->current.data )
     {
-        _dsim_array_reset( &sa->next );
-        _dsim_array_resize( &sa->next, sa->current.count, dsim_ddl_type_size(sa->type) );
+        assert( sa->current_read_count );
+        --sa->current_read_count;
+        return 1;
     }
-    return sa->next.data;
+
+    if( data == sa->next.data )
+    {
+        assert( sa->next_read_count );
+        --sa->next_read_count;
+        return 1;
+    }
+
+    return 0;
 }
 
-void dsim_storage_array_write_buffered_end( struct dsim_storage_array *sa )
+void *dsim_storage_array_begin_write( struct dsim_storage_array *sa, enum dsim_storage_write_mode mode )
 {
-    assert( sa->write_buffered );
+    if( mode == DSIM_WRITE_NONE )
+        return 0;
 
-    void *tmp = sa->current.data;
-    sa->current.data = sa->next.data;
-    sa->next.data = tmp;
-    sa->write_buffered = 0;
+    if( mode == DSIM_WRITE_DIRECT )
+    {
+        if( !dsim_storage_array_can_modify(sa) )
+            return 0;
+        sa->write_mode = mode;
+        return sa->current.data;
+    }
+
+    if( mode == DSIM_WRITE_BUFFERED )
+    {
+        if( (sa->write_mode) || (sa->next_read_count) )
+            return 0;
+        sa->write_mode = mode;
+        if( sa->next.count != sa->current.count )
+        {
+            _dsim_array_reset( &sa->next );
+            _dsim_array_resize( &sa->next, sa->current.count, dsim_ddl_type_size(sa->type) );
+        }
+        return sa->next.data;
+    }
+
+    return 0;
 }
 
+int dsim_storage_array_end_write( struct dsim_storage_array *sa, void *data )
+{
+    if( data == sa->current.data )
+    {
+        assert( sa->write_mode == DSIM_WRITE_DIRECT );
+        sa->write_mode = DSIM_WRITE_NONE;
+        return 1;
+    }
+
+    if( data == sa->next.data )
+    {
+        assert( sa->write_mode == DSIM_WRITE_BUFFERED );
+        sa->write_mode = DSIM_WRITE_NONE;
+
+        void *tmp_data = sa->current.data;
+        sa->current.data = sa->next.data;
+        sa->next.data = tmp_data;
+
+        uint32_t tmp_count = sa->current_read_count;
+        sa->current_read_count = sa->next_read_count;
+        sa->next_read_count = tmp_count;
+
+        return 1;
+    }
+
+    return 0;
+}

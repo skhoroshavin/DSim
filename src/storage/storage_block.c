@@ -75,3 +75,35 @@ void dsim_storage_block_done( struct dsim_storage_block *sb )
         dsim_storage_array_reset( sb->arrays + i );
     dsim_deallocate( sb->alloc, sb->arrays );
 }
+
+const void *dsim_storage_block_begin_read( struct dsim_storage_block *sb, uint32_t arr )
+{
+    dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(sb->layout);
+    assert( arr < dsim_ddl_array_vec_len(arrays) );
+    return dsim_storage_array_begin_read( sb->arrays + arr );
+}
+
+int dsim_storage_block_end_read( struct dsim_storage_block *sb, const void *data )
+{
+    dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(sb->layout);
+    for( size_t i = 0; i != dsim_ddl_array_vec_len(arrays); ++i )
+        if( dsim_storage_array_end_read(sb->arrays+i, data) )
+            return 1;
+    return 0;
+}
+
+void *dsim_storage_block_begin_write( struct dsim_storage_block *sb, uint32_t arr, enum dsim_storage_write_mode mode )
+{
+    dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(sb->layout);
+    assert( arr < dsim_ddl_array_vec_len(arrays) );
+    return dsim_storage_array_begin_write( sb->arrays + arr, mode );
+}
+
+int dsim_storage_block_end_write( struct dsim_storage_block *sb, void *data )
+{
+    dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(sb->layout);
+    for( size_t i = 0; i != dsim_ddl_array_vec_len(arrays); ++i )
+        if( dsim_storage_array_end_write( sb->arrays+i, data ) )
+            return 1;
+    return 0;
+}

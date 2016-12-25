@@ -30,6 +30,6 @@
     ],
 
     storages: [
-        { name: "storage", layout: "layout" }
+        { name: "data", layout: "layout" }
     ]
 }

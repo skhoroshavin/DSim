@@ -2,6 +2,7 @@
 #pragma once
 
 #include "storage_log.h"
+#include "storage_array.h"
 #include "reflection/ddl_reader.h"
 
 DSIM_BEGIN_HEADER
@@ -16,12 +17,11 @@ struct dsim_storage_operations
     uint32_t (*block_size)( const struct dsim_storage *self, uint32_t block );
 
     const uint64_t *(*id_data)( const struct dsim_storage *self, uint32_t block );
-    const void     *(*read_begin)( struct dsim_storage *self, uint32_t block, uint32_t arr );
-    void            (*read_end)( struct dsim_storage *self, uint32_t block, uint32_t arr );
-    void           *(*write_direct_begin)( struct dsim_storage *self, uint32_t block, uint32_t arr );
-    void            (*write_direct_end)( struct dsim_storage *self, uint32_t block, uint32_t arr );
-    void           *(*write_buffered_begin)( struct dsim_storage *self, uint32_t block, uint32_t arr );
-    void            (*write_buffered_end)( struct dsim_storage *self, uint32_t block, uint32_t arr );
+
+    const void *(*begin_read)( struct dsim_storage *self, uint32_t block, uint32_t arr );
+    int         (*end_read)( struct dsim_storage *self, const void *data );
+    void       *(*begin_write)( struct dsim_storage *self, uint32_t block, uint32_t arr, enum dsim_storage_write_mode mode );
+    int         (*end_write)( struct dsim_storage *self, void *data );
 
     int  (*can_modify)( const struct dsim_storage *self, uint32_t block, uint32_t arr );
     void (*select)( struct dsim_storage *self, const uint64_t *ids, uint32_t count, dsim_storage_select_cb cb, void *context );
@@ -56,18 +56,14 @@ inline static uint32_t dsim_storage_block_size( const struct dsim_storage *stora
 
 inline static const uint64_t *dsim_storage_id_data( const struct dsim_storage *storage, uint32_t block )
 { return storage->_ops->id_data( storage, block ); }
-inline static const void *dsim_storage_read_begin( struct dsim_storage *storage, uint32_t block, uint32_t arr )
-{ return storage->_ops->read_begin( storage, block, arr ); }
-inline static void dsim_storage_read_end( struct dsim_storage *storage, uint32_t block, uint32_t arr )
-{ storage->_ops->read_end( storage, block, arr ); }
-inline static const void *dsim_storage_write_direct_begin( struct dsim_storage *storage, uint32_t block, uint32_t arr )
-{ return storage->_ops->write_direct_begin( storage, block, arr ); }
-inline static void dsim_storage_write_direct_end( struct dsim_storage *storage, uint32_t block, uint32_t arr )
-{ storage->_ops->write_direct_end( storage, block, arr ); }
-inline static const void *dsim_storage_write_buffered_begin( struct dsim_storage *storage, uint32_t block, uint32_t arr )
-{ return storage->_ops->write_buffered_begin( storage, block, arr ); }
-inline static void dsim_storage_write_buffered_end( struct dsim_storage *storage, uint32_t block, uint32_t arr )
-{ storage->_ops->write_buffered_end( storage, block, arr ); }
+inline static const void *dsim_storage_begin_read( struct dsim_storage *storage, uint32_t block, uint32_t arr )
+{ return storage->_ops->begin_read( storage, block, arr ); }
+inline static int dsim_storage_end_read( struct dsim_storage *storage, const void *data )
+{ return storage->_ops->end_read( storage, data ); }
+inline static const void *dsim_storage_begin_write( struct dsim_storage *storage, uint32_t block, uint32_t arr, enum dsim_storage_write_mode mode )
+{ return storage->_ops->begin_write( storage, block, arr, mode ); }
+inline static int dsim_storage_end_write( struct dsim_storage *storage, void *data )
+{ return storage->_ops->end_write( storage, data ); }
 
 inline static int dsim_storage_can_modify( const struct dsim_storage *storage, uint32_t block, uint32_t arr )
 { return storage->_ops->can_modify( storage, block, arr ); }

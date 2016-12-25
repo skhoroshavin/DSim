@@ -136,6 +136,40 @@ TEST(storage_array_non_empty, remove)
     TEST_ASSERT_ARRAY_REMOVE_UNORDERED( (struct dsim_array_uint64*)&array, 3, 2, test_data, count_of(test_data) );
 }
 
+TEST(storage_array_non_empty, update)
+{
+    const uint64_t more_data[] = { 65, 0, 123, 87, 1 };
+    dsim_storage_array_update( &array, more_data, 0, 3, count_of(more_data) );
+
+    TEST_ASSERT_STORAGE_ARRAY_SIZE( &array, count_of(test_data) );
+    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.current.data, test_data, 3*sizeof(test_data[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.current.data + 3, more_data, sizeof(more_data) );
+    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.current.data + 8, test_data + 8, 1*sizeof(test_data[0]) );
+}
+
+TEST(storage_array_non_empty, read)
+{
+    const uint64_t *data = (const uint64_t *)dsim_storage_array_begin_read( &array );
+
+    TEST_ASSERT_NOT_NULL( data );
+    TEST_ASSERT_EQUAL( dsim_storage_array_can_modify(&array), 0 );
+    TEST_ASSERT_EQUAL_MEMORY( data, test_data, sizeof(test_data) );
+
+    const uint64_t *data2 = (const uint64_t *)dsim_storage_array_begin_read( &array );
+
+    TEST_ASSERT_NOT_NULL( data2 );
+    TEST_ASSERT_EQUAL( dsim_storage_array_can_modify(&array), 0 );
+    TEST_ASSERT_EQUAL_MEMORY( data2, test_data, sizeof(test_data) );
+
+    dsim_storage_array_end_read( &array, data );
+    TEST_ASSERT_EQUAL( dsim_storage_array_can_modify(&array), 0 );
+
+    TEST_ASSERT_NULL( dsim_storage_array_begin_write(&array, DSIM_WRITE_DIRECT) );
+
+    dsim_storage_array_end_read( &array, data2 );
+    TEST_ASSERT_EQUAL( dsim_storage_array_can_modify(&array), 1 );
+}
+
 TEST(storage_array_non_empty, reset)
 {
     dsim_storage_array_reset( &array );
@@ -150,7 +184,8 @@ TEST_GROUP_RUNNER(storage_array_non_empty)
     RUN_TEST_CASE(storage_array_non_empty, resize_less);
     RUN_TEST_CASE(storage_array_non_empty, push_back);
     RUN_TEST_CASE(storage_array_non_empty, remove);
-    //    RUN_TEST_CASE(storage_array_non_empty, update);
+    RUN_TEST_CASE(storage_array_non_empty, update);
+    RUN_TEST_CASE(storage_array_non_empty, read);
     RUN_TEST_CASE(storage_array_non_empty, reset);
 }
 

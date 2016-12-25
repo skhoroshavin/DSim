@@ -179,20 +179,16 @@ static void _dsim_ddl_generate_h( const char *h_name, void *data )
             const char *ctype = dsim_ddl_type_ctype(type);
             if( !ctype ) ctype = dsim_ddl_type_name(type);
 
-            fprintf( f, "inline static const %s *%s_%s_%s_read_begin() { return (const %s *)dsim_storage_read_begin( ddl_%s->storage_%s, 0, %zd ); }\n",
+            fprintf( f, "inline static const %s *%s_%s_%s_begin_read() { return (const %s *)dsim_storage_begin_read( ddl_%s->storage_%s, 0, %zd ); }\n",
                      ctype, root_name, storage_name, array_name, ctype, root_name, storage_name, j );
-            fprintf( f, "inline static void %s_%s_%s_read_end() { dsim_storage_read_end( ddl_%s->storage_%s, 0, %zd ); }\n",
-                     root_name, storage_name, array_name, root_name, storage_name, j );
-            fprintf( f, "inline static %s *%s_%s_%s_write_direct_begin() { return (%s *)dsim_storage_write_direct_begin( ddl_%s->storage_%s, 0, %zd ); }\n",
+            fprintf( f, "inline static %s *%s_%s_%s_begin_write( enum dsim_storage_write_mode mode ) { return (%s *)dsim_storage_begin_write( ddl_%s->storage_%s, 0, %zd, mode ); }\n",
                      ctype, root_name, storage_name, array_name, ctype, root_name, storage_name, j );
-            fprintf( f, "inline static void %s_%s_%s_write_direct_end() { dsim_storage_write_direct_end( ddl_%s->storage_%s, 0, %zd ); }\n",
-                     root_name, storage_name, array_name, root_name, storage_name, j );
-            fprintf( f, "inline static %s *%s_%s_%s_write_buffered_begin() { return (%s *)dsim_storage_write_buffered_begin( ddl_%s->storage_%s, 0, %zd ); }\n",
-                     ctype, root_name, storage_name, array_name, ctype, root_name, storage_name, j );
-            fprintf( f, "inline static void %s_%s_%s_write_buffered_end() { dsim_storage_write_buffered_end( ddl_%s->storage_%s, 0, %zd ); }\n",
-                     root_name, storage_name, array_name, root_name, storage_name, j );
             fprintf( f, "\n" );
         }
+        fprintf( f, "inline static void %s_%s_end_read( const void *data ) { dsim_storage_end_read( ddl_%s->storage_%s, data ); }\n",
+                 root_name, storage_name, root_name, storage_name );
+        fprintf( f, "inline static void %s_%s_end_write( void *data ) { dsim_storage_end_write( ddl_%s->storage_%s, data ); }\n",
+                 root_name, storage_name, root_name, storage_name );
         fprintf( f, "\n" );
     }
     fprintf( f, "\n" );
