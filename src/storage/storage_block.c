@@ -44,7 +44,7 @@ void dsim_storage_block_push_back( struct dsim_storage_block *sb, const void *co
         if( data[i] )
             dsim_storage_array_push_back( sb->arrays + i, data[i], count );
         else
-            dsim_storage_array_resize( sb->arrays + i, sb->arrays[i].current.count + count );
+            dsim_storage_array_resize( sb->arrays + i, sb->arrays[i].main.count + count );
     }
 }
 
@@ -83,13 +83,13 @@ const void *dsim_storage_block_begin_read( struct dsim_storage_block *sb, uint32
     return dsim_storage_array_begin_read( sb->arrays + arr );
 }
 
-int dsim_storage_block_end_read( struct dsim_storage_block *sb, const void *data )
+unsigned dsim_storage_block_end_read( struct dsim_storage_block *sb, const void *data )
 {
     dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(sb->layout);
     for( size_t i = 0; i != dsim_ddl_array_vec_len(arrays); ++i )
-        if( dsim_storage_array_end_read(sb->arrays+i, data) )
-            return 1;
-    return 0;
+        if( dsim_storage_array_end_read(sb->arrays+i, data) != DSIM_INVALID_INDEX )
+            return i;
+    return DSIM_INVALID_INDEX;
 }
 
 void *dsim_storage_block_begin_write( struct dsim_storage_block *sb, uint32_t arr, enum dsim_storage_write_mode mode )
@@ -99,11 +99,11 @@ void *dsim_storage_block_begin_write( struct dsim_storage_block *sb, uint32_t ar
     return dsim_storage_array_begin_write( sb->arrays + arr, mode );
 }
 
-int dsim_storage_block_end_write( struct dsim_storage_block *sb, void *data )
+unsigned dsim_storage_block_end_write( struct dsim_storage_block *sb, void *data )
 {
     dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(sb->layout);
     for( size_t i = 0; i != dsim_ddl_array_vec_len(arrays); ++i )
-        if( dsim_storage_array_end_write( sb->arrays+i, data ) )
-            return 1;
-    return 0;
+        if( dsim_storage_array_end_write( sb->arrays+i, data ) != DSIM_INVALID_INDEX )
+            return i;
+    return DSIM_INVALID_INDEX;
 }

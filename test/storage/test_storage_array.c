@@ -10,16 +10,16 @@ struct dsim_storage_array array;
 
 static void TEST_ASSERT_STORAGE_ARRAY_NULL( const struct dsim_storage_array *a )
 {
-    TEST_ASSERT_ARRAY_NULL( (struct dsim_array_uint64*)&a->current );
-    TEST_ASSERT_ARRAY_NULL( (struct dsim_array_uint64*)&a->next );
+    TEST_ASSERT_ARRAY_NULL( (struct dsim_array_uint64*)&a->main );
+    TEST_ASSERT_ARRAY_NULL( (struct dsim_array_uint64*)&a->back );
     TEST_ASSERT_EQUAL( dsim_storage_array_can_modify(a), 1 );
 }
 
 static void TEST_ASSERT_STORAGE_ARRAY_SIZE( const struct dsim_storage_array *a, size_t size )
 {
-    TEST_ASSERT_ARRAY_CAPACITY( (struct dsim_array_uint64*)&a->current, size );
-    TEST_ASSERT_ARRAY_NULL( (struct dsim_array_uint64*)&a->next );
-    TEST_ASSERT_EQUAL( a->current.count, size );
+    TEST_ASSERT_ARRAY_CAPACITY( (struct dsim_array_uint64*)&a->main, size );
+    TEST_ASSERT_ARRAY_NULL( (struct dsim_array_uint64*)&a->back );
+    TEST_ASSERT_EQUAL( a->main.count, size );
     TEST_ASSERT_EQUAL( dsim_storage_array_can_modify(a), 1 );
 }
 
@@ -59,7 +59,7 @@ TEST(storage_array_empty, push_back)
     dsim_storage_array_push_back( &array, data, count_of(data) );
 
     TEST_ASSERT_STORAGE_ARRAY_SIZE( &array, count_of(data) );
-    TEST_ASSERT_EQUAL_MEMORY( array.current.data, data, sizeof(data) );
+    TEST_ASSERT_EQUAL_MEMORY( array.main.data, data, sizeof(data) );
 }
 
 TEST(storage_array_empty, reset)
@@ -101,14 +101,14 @@ TEST_TEAR_DOWN(storage_array_non_empty)
 TEST(storage_array_non_empty, assert_non_empty)
 {
     TEST_ASSERT_STORAGE_ARRAY_SIZE( &array, count_of(test_data) );
-    TEST_ASSERT_EQUAL_MEMORY( array.current.data, test_data, sizeof(test_data) );
+    TEST_ASSERT_EQUAL_MEMORY( array.main.data, test_data, sizeof(test_data) );
 }
 TEST(storage_array_non_empty, resize_more)
 {
     dsim_storage_array_resize( &array, count_of(test_data) + 4 );
 
     TEST_ASSERT_STORAGE_ARRAY_SIZE( &array, count_of(test_data) + 4 );
-    TEST_ASSERT_EQUAL_MEMORY( array.current.data, test_data, sizeof(test_data) );
+    TEST_ASSERT_EQUAL_MEMORY( array.main.data, test_data, sizeof(test_data) );
 }
 
 TEST(storage_array_non_empty, resize_less)
@@ -116,7 +116,7 @@ TEST(storage_array_non_empty, resize_less)
     dsim_storage_array_resize( &array, count_of(test_data) - 4 );
 
     TEST_ASSERT_STORAGE_ARRAY_SIZE( &array, count_of(test_data) - 4 );
-    TEST_ASSERT_EQUAL_MEMORY( array.current.data, test_data, array.current.count*sizeof(test_data[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( array.main.data, test_data, array.main.count*sizeof(test_data[0]) );
 }
 
 TEST(storage_array_non_empty, push_back)
@@ -125,8 +125,8 @@ TEST(storage_array_non_empty, push_back)
     dsim_storage_array_push_back( &array, more_data, count_of(more_data) );
 
     TEST_ASSERT_STORAGE_ARRAY_SIZE( &array, count_of(test_data) + count_of(more_data) );
-    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.current.data, test_data, sizeof(test_data) );
-    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.current.data + count_of(test_data), more_data, sizeof(more_data) );
+    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.main.data, test_data, sizeof(test_data) );
+    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.main.data + count_of(test_data), more_data, sizeof(more_data) );
 }
 
 TEST(storage_array_non_empty, remove)
@@ -142,9 +142,9 @@ TEST(storage_array_non_empty, update)
     dsim_storage_array_update( &array, more_data, 0, 3, count_of(more_data) );
 
     TEST_ASSERT_STORAGE_ARRAY_SIZE( &array, count_of(test_data) );
-    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.current.data, test_data, 3*sizeof(test_data[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.current.data + 3, more_data, sizeof(more_data) );
-    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.current.data + 8, test_data + 8, 1*sizeof(test_data[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.main.data, test_data, 3*sizeof(test_data[0]) );
+    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.main.data + 3, more_data, sizeof(more_data) );
+    TEST_ASSERT_EQUAL_MEMORY( (uint64_t*)array.main.data + 8, test_data + 8, 1*sizeof(test_data[0]) );
 }
 
 TEST(storage_array_non_empty, read)
@@ -164,7 +164,7 @@ TEST(storage_array_non_empty, read)
     dsim_storage_array_end_read( &array, data );
     TEST_ASSERT_EQUAL( dsim_storage_array_can_modify(&array), 0 );
 
-    TEST_ASSERT_NULL( dsim_storage_array_begin_write(&array, DSIM_WRITE_DIRECT) );
+    TEST_ASSERT_NULL( dsim_storage_array_begin_write(&array, DSIM_STORAGE_WRITE_DIRECT) );
 
     dsim_storage_array_end_read( &array, data2 );
     TEST_ASSERT_EQUAL( dsim_storage_array_can_modify(&array), 1 );

@@ -6,21 +6,20 @@
 
 enum dsim_storage_write_mode
 {
-    DSIM_WRITE_NONE,
-    DSIM_WRITE_DIRECT,
-    DSIM_WRITE_BUFFERED
+    DSIM_STORAGE_WRITE_NONE,
+    DSIM_STORAGE_WRITE_DIRECT,
+    DSIM_STORAGE_WRITE_BUFFERED
 };
 
 struct dsim_storage_array
 {
-    struct _dsim_array current;
-    struct _dsim_array next;
+    struct _dsim_array main;
+    struct _dsim_array back;
     dsim_ddl_type_table_t type;
-    uint32_t current_read_count;
-    uint32_t next_read_count;
+    unsigned main_read_count;
+    unsigned back_read_count;
     enum dsim_storage_write_mode write_mode;
 };
-
 
 void dsim_storage_array_init( struct dsim_storage_array *sa, dsim_ddl_type_table_t type, struct dsim_allocator *alloc );
 int dsim_storage_array_can_modify( const struct dsim_storage_array *sa );
@@ -31,6 +30,6 @@ void dsim_storage_array_remove_fast( struct dsim_storage_array *sa, uint32_t pos
 void dsim_storage_array_reset( struct dsim_storage_array *sa );
 
 const void *dsim_storage_array_begin_read( struct dsim_storage_array *sa );
-int dsim_storage_array_end_read( struct dsim_storage_array *sa, const void *data );
+unsigned dsim_storage_array_end_read( struct dsim_storage_array *sa, const void *data );
 void *dsim_storage_array_begin_write( struct dsim_storage_array *sa, enum dsim_storage_write_mode mode );
-int dsim_storage_array_end_write( struct dsim_storage_array *sa, void *data );
+unsigned dsim_storage_array_end_write( struct dsim_storage_array *sa, void *data );

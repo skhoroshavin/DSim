@@ -19,6 +19,6 @@ void dsim_storage_block_remove_fast( struct dsim_storage_block *sb, uint32_t pos
 void dsim_storage_block_done( struct dsim_storage_block *sb );
 
 const void *dsim_storage_block_begin_read( struct dsim_storage_block *sb, uint32_t arr );
-int dsim_storage_block_end_read( struct dsim_storage_block *sb, const void *data );
+unsigned dsim_storage_block_end_read( struct dsim_storage_block *sb, const void *data );
 void *dsim_storage_block_begin_write( struct dsim_storage_block *sb, uint32_t arr, enum dsim_storage_write_mode mode );
-int dsim_storage_block_end_write( struct dsim_storage_block *sb, void *data );
+unsigned dsim_storage_block_end_write( struct dsim_storage_block *sb, void *data );
