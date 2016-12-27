@@ -170,6 +170,38 @@ TEST(storage_array_non_empty, read)
     TEST_ASSERT_EQUAL( dsim_storage_array_can_modify(&array), 1 );
 }
 
+TEST(storage_array_non_empty, write_buffered)
+{
+    uint64_t more_data[count_of(test_data)];
+    for( size_t i = 0; i != count_of(more_data); ++i )
+        more_data[i] = rand();
+
+    const uint64_t *prev_data = (const uint64_t *)dsim_storage_array_begin_read( &array );
+    TEST_ASSERT_NOT_NULL( prev_data );
+    TEST_ASSERT_EQUAL( dsim_storage_array_can_modify(&array), 0 );
+    TEST_ASSERT_EQUAL_MEMORY( prev_data, test_data, sizeof(test_data) );
+
+    uint64_t *data = (uint64_t *)dsim_storage_array_begin_write( &array, DSIM_STORAGE_WRITE_BUFFERED );
+    TEST_ASSERT_NOT_NULL( data );
+    TEST_ASSERT_EQUAL( dsim_storage_array_can_modify(&array), 0 );
+
+    memcpy( data, more_data, sizeof(more_data) );
+    TEST_ASSERT_EQUAL_MEMORY( prev_data, test_data, sizeof(test_data) );
+    TEST_ASSERT_EQUAL_MEMORY( data, more_data, sizeof(more_data) );
+
+    dsim_storage_array_end_write( &array, data );
+    TEST_ASSERT_EQUAL_MEMORY( prev_data, test_data, sizeof(test_data) );
+
+    const uint64_t *next_data = (const uint64_t *)dsim_storage_array_begin_read( &array );
+    TEST_ASSERT_NOT_NULL( next_data );
+    TEST_ASSERT_EQUAL( dsim_storage_array_can_modify(&array), 0 );
+    TEST_ASSERT_EQUAL_MEMORY( prev_data, test_data, sizeof(test_data) );
+    TEST_ASSERT_EQUAL_MEMORY( next_data, more_data, sizeof(more_data) );
+
+    dsim_storage_array_end_read( &array, next_data );
+    dsim_storage_array_end_read( &array, prev_data );
+}
+
 TEST(storage_array_non_empty, reset)
 {
     dsim_storage_array_reset( &array );
@@ -186,6 +218,7 @@ TEST_GROUP_RUNNER(storage_array_non_empty)
     RUN_TEST_CASE(storage_array_non_empty, remove);
     RUN_TEST_CASE(storage_array_non_empty, update);
     RUN_TEST_CASE(storage_array_non_empty, read);
+    RUN_TEST_CASE(storage_array_non_empty, write_buffered);
     RUN_TEST_CASE(storage_array_non_empty, reset);
 }
 

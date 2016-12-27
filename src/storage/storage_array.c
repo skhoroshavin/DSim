@@ -30,13 +30,13 @@ void dsim_storage_array_push_back( struct dsim_storage_array *sa, const void *da
     _dsim_array_push_back( &sa->main, data, count, dsim_ddl_type_size(sa->type) );
 }
 
-void dsim_storage_array_update( struct dsim_storage_array *sa, const void *data, uint32_t src_offset, uint32_t dst_offset, uint32_t count )
+void dsim_storage_array_update( struct dsim_storage_array *sa, const void *src, uint32_t src_offset, uint32_t dst_offset, uint32_t count )
 {
     assert( dsim_storage_array_can_modify(sa) );
 
     size_t elem_size = dsim_ddl_type_size(sa->type);
     memcpy( (char *)sa->main.data + dst_offset*elem_size,
-            (const char *)data + src_offset*elem_size,
+            (const char *)src + src_offset*elem_size,
             count*elem_size );
 }
 

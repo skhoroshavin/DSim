@@ -46,7 +46,7 @@ unsigned dsim_hash_storage_end_read( struct dsim_storage *self, const void *data
     return dsim_storage_block_end_read( &s->data, data );
 }
 
-void *dsim_hash_storage_write_begin( struct dsim_storage *self, uint32_t block, uint32_t arr, enum dsim_storage_write_mode mode )
+void *dsim_hash_storage_begin_write( struct dsim_storage *self, uint32_t block, uint32_t arr, enum dsim_storage_write_mode mode )
 {
     dsim_unused(block);
 
@@ -56,7 +56,7 @@ void *dsim_hash_storage_write_begin( struct dsim_storage *self, uint32_t block, 
     return dsim_storage_block_begin_write( &s->data, arr, mode );
 }
 
-unsigned dsim_hash_storage_write_end( struct dsim_storage *self, void *data )
+unsigned dsim_hash_storage_end_write( struct dsim_storage *self, void *data )
 {
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
     return dsim_storage_block_end_write( &s->data, data );
@@ -190,8 +190,8 @@ struct dsim_storage_operations dsim_hash_storage_ops =
     .id_data       = dsim_hash_storage_id_data,
     .begin_read    = dsim_hash_storage_begin_read,
     .end_read      = dsim_hash_storage_end_read,
-    .begin_write   = dsim_hash_storage_write_begin,
-    .end_write     = dsim_hash_storage_write_end,
+    .begin_write   = dsim_hash_storage_begin_write,
+    .end_write     = dsim_hash_storage_end_write,
 
     .can_modify = dsim_hash_storage_can_modify,
     .select = dsim_hash_storage_select,
