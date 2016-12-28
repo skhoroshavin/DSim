@@ -20,12 +20,10 @@ struct dsim_storage_command
     enum dsim_storage_command_type type;
 };
 
-DSIM_DEFINE_ARRAY(struct dsim_storage_command, storage_command)
-
 struct dsim_storage_log
 {
     uint64_t version;
-    struct dsim_array_storage_command commands;
+    dsim_array(struct dsim_storage_command) commands;
 };
 
 void dsim_storage_log_init( struct dsim_storage_log *sl, struct dsim_allocator *alloc );

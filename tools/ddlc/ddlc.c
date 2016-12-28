@@ -17,11 +17,11 @@
 
 static void *load_json_ddl( const char *filename, size_t *size_out )
 {
-    struct dsim_array_char json = dsim_array_static_init( &dsim_default_allocator );
+    dsim_byte_array json = dsim_array_static_init( &dsim_default_allocator );
     dsim_read_file( filename, &json );
 
     void *buf = dsim_ddl_compile_json( json.data, json.count, size_out );
-    dsim_array_char_reset( &json );
+    dsim_array_reset( &json );
     return buf;
 }
 
