@@ -1,12 +1,12 @@
 
 #pragma once
 
-#include "unity_fixture.h"
+#include "greatest.h"
 #include "storage/storage_array.h"
 
 /*
  * Runner
  */
 
-void run_test_storage_array();
+SUITE_EXTERN(test_storage_array);
 

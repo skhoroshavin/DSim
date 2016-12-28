@@ -1,289 +1,296 @@
 
 #include "test_array.h"
-#include "test_allocator.h"
 
-static struct dsim_array_uint64 array = dsim_array_static_init(&dsim_test_allocator);
+static struct dsim_array_uint64 array = dsim_array_static_init(&dsim_default_allocator);
+
+static uint64_t test_data[] = { 5, 3, 7, 52, 0, 12, 3, 623, 23 };
+
+static void setup_array_non_empty( void *ctx )
+{
+    dsim_unused(ctx);
+    dsim_array_uint64_push_back_n( &array, test_data, count_of(test_data) );
+}
+
+static void teardown_array( void *ctx )
+{
+    dsim_unused(ctx);
+    dsim_array_uint64_reset( &array );
+}
 
 /*
  * Utility
  */
 
-void TEST_ASSERT_ARRAY_NULL( const struct dsim_array_uint64 *a )
+enum greatest_test_res assert_array_null( const struct dsim_array_uint64 *a )
 {
-    TEST_ASSERT_NULL( a->data );
-    TEST_ASSERT_EQUAL( a->count, 0 );
-    TEST_ASSERT_EQUAL( a->capacity, 0 );
+    ASSERT( !a->data );
+    ASSERT_INT_EQ( a->count, 0 );
+    ASSERT_INT_EQ( a->capacity, 0 );
+    PASS();
 }
 
-void TEST_ASSERT_ARRAY_CAPACITY( const struct dsim_array_uint64 *a, uint32_t capacity )
+enum greatest_test_res assert_array_capacity( const struct dsim_array_uint64 *a, uint32_t capacity )
 {
-    TEST_ASSERT_NOT_NULL( a->data );
-    TEST_ASSERT( a->capacity >= capacity );
+    ASSERT( a->data );
+    ASSERT( a->capacity >= capacity );
+    PASS();
 }
 
-void TEST_ASSERT_ARRAY_REMOVE_ORDERED( const struct dsim_array_uint64 *a, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
+enum greatest_test_res assert_array_remove_ordered( const struct dsim_array_uint64 *a, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
 {
-    TEST_ASSERT_ARRAY_CAPACITY( a, old_count );
-    TEST_ASSERT_EQUAL( a->count, old_count - count );
-    TEST_ASSERT_EQUAL_MEMORY( a->data, old_data, pos*sizeof(a->data[0]) );
+    CHECK_CALL(assert_array_capacity( a, old_count ));
+    ASSERT_INT_EQ( a->count, old_count - count );
+    ASSERT_MEM_EQ( a->data, old_data, pos*sizeof(a->data[0]) );
     if( old_count > pos + count )
-        TEST_ASSERT_EQUAL_MEMORY( a->data + pos, old_data + pos + count, (old_count - pos - count)*sizeof(a->data[0]) );
+        ASSERT_MEM_EQ( a->data + pos, old_data + pos + count, (old_count - pos - count)*sizeof(a->data[0]) );
+    PASS();
 }
 
-void TEST_ASSERT_ARRAY_REMOVE_UNORDERED( const struct dsim_array_uint64 *a, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
+enum greatest_test_res assert_array_remove_unordered( const struct dsim_array_uint64 *a, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
 {
-    TEST_ASSERT_ARRAY_CAPACITY( a, old_count );
-    TEST_ASSERT_EQUAL( a->count, old_count - count );
-    TEST_ASSERT_EQUAL_MEMORY( a->data, old_data, pos*sizeof(a->data[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( a->data + pos, old_data + old_count - count, count*sizeof(a->data[0]) );
-    TEST_ASSERT_EQUAL_MEMORY( a->data + pos + count, old_data + pos + count, (old_count - pos - 2*count)*sizeof(a->data[0]) );
+    CHECK_CALL(assert_array_capacity( a, old_count ));
+    ASSERT_INT_EQ( a->count, old_count - count );
+    ASSERT_MEM_EQ( a->data, old_data, pos*sizeof(a->data[0]) );
+    ASSERT_MEM_EQ( a->data + pos, old_data + old_count - count, count*sizeof(a->data[0]) );
+    ASSERT_MEM_EQ( a->data + pos + count, old_data + pos + count, (old_count - pos - 2*count)*sizeof(a->data[0]) );
+    PASS();
 }
 
 /*
  * Empty array
  */
 
-TEST_GROUP(array_empty);
-
-TEST_SETUP(array_empty)
+TEST array_empty_assert_empty()
 {
-
+    CHECK_CALL(assert_array_null( &array ));
+    PASS();
 }
 
-TEST_TEAR_DOWN(array_empty)
-{
-    dsim_array_uint64_reset( &array );
-}
-
-TEST(array_empty, assert_empty)
-{
-    TEST_ASSERT_ARRAY_NULL( &array );
-}
-
-TEST(array_empty, reserve)
+TEST array_empty_reserve()
 {
     dsim_array_uint64_reserve( &array, 10 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, 10 );
-    TEST_ASSERT_EQUAL( array.count, 0 );
+    CHECK_CALL(assert_array_capacity(&array, 10 ));
+    ASSERT_INT_EQ( array.count, 0 );
+    PASS();
 }
 
-TEST(array_empty, resize)
+TEST array_empty_resize()
 {
     dsim_array_uint64_resize( &array, 10 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, 10 );
-    TEST_ASSERT_EQUAL( array.count, 10 );
+    CHECK_CALL(assert_array_capacity(&array, 10 ));
+    ASSERT_INT_EQ( array.count, 10 );
+    PASS();
 }
 
-TEST(array_empty, push_back)
+TEST array_empty_push_back()
 {
     dsim_array_uint64_push_back( &array, 5 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, 1 );
-    TEST_ASSERT_EQUAL( array.count, 1 );
-    TEST_ASSERT_EQUAL( array.at[0], 5 );
+    CHECK_CALL(assert_array_capacity(&array, 1 ));
+    ASSERT_INT_EQ( array.count, 1 );
+    ASSERT_INT_EQ( array.at[0], 5 );
+    PASS();
 }
 
-TEST(array_empty, push_back_n)
+TEST array_empty_push_back_n()
 {
     const uint64_t data[] = { 43, 3, 16, 5 };
     dsim_array_uint64_push_back_n( &array, data, count_of(data) );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(data) );
-    TEST_ASSERT_EQUAL( array.count, count_of(data) );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, data, sizeof(data) );
+    CHECK_CALL(assert_array_capacity(&array, count_of(data) ));
+    ASSERT_INT_EQ( array.count, count_of(data) );
+    ASSERT_MEM_EQ( array.data, data, sizeof(data) );
+    PASS();
 }
 
-TEST(array_empty, clear)
+TEST array_empty_clear()
 {
     dsim_array_uint64_clear( &array );
 
-    TEST_ASSERT_ARRAY_NULL( &array );
+    CHECK_CALL(assert_array_null( &array ));
+    PASS();
 }
 
-TEST(array_empty, reset)
+TEST array_empty_reset()
 {
     dsim_array_uint64_reset( &array );
 
-    TEST_ASSERT_ARRAY_NULL( &array );
-}
-
-TEST_GROUP_RUNNER(array_empty)
-{
-    RUN_TEST_CASE(array_empty, assert_empty);
-    RUN_TEST_CASE(array_empty, reserve);
-    RUN_TEST_CASE(array_empty, resize);
-    RUN_TEST_CASE(array_empty, push_back);
-    RUN_TEST_CASE(array_empty, push_back_n);
-    RUN_TEST_CASE(array_empty, clear);
-    RUN_TEST_CASE(array_empty, reset);
+    CHECK_CALL(assert_array_null( &array ));
+    PASS();
 }
 
 /*
  * Non empty array
  */
 
-TEST_GROUP(array_non_empty);
-
-static uint64_t test_data[] = { 5, 3, 7, 52, 0, 12, 3, 623, 23 };
-
-TEST_SETUP(array_non_empty)
+TEST array_non_empty_assert_non_empty()
 {
-    dsim_array_uint64_push_back_n( &array, test_data, count_of(test_data) );
+    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) ));
+    ASSERT_INT_EQ( array.count, count_of(test_data) );
+    ASSERT_MEM_EQ( array.data, test_data, sizeof(test_data) );
+    PASS();
 }
 
-TEST_TEAR_DOWN(array_non_empty)
-{
-    dsim_array_uint64_reset( &array );
-}
-
-TEST(array_non_empty, assert_non_empty)
-{
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, sizeof(test_data) );
-}
-
-TEST(array_non_empty, reserve_more)
+TEST array_non_empty_reserve_more()
 {
     dsim_array_uint64_reserve( &array, count_of(test_data) + 4 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) + 4 );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, sizeof(test_data) );
+    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) + 4 ));
+    ASSERT_INT_EQ( array.count, count_of(test_data) );
+    ASSERT_MEM_EQ( array.data, test_data, sizeof(test_data) );
+    PASS();
 }
 
-TEST(array_non_empty, reserve_less)
+TEST array_non_empty_reserve_less()
 {
     dsim_array_uint64_reserve( &array, count_of(test_data) - 4 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, sizeof(test_data) );
+    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) ));
+    ASSERT_INT_EQ( array.count, count_of(test_data) );
+    ASSERT_MEM_EQ( array.data, test_data, sizeof(test_data) );
+    PASS();
 }
 
-TEST(array_non_empty, resize_more)
+TEST array_non_empty_resize_more()
 {
     dsim_array_uint64_resize( &array, count_of(test_data) + 4 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) + 4 );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) + 4 );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, sizeof(test_data) );
+    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) + 4 ));
+    ASSERT_INT_EQ( array.count, count_of(test_data) + 4 );
+    ASSERT_MEM_EQ( array.data, test_data, sizeof(test_data) );
+    PASS();
 }
 
-TEST(array_non_empty, resize_less)
+TEST array_non_empty_resize_less()
 {
     dsim_array_uint64_resize( &array, count_of(test_data) - 4 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) - 4 );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, array.count*sizeof(test_data[0]) );
+    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) ));
+    ASSERT_INT_EQ( array.count, count_of(test_data) - 4 );
+    ASSERT_MEM_EQ( array.data, test_data, array.count*sizeof(test_data[0]) );
+    PASS();
 }
 
-TEST(array_non_empty, push_back)
+TEST array_non_empty_push_back()
 {
     dsim_array_uint64_push_back( &array, 42 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) + 1 );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) + 1 );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, sizeof(test_data) );
-    TEST_ASSERT_EQUAL( array.at[count_of(test_data)], 42 );
+    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) + 1 ));
+    ASSERT_INT_EQ( array.count, count_of(test_data) + 1 );
+    ASSERT_MEM_EQ( array.data, test_data, sizeof(test_data) );
+    ASSERT_INT_EQ( array.at[count_of(test_data)], 42 );
+    PASS();
 }
 
-TEST(array_non_empty, push_back_n)
+TEST array_non_empty_push_back_n()
 {
     const uint64_t more_data[] = { 65, 0, 123, 87, 1 };
     dsim_array_uint64_push_back_n( &array, more_data, count_of(more_data) );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) + count_of(more_data) );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) + count_of(more_data) );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, sizeof(test_data) );
-    TEST_ASSERT_EQUAL_MEMORY( array.data + count_of(test_data), more_data, sizeof(more_data) );
+    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) + count_of(more_data) ));
+    ASSERT_INT_EQ( array.count, count_of(test_data) + count_of(more_data) );
+    ASSERT_MEM_EQ( array.data, test_data, sizeof(test_data) );
+    ASSERT_MEM_EQ( array.data + count_of(test_data), more_data, sizeof(more_data) );
+    PASS();
 }
 
-TEST(array_non_empty, pop_back)
+TEST array_non_empty_pop_back()
 {
     dsim_array_uint64_pop_back( &array );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) - 1 );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, array.count*sizeof(test_data[0]) );
+    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) ));
+    ASSERT_INT_EQ( array.count, count_of(test_data) - 1 );
+    ASSERT_MEM_EQ( array.data, test_data, array.count*sizeof(test_data[0]) );
+    PASS();
 }
 
-TEST(array_non_empty, pop_back_n)
+TEST array_non_empty_pop_back_n()
 {
     dsim_array_uint64_pop_back_n( &array, 3 );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) );
-    TEST_ASSERT_EQUAL( array.count, count_of(test_data) - 3 );
-    TEST_ASSERT_EQUAL_MEMORY( array.data, test_data, array.count*sizeof(test_data[0]) );
+    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) ));
+    ASSERT_INT_EQ( array.count, count_of(test_data) - 3 );
+    ASSERT_MEM_EQ( array.data, test_data, array.count*sizeof(test_data[0]) );
+    PASS();
 }
 
-TEST(array_non_empty, remove)
+TEST array_non_empty_remove()
 {
     dsim_array_uint64_remove( &array, 2, 3 );
 
-    TEST_ASSERT_ARRAY_REMOVE_ORDERED( &array, 2, 3, test_data, count_of(test_data) );
+    CHECK_CALL(assert_array_remove_ordered(&array, 2, 3, test_data, count_of(test_data) ));
+    PASS();
 }
 
-TEST(array_non_empty, remove_from_end)
+TEST array_non_empty_remove_from_end()
 {
     dsim_array_uint64_remove( &array, array.count-4, 4 );
 
-    TEST_ASSERT_ARRAY_REMOVE_ORDERED( &array, array.count, 4, test_data, count_of(test_data) );
+    CHECK_CALL(assert_array_remove_ordered(&array, array.count, 4, test_data, count_of(test_data) ));
+    PASS();
 }
 
-TEST(array_non_empty, remove_fast_unordered)
+TEST array_non_empty_remove_fast_unordered()
 {
     dsim_array_uint64_remove_fast( &array, 3, 2 );
 
-    TEST_ASSERT_ARRAY_REMOVE_UNORDERED( &array, 3, 2, test_data, count_of(test_data) );
+    CHECK_CALL(assert_array_remove_unordered(&array, 3, 2, test_data, count_of(test_data) ));
+    PASS();
 }
 
-TEST(array_non_empty, remove_fast_ordered)
+TEST array_non_empty_remove_fast_ordered()
 {
     dsim_array_uint64_remove_fast( &array, 2, 4 );
 
-    TEST_ASSERT_ARRAY_REMOVE_ORDERED( &array, 2, 4, test_data, count_of(test_data) );
+    CHECK_CALL(assert_array_remove_ordered(&array, 2, 4, test_data, count_of(test_data) ));
+    PASS();
 }
 
-TEST(array_non_empty, clear)
+TEST array_non_empty_clear()
 {
     dsim_array_uint64_clear( &array );
 
-    TEST_ASSERT_ARRAY_CAPACITY( &array, count_of(test_data) );
-    TEST_ASSERT_EQUAL( array.count, 0 );
+    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) ));
+    ASSERT_INT_EQ( array.count, 0 );
+    PASS();
 }
 
-TEST(array_non_empty, reset)
+TEST array_non_empty_reset()
 {
     dsim_array_uint64_reset( &array );
 
-    TEST_ASSERT_ARRAY_NULL( &array );
+    CHECK_CALL(assert_array_null( &array ));
+    PASS();
 }
 
-TEST_GROUP_RUNNER(array_non_empty)
+SUITE(test_array)
 {
-    RUN_TEST_CASE(array_non_empty, assert_non_empty);
-    RUN_TEST_CASE(array_non_empty, reserve_more);
-    RUN_TEST_CASE(array_non_empty, reserve_less);
-    RUN_TEST_CASE(array_non_empty, resize_more);
-    RUN_TEST_CASE(array_non_empty, resize_less);
-    RUN_TEST_CASE(array_non_empty, push_back);
-    RUN_TEST_CASE(array_non_empty, push_back_n);
-    RUN_TEST_CASE(array_non_empty, pop_back);
-    RUN_TEST_CASE(array_non_empty, pop_back_n);
-    RUN_TEST_CASE(array_non_empty, remove);
-    RUN_TEST_CASE(array_non_empty, remove_from_end);
-    RUN_TEST_CASE(array_non_empty, remove_fast_unordered);
-    RUN_TEST_CASE(array_non_empty, remove_fast_ordered);
-    RUN_TEST_CASE(array_non_empty, clear);
-    RUN_TEST_CASE(array_non_empty, reset);
-}
+    SET_TEARDOWN(teardown_array, 0);
+    RUN_TEST(array_empty_assert_empty);
+    RUN_TEST(array_empty_reserve);
+    RUN_TEST(array_empty_resize);
+    RUN_TEST(array_empty_push_back);
+    RUN_TEST(array_empty_push_back_n);
+    RUN_TEST(array_empty_clear);
+    RUN_TEST(array_empty_reset);
 
-void run_test_array()
-{
-    RUN_TEST_GROUP(array_empty);
-    RUN_TEST_GROUP(array_non_empty);
+
+    SET_SETUP(setup_array_non_empty, 0);
+    RUN_TEST(array_non_empty_assert_non_empty);
+    RUN_TEST(array_non_empty_reserve_more);
+    RUN_TEST(array_non_empty_reserve_less);
+    RUN_TEST(array_non_empty_resize_more);
+    RUN_TEST(array_non_empty_resize_less);
+    RUN_TEST(array_non_empty_push_back);
+    RUN_TEST(array_non_empty_push_back_n);
+    RUN_TEST(array_non_empty_pop_back);
+    RUN_TEST(array_non_empty_pop_back_n);
+    RUN_TEST(array_non_empty_remove);
+    RUN_TEST(array_non_empty_remove_from_end);
+    RUN_TEST(array_non_empty_remove_fast_unordered);
+    RUN_TEST(array_non_empty_remove_fast_ordered);
+    RUN_TEST(array_non_empty_clear);
+    RUN_TEST(array_non_empty_reset);
 }

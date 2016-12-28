@@ -66,7 +66,7 @@ add_dependencies(test_dsim test_dsim_prepare)
 target_link_libraries(test_dsim -ldsim)
 
 add_custom_target(tests
-    COMMAND test_dsim
+    COMMAND valgrind ./test_dsim
     DEPENDS test_dsim)
 
 add_custom_target(coverage

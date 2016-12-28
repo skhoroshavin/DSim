@@ -12,4 +12,4 @@
  * Runner
  */
 
-void run_test_hash();
+SUITE_EXTERN(test_hash);
