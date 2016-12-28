@@ -31,4 +31,4 @@ Help with porting to as many platforms as possible is very welcome.
 ## Credits
 
 - Hash container inspired by hash from [Bitsquid foundation](https://bitbucket.org/bitsquid/foundation) library.
-- Tests written using [Unity](http://www.throwtheswitch.org/unity) framework.
+- Tests written using [Greatest](https://github.com/silentbicycle/greatest) framework.
