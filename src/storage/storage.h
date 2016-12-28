@@ -3,7 +3,7 @@
 
 #include "storage_log.h"
 #include "storage_array.h"
-#include "reflection/ddl_reader.h"
+#include "ddl_reader.h"
 
 DSIM_BEGIN_HEADER
 

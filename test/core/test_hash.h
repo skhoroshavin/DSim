@@ -2,7 +2,7 @@
 #pragma once
 
 #include "test_array.h"
-#include "containers/hash.h"
+#include "core/hash.h"
 
 /*
  * Utility

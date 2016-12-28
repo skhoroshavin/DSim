@@ -1,8 +1,8 @@
 
 #include <time.h>
 
-#include "containers/test_array.h"
-#include "containers/test_hash.h"
+#include "core/test_array.h"
+#include "core/test_hash.h"
 
 #include "storage/test_storage_array.h"
 

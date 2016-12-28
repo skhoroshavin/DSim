@@ -1,7 +1,7 @@
 
 #include <memory.h>
 
-#include "greatest.h"
+#include "test/greatest.h"
 #include "test.ddl.h"
 
 TEST assert_hash_storage_scheme()

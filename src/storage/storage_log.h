@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "containers/array.h"
+#include "core/array.h"
 
 DSIM_BEGIN_HEADER
 

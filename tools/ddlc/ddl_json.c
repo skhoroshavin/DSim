@@ -1,10 +1,10 @@
 
 #include "ddl_json.h"
-#include "reflection/ddl_builder.h"
-#include "reflection/ddl_json_parser.h"
-#include "reflection/ddl_registry.h"
-#include "reflection/ddl_utils.h"
-#include "utils/log.h"
+#include "storage/ddl_builder.h"
+#include "storage/ddl_json_parser.h"
+#include "storage/ddl_registry.h"
+#include "storage/ddl_utils.h"
+#include "core/log.h"
 
 static void *dsim_ddl_load_json( const char *json_data, size_t json_size, size_t *size_out )
 {

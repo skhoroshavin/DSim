@@ -1,7 +1,7 @@
 
-#include "greatest.h"
+#include "test/greatest.h"
 
-#include "utils/common.h"
+#include "core/common.h"
 
 TEST common_count_of()
 {

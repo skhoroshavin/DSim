@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 2.8)
 add_definitions(-Wall -Wextra -Werror)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c99")
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DNDEBUG --coverage")
 set(FLATCC_RTONLY On)
 set(FLATCC_REFLECTION Off)
 
@@ -32,11 +32,9 @@ endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 include_directories(src)
 
-aux_source_directory(src/allocators SRC_LIST)
-aux_source_directory(src/containers SRC_LIST)
-aux_source_directory(src/reflection SRC_LIST)
+aux_source_directory(src/core SRC_LIST)
+aux_source_directory(src/test SRC_LIST)
 aux_source_directory(src/storage SRC_LIST)
-aux_source_directory(src/utils SRC_LIST)
 
 add_library(dsim SHARED ${SRC_LIST})
 add_dependencies(dsim dsim_flatcc)
@@ -55,11 +53,9 @@ add_dependencies(test_dsim_prepare ddlc)
 include_directories(test)
 aux_source_directory(test TEST_LIST)
 
-aux_source_directory(test/allocators TEST_LIST)
-aux_source_directory(test/containers TEST_LIST)
-aux_source_directory(test/reflection TEST_LIST)
+aux_source_directory(test/core TEST_LIST)
+aux_source_directory(test/test TEST_LIST)
 aux_source_directory(test/storage TEST_LIST)
-aux_source_directory(test/utils TEST_LIST)
 
 add_executable(test_dsim ${TEST_LIST})
 add_dependencies(test_dsim test_dsim_prepare)

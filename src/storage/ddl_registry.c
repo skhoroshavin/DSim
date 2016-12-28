@@ -1,9 +1,9 @@
 
 #include "ddl_registry.h"
 #include "ddl_utils.h"
-#include "containers/array.h"
-#include "utils/log.h"
-#include "storage/hash_storage.h"
+#include "core/array.h"
+#include "core/log.h"
+#include "hash_storage.h"
 
 static dsim_array(const char*) ddl_roots = dsim_array_static_init(&dsim_default_allocator);
 static dsim_array(struct dsim_storage*) ddl_storages = dsim_array_static_init(&dsim_default_allocator);

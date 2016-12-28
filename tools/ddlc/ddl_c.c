@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 
-#include "reflection/ddl_utils.h"
-#include "containers/string.h"
+#include "storage/ddl_utils.h"
+#include "core/string.h"
 
 static void _dsim_ddl_generate_h( const char *h_name, void *data )
 {
@@ -16,8 +16,8 @@ static void _dsim_ddl_generate_h( const char *h_name, void *data )
     fprintf( f, "\n" );
     fprintf( f, "#pragma once\n" );
     fprintf( f, "\n" );
+    fprintf( f, "#include \"storage/ddl_reader.h\"\n" );
     fprintf( f, "#include \"storage/storage.h\"\n" );
-    fprintf( f, "#include \"reflection/ddl_reader.h\"\n" );
     fprintf( f, "\n" );
 
     dsim_ddl_type_vec_t types = dsim_ddl_root_types( root );
@@ -224,7 +224,7 @@ static void _dsim_ddl_generate_c( const char *h_name, const char *c_name, void *
     const char *root_name = dsim_ddl_root_name( root );
 
     fprintf( f, "\n" );
-    fprintf( f, "#include \"reflection/ddl_registry.h\"\n" );
+    fprintf( f, "#include \"storage/ddl_registry.h\"\n" );
     fprintf( f, "#include \"storage/hash_storage.h\"\n" );
     fprintf( f, "#include \"%s\"\n", h_name);
     fprintf( f, "\n" );

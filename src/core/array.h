@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "allocators/allocator.h"
+#include "allocator.h"
 
 DSIM_BEGIN_HEADER
 

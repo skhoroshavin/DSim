@@ -1,14 +1,14 @@
 
-#include "reflection/ddl_reader.h"
-#include "reflection/ddl_builder.h"
-#include "reflection/ddl_json_parser.h"
-#include "reflection/ddl_utils.h"
+#include "storage/ddl_reader.h"
+#include "storage/ddl_builder.h"
+#include "storage/ddl_json_parser.h"
+#include "storage/ddl_utils.h"
+#include "storage/ddl_registry.h"
 
-#include "containers/array.h"
-#include "containers/string.h"
-#include "reflection/ddl_registry.h"
-#include "utils/file.h"
-#include "utils/log.h"
+#include "core/array.h"
+#include "core/string.h"
+#include "core/file.h"
+#include "core/log.h"
 
 #include "ddl_json.h"
 #include "ddl_c.h"

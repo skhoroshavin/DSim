@@ -3,7 +3,7 @@
 
 #include "storage.h"
 #include "storage_block.h"
-#include "containers/hash.h"
+#include "core/hash.h"
 
 DSIM_BEGIN_HEADER
 

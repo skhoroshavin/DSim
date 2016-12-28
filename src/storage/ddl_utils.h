@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "utils/common.h"
+#include "core/common.h"
 #include "ddl_reader.h"
 
 DSIM_BEGIN_HEADER

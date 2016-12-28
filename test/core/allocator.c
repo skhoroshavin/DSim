@@ -1,9 +1,9 @@
 
-#include "greatest.h"
+#include "test/greatest.h"
 #include <memory.h>
 
-#include "allocators/allocator.h"
-#include "allocators/stack_allocator.h"
+#include "core/allocator.h"
+#include "core/stack_allocator.h"
 
 TEST test_allocate( struct dsim_allocator *alloc )
 {

@@ -2,7 +2,7 @@
 #pragma once
 
 #include "common.h"
-#include "containers/array.h"
+#include "array.h"
 
 DSIM_BEGIN_HEADER
 

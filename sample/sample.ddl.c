@@ -1,5 +1,5 @@
 
-#include "reflection/ddl_registry.h"
+#include "storage/ddl_registry.h"
 #include "storage/hash_storage.h"
 #include "sample.ddl.h"
 

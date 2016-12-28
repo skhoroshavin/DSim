@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "utils/common.h"
+#include "common.h"
 #include <stdlib.h>
 
 DSIM_BEGIN_HEADER

@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "containers/array.h"
-#include "reflection/ddl_registry.h"
+#include "core/array.h"
+#include "ddl_registry.h"
 
 enum dsim_storage_write_mode
 {

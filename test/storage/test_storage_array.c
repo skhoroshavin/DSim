@@ -2,7 +2,7 @@
 #include "test_storage_array.h"
 #include <memory.h>
 
-#include "containers/test_array.h"
+#include "core/test_array.h"
 #include "test.ddl.h"
 
 struct dsim_storage_array array;

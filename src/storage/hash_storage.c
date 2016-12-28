@@ -1,6 +1,6 @@
 
 #include "hash_storage.h"
-#include "utils/log.h"
+#include "core/log.h"
 #include <memory.h>
 
 static uint32_t dsim_hash_storage_block_count( const struct dsim_storage *self )

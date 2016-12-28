@@ -1,6 +1,6 @@
 
 #include "hash.h"
-#include "utils/log.h"
+#include "log.h"
 #include <memory.h>
 
 static void _dsim_hash_set_prev( struct dsim_hash *h, uint32_t pos, uint32_t dst )

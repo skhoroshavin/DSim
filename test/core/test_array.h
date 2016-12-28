@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "greatest.h"
-#include "containers/array.h"
+#include "test/greatest.h"
+#include "core/array.h"
 
 /*
  * Utility

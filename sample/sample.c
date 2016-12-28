@@ -1,10 +1,10 @@
 
 #include "sample.h"
 #include "sample.ddl.h"
-#include "reflection/ddl_registry.h"
+#include "storage/ddl_registry.h"
 
-#include "utils/file.h"
-#include "utils/log.h"
+#include "core/file.h"
+#include "core/log.h"
 
 int main( int argc, const char *argv[] )
 {

@@ -1,6 +1,6 @@
 
 #include "dsim_lua.h"
-#include "reflection/ddl_registry.h"
+#include "storage/ddl_registry.h"
 #include <memory.h>
 
 /*
