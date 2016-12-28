@@ -89,5 +89,8 @@ static void test_allocator_p( struct dsim_allocator *alloc )
 SUITE(test_allocator)
 {
     test_allocator_p( &dsim_default_allocator );
-    test_allocator_p( &dsim_stack_allocator_0.alloc );
+
+    struct dsim_stack_allocator stack_alloc = dsim_stack_allocator_static_init(&dsim_default_allocator);
+    test_allocator_p( &stack_alloc.alloc );
+    dsim_stack_allocator_reset( &stack_alloc );
 }
