@@ -1016,8 +1016,8 @@ greatest_run_info greatest_info
 #define CHECK_CALL     GREATEST_CHECK_CALL
 
 #define ASSERT_INT_EQ(GOT, EXP)  ASSERT_EQ_FMT(GOT, EXP, "%d")
-#define ASSERT_HEX_EQ(GOT, EXP)  ASSERT_EQ_FMT(GOT, EXP, "%d")
-#define ASSERT_PTR_EQ(GOT, EXP)  ASSERT_EQ_FMT(GOT, EXP, "%d")
+#define ASSERT_HEX_EQ(GOT, EXP)  ASSERT_EQ_FMT(GOT, EXP, "0x%x")
+#define ASSERT_PTR_EQ(GOT, EXP)  ASSERT_EQ_FMT(GOT, EXP, "0x%zx")
 
 #ifdef GREATEST_VA_ARGS
 #define RUN_TESTp      GREATEST_RUN_TESTp
