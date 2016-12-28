@@ -8,7 +8,6 @@ script:
   - mkdir build-release && cd build-release
   - cmake -DCMAKE_BUILD_TYPE=Release ..
   - make tests
-  - valgrind ./test_dsim
   - cd ..
   - mkdir build-debug && cd build-debug
   - cmake -DCMAKE_BUILD_TYPE=Debug .. 
