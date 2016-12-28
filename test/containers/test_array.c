@@ -1,7 +1,7 @@
 
 #include "test_array.h"
 
-static dsim_array_uint64 array = dsim_array_static_init(&dsim_default_allocator);
+static dsim_array(uint64_t) array = dsim_array_static_init(&dsim_default_allocator);
 
 static uint64_t test_data[] = { 5, 3, 7, 52, 0, 12, 3, 623, 23 };
 
@@ -21,38 +21,45 @@ static void teardown_array( void *ctx )
  * Utility
  */
 
-enum greatest_test_res assert_array_null( const dsim_array_uint64 *a )
+enum greatest_test_res _assert_array_null( const void *a_data, uint32_t a_count, uint32_t a_capacity )
 {
-    ASSERT( !a->data );
-    ASSERT_INT_EQ( a->count, 0 );
-    ASSERT_INT_EQ( a->capacity, 0 );
+    ASSERT( !a_data );
+    ASSERT_INT_EQ( a_count, 0 );
+    ASSERT_INT_EQ( a_capacity, 0 );
     PASS();
 }
 
-enum greatest_test_res assert_array_capacity( const dsim_array_uint64 *a, uint32_t capacity )
+enum greatest_test_res _assert_array_capacity( const void *a_data, uint32_t a_count, uint32_t a_capacity, uint32_t capacity )
 {
-    ASSERT( a->data );
-    ASSERT( a->capacity >= capacity );
+    ASSERT( a_data );
+    ASSERT( a_capacity >= capacity );
+    ASSERT( a_count <= a_capacity );
     PASS();
 }
 
-enum greatest_test_res assert_array_remove_ordered( const dsim_array_uint64 *a, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
+enum greatest_test_res _assert_array_remove_ordered( const void *a_data, uint32_t a_count, uint32_t a_capacity, uint32_t a_elemsize, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
 {
-    CHECK_CALL(assert_array_capacity( a, old_count ));
-    ASSERT_INT_EQ( a->count, old_count - count );
-    ASSERT_MEM_EQ( a->data, old_data, pos*sizeof(a->data[0]) );
+    CHECK_CALL(_assert_array_capacity( a_data, a_count, a_capacity, old_count ));
+    ASSERT_INT_EQ( a_count, old_count - count );
+    ASSERT_MEM_EQ( a_data, old_data, pos*a_elemsize );
     if( old_count > pos + count )
-        ASSERT_MEM_EQ( a->data + pos, old_data + pos + count, (old_count - pos - count)*sizeof(a->data[0]) );
+        ASSERT_MEM_EQ( (const char*)a_data + pos*a_elemsize,
+                       (const char*)old_data + (pos + count)*a_elemsize,
+                       (old_count - pos - count)*a_elemsize );
     PASS();
 }
 
-enum greatest_test_res assert_array_remove_unordered( const dsim_array_uint64 *a, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
+enum greatest_test_res _assert_array_remove_unordered( const void *a_data, uint32_t a_count, uint32_t a_capacity, uint32_t a_elemsize, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
 {
-    CHECK_CALL(assert_array_capacity( a, old_count ));
-    ASSERT_INT_EQ( a->count, old_count - count );
-    ASSERT_MEM_EQ( a->data, old_data, pos*sizeof(a->data[0]) );
-    ASSERT_MEM_EQ( a->data + pos, old_data + old_count - count, count*sizeof(a->data[0]) );
-    ASSERT_MEM_EQ( a->data + pos + count, old_data + pos + count, (old_count - pos - 2*count)*sizeof(a->data[0]) );
+    CHECK_CALL(_assert_array_capacity( a_data, a_count, a_capacity, old_count ));
+    ASSERT_INT_EQ( a_count, old_count - count );
+    ASSERT_MEM_EQ( a_data, old_data, pos*a_elemsize );
+    ASSERT_MEM_EQ( (const char*)a_data + pos*a_elemsize,
+                   (const char*)old_data + (old_count - count)*a_elemsize,
+                   count*a_elemsize );
+    ASSERT_MEM_EQ( (const char*)a_data + (pos + count)*a_elemsize,
+                   (const char*)old_data + (pos + count)*a_elemsize,
+                   (old_count - pos - 2*count)*a_elemsize );
     PASS();
 }
 
