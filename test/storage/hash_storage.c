@@ -27,8 +27,6 @@ TEST assert_hash_storage_empty()
     test_data_select( test_ids, addr, count_of(test_ids) );
     ASSERT_MEM_EQ( addr, expected_addr, sizeof(addr) );
 
-    ASSERT_INT_EQ( ddl_test->storage_data->log.version, 0 );
-    ASSERT_INT_EQ( ddl_test->storage_data->log.commands.count, 0 );
     PASS();
 }
 
@@ -63,11 +61,6 @@ TEST hash_storage_empty_insert()
     CHECK_CALL(assert_hash_storage_count( count_of(ids) ));
     ASSERT_MEM_EQ( test_data_id_data(), ids, sizeof(ids) );
 
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.count, 1 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].block, 0 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].start, 100 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].count, 4 );
     PASS();
 }
 
@@ -112,11 +105,6 @@ TEST hash_storage_non_empty_assert_non_empty()
     CHECK_CALL(assert_hash_storage_count( 10 ));
     CHECK_CALL(assert_hash_storage_data());
 
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.count, 1 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].block, 0 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].start, 20 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].count, 10 );
     PASS();
 }
 
@@ -135,15 +123,6 @@ TEST hash_storage_non_empty_insert_more()
     test_data_select( test_ids, addr, count_of(test_ids) );
     ASSERT_MEM_EQ( addr, expected_addr, sizeof(addr) );
 
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.count, 2 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].block, 0 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].start, 20 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].count, 10 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[1].type, SCT_PUSH_BACK );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[1].block, 0 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[1].start, 15 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[1].count, 3 );
     PASS();
 }
 
@@ -173,15 +152,6 @@ TEST hash_storage_non_empty_remove_fast()
     test_data_select( test_ids, addr, count_of(test_ids) );
     ASSERT_MEM_EQ( addr, expected_addr, sizeof(addr) );
 
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.count, 2 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].block, 0 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].start, 20 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].count, 10 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[1].type, SCT_REMOVE_FAST );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[1].block, 0 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[1].start, 2 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[1].count, 3 );
     PASS();
 }
 
@@ -208,15 +178,6 @@ TEST hash_storage_non_empty_remove_ordered()
     test_data_select( test_ids, addr, count_of(test_ids) );
     ASSERT_MEM_EQ( addr, expected_addr, sizeof(addr) );
 
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.count, 2 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].type, SCT_PUSH_BACK );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].block, 0 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].start, 20 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[0].count, 10 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[1].type, SCT_REMOVE_FAST );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[1].block, 0 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[1].start, 3 );
-//    ASSERT_INT_EQ( ddl_test->storage_test->log.commands.at[1].count, 4 );
     PASS();
 }
 

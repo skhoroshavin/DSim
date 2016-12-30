@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include "storage_log.h"
 #include "storage_array.h"
 #include "ddl_reader.h"
 
@@ -10,6 +9,17 @@ DSIM_BEGIN_HEADER
 typedef void (*dsim_storage_select_cb)( void *context, uint32_t pos, uint32_t block, uint32_t block_pos, uint32_t count );
 
 struct dsim_storage;
+
+struct dsim_storage_listener
+{
+    void (*on_insert)( struct dsim_storage_listener *self, struct dsim_storage *storage, uint32_t block, uint32_t pos, uint32_t count );
+    void (*on_remove)( struct dsim_storage_listener *self, struct dsim_storage *storage, uint32_t block, uint32_t pos, uint32_t count );
+    void (*on_update)( struct dsim_storage_listener *self, struct dsim_storage *storage, uint32_t array, uint32_t block, uint32_t pos, uint32_t count );
+};
+
+void dsim_storage_emit_insert( struct dsim_storage *storage, uint32_t block, uint32_t pos, uint32_t count );
+void dsim_storage_emit_remove( struct dsim_storage *storage, uint32_t block, uint32_t pos, uint32_t count );
+void dsim_storage_emit_update( struct dsim_storage *storage, uint32_t array, uint32_t block, uint32_t pos, uint32_t count );
 
 struct dsim_storage_operations
 {
@@ -35,18 +45,19 @@ struct dsim_storage_operations
 struct dsim_storage
 {
     const struct dsim_storage_operations *_ops;
-    struct dsim_storage_log log;
+    struct dsim_storage_listener *listener;
     const char *name;
     dsim_ddl_layout_table_t layout;
 };
 
-inline static void dsim_storage_init( struct dsim_storage *storage, const struct dsim_storage_operations *ops,
-                                      const char *name, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )
+inline static void dsim_storage_init( struct dsim_storage *storage,
+                                      const struct dsim_storage_operations *ops,
+                                      const char *name, dsim_ddl_layout_table_t layout )
 {
     storage->_ops = ops;
+    storage->listener = 0;
     storage->name = name;
     storage->layout = layout;
-    dsim_storage_log_init( &storage->log, alloc );
 }
 
 inline static uint32_t dsim_storage_block_count( const struct dsim_storage *storage )
@@ -77,7 +88,7 @@ inline static void dsim_storage_remove( struct dsim_storage *storage, const uint
 { storage->_ops->remove( storage, ids, count ); }
 
 inline static void dsim_storage_done( struct dsim_storage *storage )
-{ storage->_ops->done( storage ); dsim_storage_log_reset( &storage->log ); }
+{ storage->_ops->done( storage ); }
 
 typedef struct dsim_storage_addr
 {

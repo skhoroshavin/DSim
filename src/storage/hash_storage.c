@@ -11,31 +11,25 @@ static uint32_t dsim_hash_storage_block_count( const struct dsim_storage *self )
 
 static uint32_t dsim_hash_storage_block_size( const struct dsim_storage *self, uint32_t block )
 {
-    dsim_unused(block);
+    if( block != 0 ) return 0;
 
     const struct dsim_hash_storage *s = container_of( self, const struct dsim_hash_storage, storage );
-
-    assert( block == 0 ); // LCOV_EXCL_BR_LINE
     return s->ids.keys.count;
 }
 
 static const uint64_t *dsim_hash_storage_id_data( const struct dsim_storage *self, uint32_t block )
 {
-    dsim_unused(block);
+    if( block != 0 ) return 0;
 
     const struct dsim_hash_storage *s = container_of( self, const struct dsim_hash_storage, storage );
-
-    assert( block == 0 ); // LCOV_EXCL_BR_LINE
     return s->ids.keys.data;
 }
 
 const void *dsim_hash_storage_begin_read( struct dsim_storage *self, uint32_t block, uint32_t arr )
 {
-    dsim_unused(block);
+    if( block != 0 ) return 0;
 
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
-
-    assert( block == 0 ); // LCOV_EXCL_BR_LINE
     return dsim_storage_block_begin_read( &s->data, arr );
 
 }
@@ -48,18 +42,19 @@ unsigned dsim_hash_storage_end_read( struct dsim_storage *self, const void *data
 
 void *dsim_hash_storage_begin_write( struct dsim_storage *self, uint32_t block, uint32_t arr, enum dsim_storage_write_mode mode )
 {
-    dsim_unused(block);
+    if( block != 0 ) return 0;
 
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
-
-    assert( block == 0 ); // LCOV_EXCL_BR_LINE
     return dsim_storage_block_begin_write( &s->data, arr, mode );
 }
 
 unsigned dsim_hash_storage_end_write( struct dsim_storage *self, void *data )
 {
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
-    return dsim_storage_block_end_write( &s->data, data );
+    unsigned array = dsim_storage_block_end_write( &s->data, data );
+    if( array != DSIM_INVALID_INDEX )
+        dsim_storage_emit_update( self, array, 0, 0, dsim_hash_storage_block_size(self, 0) );
+    return array;
 }
 
 static int dsim_hash_storage_can_modify( const struct dsim_storage *self, uint32_t block, uint32_t arr )
@@ -117,7 +112,7 @@ static void dsim_hash_storage_insert( struct dsim_storage *self, const uint64_t 
     else
         dsim_storage_block_resize( &s->data, s->ids.keys.count + count );
 
-    //dsim_storage_log_cmd_push_back( &self->log, 0, start_id, count );
+    dsim_storage_emit_insert( self, 0, s->ids.keys.count - count, count );
 }
 
 struct _hash_update_context
@@ -132,7 +127,15 @@ static void _hash_update_process( void *context, uint32_t pos, uint32_t block, u
     struct _hash_update_context *ctx = (struct _hash_update_context*)context;
 
     if( pos != DSIM_INVALID_INDEX )
+    {
         dsim_storage_block_update( &ctx->s->data, ctx->data, pos, block_pos, count );
+
+        dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(ctx->s->storage.layout);
+        size_t array_count = dsim_ddl_array_vec_len(arrays);
+        for( size_t i = 0; i != array_count; ++i )
+            if( ctx->data[i] )
+                dsim_storage_emit_update( &ctx->s->storage, i, block, block_pos, count );
+    }
 }
 
 static void dsim_hash_storage_update( struct dsim_storage *self, const uint64_t *ids, const void *const *data, uint32_t count )
@@ -162,6 +165,7 @@ static void _hash_remove_process( void *context, uint32_t pos, uint32_t block, u
     {
         dsim_hash_remove_fast( &ctx->s->ids, block_pos, count );
         dsim_storage_block_remove_fast( &ctx->s->data, block_pos, count );
+        dsim_storage_emit_remove( &ctx->s->storage, block, block_pos, count );
     }
 }
 
@@ -204,7 +208,7 @@ struct dsim_storage_operations dsim_hash_storage_ops =
 
 void dsim_hash_storage_init( struct dsim_hash_storage *storage, const char *name, dsim_ddl_layout_table_t layout, struct dsim_allocator *alloc )
 {
-    dsim_storage_init( &storage->storage, &dsim_hash_storage_ops, name, layout, alloc );
+    dsim_storage_init( &storage->storage, &dsim_hash_storage_ops, name, layout );
     dsim_hash_init( &storage->ids, alloc );
     dsim_storage_block_init( &storage->data, layout, alloc );
 }
