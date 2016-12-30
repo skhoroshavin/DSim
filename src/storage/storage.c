@@ -15,11 +15,11 @@ void dsim_storage_emit_remove( struct dsim_storage *storage, uint32_t block, uin
     storage->listener->on_remove( storage->listener, storage, block, pos, count );
 }
 
-void dsim_storage_emit_update( struct dsim_storage *storage, uint32_t array, uint32_t block, uint32_t pos, uint32_t count )
+void dsim_storage_emit_update( struct dsim_storage *storage, uint32_t mask, uint32_t block, uint32_t pos, uint32_t count )
 {
     if( !storage->listener ) return;
     if( !storage->listener->on_update ) return;
-    storage->listener->on_update( storage->listener, storage, array, block, pos, count );
+    storage->listener->on_update( storage->listener, storage, mask, block, pos, count );
 }
 
 static void _select_buf_process( void *context, uint32_t pos, uint32_t block, uint32_t block_pos, uint32_t count )

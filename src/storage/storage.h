@@ -14,12 +14,12 @@ struct dsim_storage_listener
 {
     void (*on_insert)( struct dsim_storage_listener *self, struct dsim_storage *storage, uint32_t block, uint32_t pos, uint32_t count );
     void (*on_remove)( struct dsim_storage_listener *self, struct dsim_storage *storage, uint32_t block, uint32_t pos, uint32_t count );
-    void (*on_update)( struct dsim_storage_listener *self, struct dsim_storage *storage, uint32_t array, uint32_t block, uint32_t pos, uint32_t count );
+    void (*on_update)( struct dsim_storage_listener *self, struct dsim_storage *storage, uint32_t mask, uint32_t block, uint32_t pos, uint32_t count );
 };
 
 void dsim_storage_emit_insert( struct dsim_storage *storage, uint32_t block, uint32_t pos, uint32_t count );
 void dsim_storage_emit_remove( struct dsim_storage *storage, uint32_t block, uint32_t pos, uint32_t count );
-void dsim_storage_emit_update( struct dsim_storage *storage, uint32_t array, uint32_t block, uint32_t pos, uint32_t count );
+void dsim_storage_emit_update( struct dsim_storage *storage, uint32_t mask, uint32_t block, uint32_t pos, uint32_t count );
 
 struct dsim_storage_operations
 {

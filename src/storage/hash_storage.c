@@ -53,7 +53,7 @@ unsigned dsim_hash_storage_end_write( struct dsim_storage *self, void *data )
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
     unsigned array = dsim_storage_block_end_write( &s->data, data );
     if( array != DSIM_INVALID_INDEX )
-        dsim_storage_emit_update( self, array, 0, 0, dsim_hash_storage_block_size(self, 0) );
+        dsim_storage_emit_update( self, 1 << array, 0, 0, dsim_hash_storage_block_size(self, 0) );
     return array;
 }
 
@@ -128,13 +128,8 @@ static void _hash_update_process( void *context, uint32_t pos, uint32_t block, u
 
     if( pos != DSIM_INVALID_INDEX )
     {
-        dsim_storage_block_update( &ctx->s->data, ctx->data, pos, block_pos, count );
-
-        dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(ctx->s->storage.layout);
-        size_t array_count = dsim_ddl_array_vec_len(arrays);
-        for( size_t i = 0; i != array_count; ++i )
-            if( ctx->data[i] )
-                dsim_storage_emit_update( &ctx->s->storage, i, block, block_pos, count );
+        uint32_t mask = dsim_storage_block_update( &ctx->s->data, ctx->data, pos, block_pos, count );
+        dsim_storage_emit_update( &ctx->s->storage, mask, block, block_pos, count );
     }
 }
 
@@ -163,9 +158,9 @@ static void _hash_remove_process( void *context, uint32_t pos, uint32_t block, u
 
     if( pos != DSIM_INVALID_INDEX )
     {
+        dsim_storage_emit_remove( &ctx->s->storage, block, block_pos, count );
         dsim_hash_remove_fast( &ctx->s->ids, block_pos, count );
         dsim_storage_block_remove_fast( &ctx->s->data, block_pos, count );
-        dsim_storage_emit_remove( &ctx->s->storage, block, block_pos, count );
     }
 }
 

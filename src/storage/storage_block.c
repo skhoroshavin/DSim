@@ -48,15 +48,18 @@ void dsim_storage_block_push_back( struct dsim_storage_block *sb, const void *co
     }
 }
 
-void dsim_storage_block_update( struct dsim_storage_block *sb, const void *const *data, uint32_t src_offset, uint32_t dst_offset, uint32_t count )
+uint32_t dsim_storage_block_update( struct dsim_storage_block *sb, const void *const *data, uint32_t src_offset, uint32_t dst_offset, uint32_t count )
 {
+    uint32_t mask = 0;
     dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(sb->layout);
     size_t array_count = dsim_ddl_array_vec_len(arrays);
     for( uint32_t i = 0; i < array_count; ++i )
     {
         if( !data[i] ) continue;
         dsim_storage_array_update( sb->arrays + i, data[i], src_offset, dst_offset, count );
+        mask |= (1 << i);
     }
+    return mask;
 }
 
 void dsim_storage_block_remove_fast( struct dsim_storage_block *sb, uint32_t pos, uint32_t count )
