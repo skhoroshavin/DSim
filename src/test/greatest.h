@@ -286,6 +286,9 @@ unsigned int greatest_get_verbosity(void);
 void greatest_set_verbosity(unsigned int verbosity);
 void greatest_set_flag(greatest_flag_t flag);
 
+void greatest_parse_args(int argc, char **argv);
+void greatest_run_suite(greatest_suite_cb *suite_cb, const char *suite_name);
+void greatest_update_counts_and_reset_suite(void);
 
 /********************
 * Language Support *
@@ -676,7 +679,7 @@ static void report_suite(void) {                                        \
     }                                                                   \
 }                                                                       \
                                                                         \
-static void update_counts_and_reset_suite(void) {                       \
+void greatest_update_counts_and_reset_suite(void) {                              \
     greatest_info.setup = NULL;                                         \
     greatest_info.setup_udata = NULL;                                   \
     greatest_info.teardown = NULL;                                      \
@@ -689,13 +692,13 @@ static void update_counts_and_reset_suite(void) {                       \
     greatest_info.col = 0;                                              \
 }                                                                       \
                                                                         \
-static void greatest_run_suite(greatest_suite_cb *suite_cb,             \
+void greatest_run_suite(greatest_suite_cb *suite_cb,                    \
                                const char *suite_name) {                \
     if (greatest_info.suite_filter &&                                   \
         !greatest_name_match(suite_name, greatest_info.suite_filter)) { \
         return;                                                         \
     }                                                                   \
-    update_counts_and_reset_suite();                                    \
+    greatest_update_counts_and_reset_suite();                                    \
     if (GREATEST_FIRST_FAIL() && greatest_info.failed > 0) { return; }  \
     fprintf(GREATEST_STDOUT, "\n* Suite %s:\n", suite_name);            \
     GREATEST_SET_TIME(greatest_info.suite.pre_suite);                   \
@@ -784,7 +787,7 @@ void greatest_usage(const char *name) {                                 \
         name);                                                          \
 }                                                                       \
                                                                         \
-static void greatest_parse_args(int argc, char **argv) {                \
+void greatest_parse_args(int argc, char **argv) {                       \
     int i = 0;                                                          \
     for (i = 1; i < argc; i++) {                                        \
         if (0 == strncmp("-t", argv[i], 2)) {                           \
@@ -950,7 +953,7 @@ greatest_run_info greatest_info
 #define GREATEST_PRINT_REPORT()                                         \
     do {                                                                \
         if (!GREATEST_LIST_ONLY()) {                                    \
-            update_counts_and_reset_suite();                            \
+            greatest_update_counts_and_reset_suite();                            \
             GREATEST_SET_TIME(greatest_info.end);                       \
             fprintf(GREATEST_STDOUT,                                    \
                 "\nTotal: %u test%s",                                   \

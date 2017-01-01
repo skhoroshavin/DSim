@@ -12,8 +12,6 @@ SUITE_EXTERN(test_allocator);
 
 SUITE_EXTERN(test_hash_storage);
 
-GREATEST_MAIN_DEFS();
-
 int main( int argc, char **argv )
 {
     GREATEST_MAIN_BEGIN();
