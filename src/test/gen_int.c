@@ -3,7 +3,7 @@
 
 unsigned test_gen_uint( struct dsim_test_data *data, unsigned min, unsigned max )
 {
-    assert( min <= max );
+    assert( min <= max ); //  LCOV_EXCL_BR_LINE
 
     unsigned result;
     dsim_test_data_gen( data, &result, sizeof(result) );

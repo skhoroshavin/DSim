@@ -67,7 +67,7 @@ static int dsim_hash_storage_can_modify( const struct dsim_storage *self, uint32
     if( !s->data.arrays )
         return 1;
 
-    assert( arr < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ) );
+    assert( arr < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ) ); //  LCOV_EXCL_BR_LINE
     return dsim_storage_array_can_modify( s->data.arrays + arr );
 }
 
@@ -103,7 +103,7 @@ static void dsim_hash_storage_select( struct dsim_storage *self, const uint64_t 
 
 static void dsim_hash_storage_insert( struct dsim_storage *self, const uint64_t *ids, const void *const *data, uint32_t count )
 {
-    assert( dsim_hash_storage_can_modify( self, DSIM_INVALID_INDEX, DSIM_INVALID_INDEX ) );
+    assert( dsim_hash_storage_can_modify( self, DSIM_INVALID_INDEX, DSIM_INVALID_INDEX ) ); //  LCOV_EXCL_BR_LINE
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
 
     dsim_hash_push_back_n( &s->ids, ids, count );
@@ -137,7 +137,7 @@ static void dsim_hash_storage_update( struct dsim_storage *self, const uint64_t 
 {
     for( size_t i = 0; i < dsim_ddl_array_vec_len( dsim_ddl_layout_arrays(self->layout) ); ++i )
         if( data[i] )
-            assert( dsim_hash_storage_can_modify( self, DSIM_INVALID_INDEX, i ) );
+            assert( dsim_hash_storage_can_modify( self, DSIM_INVALID_INDEX, i ) ); //  LCOV_EXCL_BR_LINE
 
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
 
@@ -166,7 +166,7 @@ static void _hash_remove_process( void *context, uint32_t pos, uint32_t block, u
 
 static void dsim_hash_storage_remove( struct dsim_storage *self, const uint64_t *ids, uint32_t count )
 {
-    assert( dsim_hash_storage_can_modify( self, DSIM_INVALID_INDEX, DSIM_INVALID_INDEX ) );
+    assert( dsim_hash_storage_can_modify( self, DSIM_INVALID_INDEX, DSIM_INVALID_INDEX ) ); //  LCOV_EXCL_BR_LINE
     struct dsim_hash_storage *s = container_of( self, struct dsim_hash_storage, storage );
 
     struct _hash_remove_context ctx = { s, ids };

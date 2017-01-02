@@ -58,167 +58,159 @@ void _test_gen_dsim_array( struct dsim_test_data *data, struct _dsim_array **res
 
 #define test_gen_dsim_array(data,res) _test_gen_dsim_array(data,(struct _dsim_array**)&(res) );
 
-#define test_setup_dsim_array(type,min,max) \
-    type *test_data; size_t test_count; \
-    dsim_array(type) *test_array; \
-    test_gen_array( data, (void **)&test_data, &test_count, sizeof(type), min, max ); \
-    test_gen_dsim_array( data, test_array ); \
-    dsim_array_push_back_n( test_array, test_data, test_count );
+#define GIVEN_DSIM_ARRAY(type,name,min_count) \
+    GIVEN_ARRAY(type,name,min_count); \
+    dsim_array(type) *name; \
+    test_gen_dsim_array( _ctx, name ); \
+    dsim_array_push_back_n( name, name##_data, name##_count );
 
-#define ASSERT_DSIM_ARRAY_INVARIANTS() do { \
-    ASSERT( test_array->capacity >= test_array->count ); \
-    if( test_array->capacity ) ASSERT( test_array->data ); \
-    else ASSERT( !test_array->data ); \
+#define ASSERT_DSIM_ARRAY_INVARIANTS(name) do { \
+    ASSERT( name->capacity >= name->count ); \
+    if( name->capacity ) ASSERT( name->data ); \
+    else ASSERT( !name->data ); \
     } while(0)
 
 /*
  * Tests
  */
 
-TEST array_invariants( struct dsim_test_data *data )
+DSIM_TEST(array_invariants)
 {
-    test_setup_dsim_array(uint64_t, 0, 10);
+    GIVEN_DSIM_ARRAY(uint64_t, test, 0);
 
-    ASSERT_DSIM_ARRAY_INVARIANTS();
+    ASSERT_DSIM_ARRAY_INVARIANTS(test);
     PASS();
 }
 
-TEST array_reserve( struct dsim_test_data *data )
+DSIM_TEST(array_reserve)
 {
-    test_setup_dsim_array(uint64_t, 0, 10);
+    GIVEN_DSIM_ARRAY(uint64_t, test, 0);
+    uint32_t old_capacity = test->capacity;
+    GIVEN_UINT(capacity,0,old_capacity*2);
 
-    uint32_t old_capacity = test_array->capacity;
-    uint32_t capacity = test_gen_uint( data, 0, 10 );
-    dsim_array_reserve( test_array, capacity );
+    dsim_array_reserve( test, capacity );
 
-    ASSERT_DSIM_ARRAY_INVARIANTS();
-    ASSERT( test_array->capacity >= old_capacity );
-    ASSERT( test_array->count == test_count );
-    ASSERT_MEM_EQ( test_array->data, test_data, test_count*sizeof(uint64_t) );
-
+    ASSERT_DSIM_ARRAY_INVARIANTS(test);
+    ASSERT( test->capacity >= old_capacity );
+    ASSERT( test->count == test_count );
+    ASSERT_MEM_EQ( test->data, test_data, test_count*sizeof(uint64_t) );
     PASS();
 }
 
-TEST array_resize( struct dsim_test_data *data )
+DSIM_TEST(array_resize)
 {
-    test_setup_dsim_array(uint64_t, 0, 10);
+    GIVEN_DSIM_ARRAY(uint64_t, test, 0);
+    GIVEN_UINT( new_size, 0, test->count*2 );
 
-    uint32_t new_size = test_gen_uint( data, 0, 10 );
-    dsim_array_resize( test_array, new_size );
+    dsim_array_resize( test, new_size );
 
-    ASSERT_DSIM_ARRAY_INVARIANTS();
-    ASSERT( test_array->count == new_size );
-    ASSERT_MEM_EQ( test_array->data, test_data, min(new_size,test_count)*sizeof(uint64_t) );
-
+    ASSERT_DSIM_ARRAY_INVARIANTS(test);
+    ASSERT( test->count == new_size );
+    ASSERT_MEM_EQ( test->data, test_data, min(new_size,test_count)*sizeof(uint64_t) );
     PASS();
 }
 
-TEST array_push_back( struct dsim_test_data *data )
+DSIM_TEST(array_push_back)
 {
-    test_setup_dsim_array(uint64_t, 0, 10);
+    GIVEN_DSIM_ARRAY(uint64_t, test, 0);
+    GIVEN_UINT(value, 0, UINT32_MAX);
 
-    unsigned value = test_gen_uint( data, 0, UINT32_MAX );
-    dsim_array_push_back( test_array, value );
+    dsim_array_push_back( test, value );
 
-    ASSERT_DSIM_ARRAY_INVARIANTS();
-    ASSERT( test_array->count == test_count + 1 );
-    ASSERT_MEM_EQ( test_array->data, test_data, test_count*sizeof(uint64_t) );
-    ASSERT_INT_EQ( test_array->at[test_count], value );
-
+    ASSERT_DSIM_ARRAY_INVARIANTS(test);
+    ASSERT( test->count == test_count + 1 );
+    ASSERT_MEM_EQ( test->data, test_data, test_count*sizeof(uint64_t) );
+    ASSERT_INT_EQ( test->at[test_count], value );
     PASS();
 }
 
-TEST array_push_back_n( struct dsim_test_data *data )
+DSIM_TEST(array_push_back_n)
 {
-    test_setup_dsim_array(uint64_t, 0, 10);
+    GIVEN_DSIM_ARRAY(uint64_t, test, 0);
+    GIVEN_ARRAY(uint64_t, more, 1 );
 
-    uint64_t *more_data; size_t more_count;
-    test_gen_array( data, (void **)&more_data, &more_count, sizeof(uint64_t), 1, 10 );
-    dsim_array_push_back_n( test_array, more_data, more_count );
+    dsim_array_push_back_n( test, more_data, more_count );
 
-    ASSERT_DSIM_ARRAY_INVARIANTS();
-    ASSERT( test_array->count == test_count + more_count );
-    ASSERT_MEM_EQ( test_array->data, test_data, test_count*sizeof(uint64_t) );
-    ASSERT_MEM_EQ( test_array->data + test_count, more_data, more_count*sizeof(uint64_t) );
-
+    ASSERT_DSIM_ARRAY_INVARIANTS(test);
+    ASSERT( test->count == test_count + more_count );
+    ASSERT_MEM_EQ( test->data, test_data, test_count*sizeof(uint64_t) );
+    ASSERT_MEM_EQ( test->data + test_count, more_data, more_count*sizeof(uint64_t) );
     PASS();
 }
 
-TEST array_pop_back( struct dsim_test_data *data )
+DSIM_TEST(array_pop_back)
 {
-    test_setup_dsim_array(uint64_t, 1, 10);
+    GIVEN_DSIM_ARRAY(uint64_t, test, 1);
 
-    dsim_array_pop_back( test_array );
+    dsim_array_pop_back( test );
 
-    ASSERT_DSIM_ARRAY_INVARIANTS();
-    ASSERT( test_array->count == test_count - 1 );
-    ASSERT_MEM_EQ( test_array->data, test_data, (test_count-1)*sizeof(uint64_t) );
-
+    ASSERT_DSIM_ARRAY_INVARIANTS(test);
+    ASSERT( test->count == test_count - 1 );
+    ASSERT_MEM_EQ( test->data, test_data, (test_count-1)*sizeof(uint64_t) );
     PASS();
 }
 
-TEST array_pop_back_n( struct dsim_test_data *data )
+DSIM_TEST(array_pop_back_n)
 {
-    test_setup_dsim_array(uint64_t, 1, 10);
+    GIVEN_DSIM_ARRAY(uint64_t, test, 1);
+    GIVEN_UINT( pop_count, 0, test->count );
 
-    uint32_t pop_count = test_gen_uint( data, 0, test_count );
-    dsim_array_pop_back_n( test_array, pop_count );
+    dsim_array_pop_back_n( test, pop_count );
 
-    ASSERT_DSIM_ARRAY_INVARIANTS();
-    ASSERT( test_array->count == test_count - pop_count );
-    ASSERT_MEM_EQ( test_array->data, test_data, (test_count-pop_count)*sizeof(uint64_t) );
-
+    ASSERT_DSIM_ARRAY_INVARIANTS(test);
+    ASSERT( test->count == test_count - pop_count );
+    ASSERT_MEM_EQ( test->data, test_data, (test_count-pop_count)*sizeof(uint64_t) );
     PASS();
 }
 
-TEST array_remove( struct dsim_test_data *data )
+DSIM_TEST(array_remove)
 {
-    test_setup_dsim_array(uint64_t, 1, 10);
+    GIVEN_DSIM_ARRAY(uint64_t, test, 1);
+    GIVEN_UINT( pos, 0, test->count - 1 );
+    GIVEN_UINT( count, 0, test->count - pos - 1 );
 
-    unsigned pos = test_gen_uint( data, 0, test_count - 1 );
-    unsigned count = test_gen_uint( data, 0, test_count - pos - 1 );
-    dsim_array_remove( test_array, pos, count );
+    dsim_array_remove( test, pos, count );
 
-    ASSERT_DSIM_ARRAY_INVARIANTS();
-    CHECK_CALL(assert_array_remove_ordered( test_array, pos, count, test_data, test_count ));
+    ASSERT_DSIM_ARRAY_INVARIANTS(test);
+    CHECK_CALL(assert_array_remove_ordered( test, pos, count, test_data, test_count ));
     PASS();
 }
 
-TEST array_remove_fast( struct dsim_test_data *data )
+DSIM_TEST(array_remove_fast)
 {
-    test_setup_dsim_array(uint64_t, 1, 10);
+    GIVEN_DSIM_ARRAY(uint64_t, test, 1);
+    GIVEN_UINT( pos, 0, test->count - 1 );
+    GIVEN_UINT( count, 0, test->count - pos - 1 );
 
-    unsigned pos = test_gen_uint( data, 0, test_count - 1 );
-    unsigned count = test_gen_uint( data, 0, test_count - pos - 1 );
-    dsim_array_remove_fast( test_array, pos, count );
+    dsim_array_remove_fast( test, pos, count );
 
-    ASSERT_DSIM_ARRAY_INVARIANTS();
+    ASSERT_DSIM_ARRAY_INVARIANTS(test);
     if( test_count - pos - count < count )
-        CHECK_CALL(assert_array_remove_ordered( test_array, pos, count, test_data, test_count ));
+        CHECK_CALL(assert_array_remove_ordered( test, pos, count, test_data, test_count ));
     else
-        CHECK_CALL(assert_array_remove_unordered( test_array, pos, count, test_data, test_count ));
+        CHECK_CALL(assert_array_remove_unordered( test, pos, count, test_data, test_count ));
     PASS();
 }
 
-TEST array_clear( struct dsim_test_data *data )
+DSIM_TEST(array_clear)
 {
-    test_setup_dsim_array(uint64_t, 0, 10);
+    GIVEN_DSIM_ARRAY(uint64_t, test, 0);
 
-    dsim_array_clear( test_array );
+    dsim_array_clear( test );
 
-    ASSERT_DSIM_ARRAY_INVARIANTS();
-    ASSERT( test_array->capacity >= test_count );
+    ASSERT_DSIM_ARRAY_INVARIANTS(test);
+    ASSERT( test->capacity >= test_count );
     PASS();
 }
 
-TEST array_reset( struct dsim_test_data *data )
+DSIM_TEST(array_reset)
 {
-    test_setup_dsim_array(uint64_t, 0, 10);
+    GIVEN_DSIM_ARRAY(uint64_t, test, 0);
 
-    dsim_array_reset( test_array );
+    dsim_array_reset( test );
 
-    ASSERT_DSIM_ARRAY_INVARIANTS();
-    ASSERT( test_array->capacity == 0 );
+    ASSERT_DSIM_ARRAY_INVARIANTS(test);
+    ASSERT( test->capacity == 0 );
     PASS();
 }
 

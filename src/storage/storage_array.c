@@ -18,21 +18,21 @@ int dsim_storage_array_can_modify( const struct dsim_storage_array *sa )
 
 void dsim_storage_array_resize( struct dsim_storage_array *sa, uint32_t count )
 {
-    assert( dsim_storage_array_can_modify(sa) );
+    assert( dsim_storage_array_can_modify(sa) ); //  LCOV_EXCL_BR_LINE
 
     _dsim_array_resize( &sa->main, count, dsim_ddl_type_size(sa->type) );
 }
 
 void dsim_storage_array_push_back( struct dsim_storage_array *sa, const void *data, uint32_t count )
 {
-    assert( dsim_storage_array_can_modify(sa) );
+    assert( dsim_storage_array_can_modify(sa) ); //  LCOV_EXCL_BR_LINE
 
     _dsim_array_push_back( &sa->main, data, count, dsim_ddl_type_size(sa->type) );
 }
 
 void dsim_storage_array_update( struct dsim_storage_array *sa, const void *src, uint32_t src_offset, uint32_t dst_offset, uint32_t count )
 {
-    assert( dsim_storage_array_can_modify(sa) );
+    assert( dsim_storage_array_can_modify(sa) ); //  LCOV_EXCL_BR_LINE
 
     size_t elem_size = dsim_ddl_type_size(sa->type);
     memcpy( (char *)sa->main.data + dst_offset*elem_size,
@@ -42,14 +42,14 @@ void dsim_storage_array_update( struct dsim_storage_array *sa, const void *src, 
 
 void dsim_storage_array_remove_fast( struct dsim_storage_array *sa, uint32_t pos, uint32_t count )
 {
-    assert( dsim_storage_array_can_modify(sa) );
+    assert( dsim_storage_array_can_modify(sa) ); //  LCOV_EXCL_BR_LINE
 
     _dsim_array_remove_fast( &sa->main, pos, count, dsim_ddl_type_size(sa->type) );
 }
 
 void dsim_storage_array_reset( struct dsim_storage_array *sa )
 {
-    assert( dsim_storage_array_can_modify(sa) );
+    assert( dsim_storage_array_can_modify(sa) ); //  LCOV_EXCL_BR_LINE
 
     _dsim_array_reset( &sa->main );
     _dsim_array_reset( &sa->back );
@@ -68,14 +68,14 @@ unsigned dsim_storage_array_end_read( struct dsim_storage_array *sa, const void 
 {
     if( data == sa->main.data )
     {
-        assert( sa->main_read_count );
+        assert( sa->main_read_count ); //  LCOV_EXCL_BR_LINE
         --sa->main_read_count;
         return 0;
     }
 
     if( data == sa->back.data )
     {
-        assert( sa->back_read_count );
+        assert( sa->back_read_count ); //  LCOV_EXCL_BR_LINE
         --sa->back_read_count;
         return 0;
     }
@@ -85,7 +85,7 @@ unsigned dsim_storage_array_end_read( struct dsim_storage_array *sa, const void 
 
 void *dsim_storage_array_begin_write( struct dsim_storage_array *sa, enum dsim_storage_write_mode mode )
 {
-    assert( mode != DSIM_STORAGE_WRITE_NONE );
+    assert( mode != DSIM_STORAGE_WRITE_NONE ); //  LCOV_EXCL_BR_LINE
 
     if( mode == DSIM_STORAGE_WRITE_DIRECT )
     {
@@ -115,14 +115,14 @@ unsigned dsim_storage_array_end_write( struct dsim_storage_array *sa, void *data
 {
     if( data == sa->main.data )
     {
-        assert( sa->write_mode == DSIM_STORAGE_WRITE_DIRECT );
+        assert( sa->write_mode == DSIM_STORAGE_WRITE_DIRECT ); //  LCOV_EXCL_BR_LINE
         sa->write_mode = DSIM_STORAGE_WRITE_NONE;
         return 0;
     }
 
     if( data == sa->back.data )
     {
-        assert( sa->write_mode == DSIM_STORAGE_WRITE_BUFFERED );
+        assert( sa->write_mode == DSIM_STORAGE_WRITE_BUFFERED ); //  LCOV_EXCL_BR_LINE
         sa->write_mode = DSIM_STORAGE_WRITE_NONE;
 
         void *tmp_data = sa->main.data;

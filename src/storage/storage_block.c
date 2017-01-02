@@ -82,7 +82,7 @@ void dsim_storage_block_done( struct dsim_storage_block *sb )
 const void *dsim_storage_block_begin_read( struct dsim_storage_block *sb, uint32_t arr )
 {
     dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(sb->layout);
-    assert( arr < dsim_ddl_array_vec_len(arrays) );
+    assert( arr < dsim_ddl_array_vec_len(arrays) ); //  LCOV_EXCL_BR_LINE
     return dsim_storage_array_begin_read( sb->arrays + arr );
 }
 
@@ -98,7 +98,7 @@ unsigned dsim_storage_block_end_read( struct dsim_storage_block *sb, const void 
 void *dsim_storage_block_begin_write( struct dsim_storage_block *sb, uint32_t arr, enum dsim_storage_write_mode mode )
 {
     dsim_ddl_array_vec_t arrays = dsim_ddl_layout_arrays(sb->layout);
-    assert( arr < dsim_ddl_array_vec_len(arrays) );
+    assert( arr < dsim_ddl_array_vec_len(arrays) ); //  LCOV_EXCL_BR_LINE
     return dsim_storage_array_begin_write( sb->arrays + arr, mode );
 }
 

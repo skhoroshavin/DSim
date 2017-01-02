@@ -9,7 +9,7 @@ void dsim_test_data_init( struct dsim_test_data *self, struct dsim_allocator *al
 
 void dsim_test_data_done( struct dsim_test_data *self )
 {
-    assert( self->dtors.count == self->ptrs.count );
+    assert( self->dtors.count == self->ptrs.count ); //  LCOV_EXCL_BR_LINE
     for( uint32_t i = self->dtors.count; i != 0; --i )
         self->dtors.at[i-1]( self->ptrs.at[i-1] );
     dsim_array_reset( &self->dtors );
