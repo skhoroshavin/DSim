@@ -14,7 +14,7 @@ struct dsim_test_data
     dsim_array(void*) ptrs;
 };
 
-void dsim_test_data_init( struct dsim_test_data *self );
+void dsim_test_data_init( struct dsim_test_data *self, struct dsim_allocator *alloc );
 void dsim_test_data_done( struct dsim_test_data *self );
 size_t dsim_test_data_gen( struct dsim_test_data *self, void *data, size_t size );
 void dsim_test_data_register_dtor( struct dsim_test_data *self, dsim_test_dtor dtor, void *ptr );
@@ -26,7 +26,7 @@ struct dsim_random_test_data
     dsim_array(char) buffer;
 };
 
-void dsim_random_test_data_init( struct dsim_random_test_data *self );
+void dsim_random_test_data_init( struct dsim_random_test_data *self, struct dsim_allocator *alloc );
 void dsim_random_test_data_done( struct dsim_random_test_data *self );
 
 DSIM_END_HEADER

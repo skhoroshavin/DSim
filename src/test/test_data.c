@@ -1,10 +1,10 @@
 
 #include "test_data.h"
 
-void dsim_test_data_init( struct dsim_test_data *self )
+void dsim_test_data_init( struct dsim_test_data *self, struct dsim_allocator *alloc )
 {
-    dsim_array_init( &self->dtors, &dsim_default_allocator );
-    dsim_array_init( &self->ptrs, &dsim_default_allocator );
+    dsim_array_init( &self->dtors, alloc );
+    dsim_array_init( &self->ptrs, alloc );
 }
 
 void dsim_test_data_done( struct dsim_test_data *self )
@@ -43,12 +43,12 @@ static size_t gen_random( struct dsim_test_data *self, void *data, size_t size )
     return size;
 }
 
-void dsim_random_test_data_init( struct dsim_random_test_data *self )
+void dsim_random_test_data_init( struct dsim_random_test_data *self, struct dsim_allocator *alloc )
 {
-    dsim_test_data_init( &self->base );
+    dsim_test_data_init( &self->base, alloc );
 
     self->base.gen_data = gen_random;
-    dsim_array_init( &self->buffer, &dsim_default_allocator );
+    dsim_array_init( &self->buffer, alloc );
 }
 
 void dsim_random_test_data_done( struct dsim_random_test_data *self )

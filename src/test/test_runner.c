@@ -1,5 +1,6 @@
 
 #include "test_runner.h"
+#include "core/stack_allocator.h"
 
 GREATEST_MAIN_DEFS();
 
@@ -9,7 +10,7 @@ void dsim_run_test( const char *name, dsim_rand_test test )
     {
         enum greatest_test_res res = GREATEST_TEST_RES_PASS;
         struct dsim_random_test_data data;
-        dsim_random_test_data_init( &data );
+        dsim_random_test_data_init( &data, &dsim_default_allocator );
 
         if( greatest_pre_test(name) == 1 )
         {
