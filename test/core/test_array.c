@@ -92,7 +92,7 @@ DSIM_TEST(array_reserve)
 
     ASSERT_DSIM_ARRAY_INVARIANTS(test);
     ASSERT( test->capacity >= old_capacity );
-    ASSERT( test->count == test_count );
+    ASSERT_INT_EQ( test->count, test_count );
     ASSERT_MEM_EQ( test->data, test_data, test_count*sizeof(uint64_t) );
     PASS();
 }
@@ -118,7 +118,7 @@ DSIM_TEST(array_push_back)
     dsim_array_push_back( test, value );
 
     ASSERT_DSIM_ARRAY_INVARIANTS(test);
-    ASSERT( test->count == test_count + 1 );
+    ASSERT_INT_EQ( test->count, test_count + 1 );
     ASSERT_MEM_EQ( test->data, test_data, test_count*sizeof(uint64_t) );
     ASSERT_INT_EQ( test->at[test_count], value );
     PASS();
@@ -132,7 +132,7 @@ DSIM_TEST(array_push_back_n)
     dsim_array_push_back_n( test, more_data, more_count );
 
     ASSERT_DSIM_ARRAY_INVARIANTS(test);
-    ASSERT( test->count == test_count + more_count );
+    ASSERT_INT_EQ( test->count, test_count + more_count );
     ASSERT_MEM_EQ( test->data, test_data, test_count*sizeof(uint64_t) );
     ASSERT_MEM_EQ( test->data + test_count, more_data, more_count*sizeof(uint64_t) );
     PASS();
@@ -145,7 +145,7 @@ DSIM_TEST(array_pop_back)
     dsim_array_pop_back( test );
 
     ASSERT_DSIM_ARRAY_INVARIANTS(test);
-    ASSERT( test->count == test_count - 1 );
+    ASSERT_INT_EQ( test->count, test_count - 1 );
     ASSERT_MEM_EQ( test->data, test_data, (test_count-1)*sizeof(uint64_t) );
     PASS();
 }
@@ -158,7 +158,7 @@ DSIM_TEST(array_pop_back_n)
     dsim_array_pop_back_n( test, pop_count );
 
     ASSERT_DSIM_ARRAY_INVARIANTS(test);
-    ASSERT( test->count == test_count - pop_count );
+    ASSERT_INT_EQ( test->count, test_count - pop_count );
     ASSERT_MEM_EQ( test->data, test_data, (test_count-pop_count)*sizeof(uint64_t) );
     PASS();
 }
@@ -172,7 +172,9 @@ DSIM_TEST(array_remove)
     dsim_array_remove( test, pos, count );
 
     ASSERT_DSIM_ARRAY_INVARIANTS(test);
-    CHECK_CALL(assert_array_remove_ordered( test, pos, count, test_data, test_count ));
+    ASSERT_INT_EQ( test->count, test_count - count );
+    ASSERT_MEM_EQ( test->data, test_data, pos*sizeof(uint64_t) );
+    ASSERT_MEM_EQ( test->data + pos, test_data + pos + count, (test_count - pos - count)*sizeof(uint64_t) );
     PASS();
 }
 
@@ -185,10 +187,15 @@ DSIM_TEST(array_remove_fast)
     dsim_array_remove_fast( test, pos, count );
 
     ASSERT_DSIM_ARRAY_INVARIANTS(test);
+    ASSERT_INT_EQ( test->count, test_count - count );
+    ASSERT_MEM_EQ( test->data, test_data, pos*sizeof(uint64_t) );
     if( test_count - pos - count < count )
-        CHECK_CALL(assert_array_remove_ordered( test, pos, count, test_data, test_count ));
+        ASSERT_MEM_EQ( test->data + pos, test_data + pos + count, (test_count - pos - count)*sizeof(uint64_t) );
     else
-        CHECK_CALL(assert_array_remove_unordered( test, pos, count, test_data, test_count ));
+    {
+        ASSERT_MEM_EQ( test->data + pos, test_data + test_count - count, count*sizeof(uint64_t) );
+        ASSERT_MEM_EQ( test->data + pos + count, test_data + pos + count, (test_count - pos - 2*count)*sizeof(uint64_t) );
+    }
     PASS();
 }
 
