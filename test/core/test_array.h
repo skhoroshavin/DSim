@@ -1,7 +1,10 @@
 
 #pragma once
 
-#include "test/greatest.h"
+#include "test/test_runner.h"
+#include "test/gen_int.h"
+#include "test/gen_array.h"
+
 #include "core/array.h"
 
 /*

@@ -1,22 +1,6 @@
 
 #include "test_array.h"
 
-static dsim_array(uint64_t) array = dsim_array_static_init(&dsim_default_allocator);
-
-static uint64_t test_data[] = { 5, 3, 7, 52, 0, 12, 3, 623, 23 };
-
-static void setup_array_non_empty( void *ctx )
-{
-    dsim_unused(ctx);
-    dsim_array_push_back_n( &array, test_data, count_of(test_data) );
-}
-
-static void teardown_array( void *ctx )
-{
-    dsim_unused(ctx);
-    dsim_array_reset( &array );
-}
-
 /*
  * Utility
  */
@@ -63,241 +47,192 @@ enum greatest_test_res _assert_array_remove_unordered( const void *a_data, uint3
     PASS();
 }
 
-/*
- * Empty array
- */
-
-TEST array_empty_assert_empty()
+void _test_gen_dsim_array( struct dsim_test_data *data, struct _dsim_array **result )
 {
-    CHECK_CALL(assert_array_null( &array ));
-    PASS();
+    *result = (struct _dsim_array*)malloc( sizeof(struct _dsim_array) );
+    dsim_test_data_register_ptr( data, *result );
+
+    _dsim_array_init( *result, &dsim_default_allocator );
+    dsim_test_data_register_dtor( data, (dsim_test_dtor)_dsim_array_reset, *result );
 }
 
-TEST array_empty_reserve()
-{
-    dsim_array_reserve( &array, 10 );
+#define test_gen_dsim_array(data,res) _test_gen_dsim_array(data,(struct _dsim_array**)&(res) );
 
-    CHECK_CALL(assert_array_capacity(&array, 10 ));
-    ASSERT_INT_EQ( array.count, 0 );
-    PASS();
-}
+#define test_setup_dsim_array(type,min,max) \
+    type *test_data; size_t test_count; \
+    dsim_array(type) *test_array; \
+    test_gen_array( data, (void **)&test_data, &test_count, sizeof(type), min, max ); \
+    test_gen_dsim_array( data, test_array ); \
+    dsim_array_push_back_n( test_array, test_data, test_count );
 
-TEST array_empty_resize()
-{
-    dsim_array_resize( &array, 10 );
-
-    CHECK_CALL(assert_array_capacity(&array, 10 ));
-    ASSERT_INT_EQ( array.count, 10 );
-    PASS();
-}
-
-TEST array_empty_push_back()
-{
-    dsim_array_push_back( &array, 5 );
-
-    CHECK_CALL(assert_array_capacity(&array, 1 ));
-    ASSERT_INT_EQ( array.count, 1 );
-    ASSERT_INT_EQ( array.at[0], 5 );
-    PASS();
-}
-
-TEST array_empty_push_back_n()
-{
-    const uint64_t data[] = { 43, 3, 16, 5 };
-    dsim_array_push_back_n( &array, data, count_of(data) );
-
-    CHECK_CALL(assert_array_capacity(&array, count_of(data) ));
-    ASSERT_INT_EQ( array.count, count_of(data) );
-    ASSERT_MEM_EQ( array.data, data, sizeof(data) );
-    PASS();
-}
-
-TEST array_empty_clear()
-{
-    dsim_array_clear( &array );
-
-    CHECK_CALL(assert_array_null( &array ));
-    PASS();
-}
-
-TEST array_empty_reset()
-{
-    dsim_array_reset( &array );
-
-    CHECK_CALL(assert_array_null( &array ));
-    PASS();
-}
+#define ASSERT_DSIM_ARRAY_INVARIANTS() do { \
+    ASSERT( test_array->capacity >= test_array->count ); \
+    if( test_array->capacity ) ASSERT( test_array->data ); \
+    else ASSERT( !test_array->data ); \
+    } while(0)
 
 /*
- * Non empty array
+ * Tests
  */
 
-TEST array_non_empty_assert_non_empty()
+TEST array_invariants( struct dsim_test_data *data )
 {
-    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) ));
-    ASSERT_INT_EQ( array.count, count_of(test_data) );
-    ASSERT_MEM_EQ( array.data, test_data, sizeof(test_data) );
+    test_setup_dsim_array(uint64_t, 0, 10);
+
+    ASSERT_DSIM_ARRAY_INVARIANTS();
     PASS();
 }
 
-TEST array_non_empty_reserve_more()
+TEST array_reserve( struct dsim_test_data *data )
 {
-    dsim_array_reserve( &array, count_of(test_data) + 4 );
+    test_setup_dsim_array(uint64_t, 0, 10);
 
-    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) + 4 ));
-    ASSERT_INT_EQ( array.count, count_of(test_data) );
-    ASSERT_MEM_EQ( array.data, test_data, sizeof(test_data) );
+    uint32_t old_capacity = test_array->capacity;
+    uint32_t capacity = test_gen_uint( data, 0, 10 );
+    dsim_array_reserve( test_array, capacity );
+
+    ASSERT_DSIM_ARRAY_INVARIANTS();
+    ASSERT( test_array->capacity >= old_capacity );
+    ASSERT( test_array->count == test_count );
+    ASSERT_MEM_EQ( test_array->data, test_data, test_count*sizeof(uint64_t) );
+
     PASS();
 }
 
-TEST array_non_empty_reserve_less()
+TEST array_resize( struct dsim_test_data *data )
 {
-    dsim_array_reserve( &array, count_of(test_data) - 4 );
+    test_setup_dsim_array(uint64_t, 0, 10);
 
-    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) ));
-    ASSERT_INT_EQ( array.count, count_of(test_data) );
-    ASSERT_MEM_EQ( array.data, test_data, sizeof(test_data) );
+    uint32_t new_size = test_gen_uint( data, 0, 10 );
+    dsim_array_resize( test_array, new_size );
+
+    ASSERT_DSIM_ARRAY_INVARIANTS();
+    ASSERT( test_array->count == new_size );
+    ASSERT_MEM_EQ( test_array->data, test_data, min(new_size,test_count)*sizeof(uint64_t) );
+
     PASS();
 }
 
-TEST array_non_empty_resize_more()
+TEST array_push_back( struct dsim_test_data *data )
 {
-    dsim_array_resize( &array, count_of(test_data) + 4 );
+    test_setup_dsim_array(uint64_t, 0, 10);
 
-    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) + 4 ));
-    ASSERT_INT_EQ( array.count, count_of(test_data) + 4 );
-    ASSERT_MEM_EQ( array.data, test_data, sizeof(test_data) );
+    unsigned value = test_gen_uint( data, 0, UINT32_MAX );
+    dsim_array_push_back( test_array, value );
+
+    ASSERT_DSIM_ARRAY_INVARIANTS();
+    ASSERT( test_array->count == test_count + 1 );
+    ASSERT_MEM_EQ( test_array->data, test_data, test_count*sizeof(uint64_t) );
+    ASSERT_INT_EQ( test_array->at[test_count], value );
+
     PASS();
 }
 
-TEST array_non_empty_resize_less()
+TEST array_push_back_n( struct dsim_test_data *data )
 {
-    dsim_array_resize( &array, count_of(test_data) - 4 );
+    test_setup_dsim_array(uint64_t, 0, 10);
 
-    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) ));
-    ASSERT_INT_EQ( array.count, count_of(test_data) - 4 );
-    ASSERT_MEM_EQ( array.data, test_data, array.count*sizeof(test_data[0]) );
+    uint64_t *more_data; size_t more_count;
+    test_gen_array( data, (void **)&more_data, &more_count, sizeof(uint64_t), 1, 10 );
+    dsim_array_push_back_n( test_array, more_data, more_count );
+
+    ASSERT_DSIM_ARRAY_INVARIANTS();
+    ASSERT( test_array->count == test_count + more_count );
+    ASSERT_MEM_EQ( test_array->data, test_data, test_count*sizeof(uint64_t) );
+    ASSERT_MEM_EQ( test_array->data + test_count, more_data, more_count*sizeof(uint64_t) );
+
     PASS();
 }
 
-TEST array_non_empty_push_back()
+TEST array_pop_back( struct dsim_test_data *data )
 {
-    dsim_array_push_back( &array, 42 );
+    test_setup_dsim_array(uint64_t, 1, 10);
 
-    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) + 1 ));
-    ASSERT_INT_EQ( array.count, count_of(test_data) + 1 );
-    ASSERT_MEM_EQ( array.data, test_data, sizeof(test_data) );
-    ASSERT_INT_EQ( array.at[count_of(test_data)], 42 );
+    dsim_array_pop_back( test_array );
+
+    ASSERT_DSIM_ARRAY_INVARIANTS();
+    ASSERT( test_array->count == test_count - 1 );
+    ASSERT_MEM_EQ( test_array->data, test_data, (test_count-1)*sizeof(uint64_t) );
+
     PASS();
 }
 
-TEST array_non_empty_push_back_n()
+TEST array_pop_back_n( struct dsim_test_data *data )
 {
-    const uint64_t more_data[] = { 65, 0, 123, 87, 1 };
-    dsim_array_push_back_n( &array, more_data, count_of(more_data) );
+    test_setup_dsim_array(uint64_t, 1, 10);
 
-    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) + count_of(more_data) ));
-    ASSERT_INT_EQ( array.count, count_of(test_data) + count_of(more_data) );
-    ASSERT_MEM_EQ( array.data, test_data, sizeof(test_data) );
-    ASSERT_MEM_EQ( array.data + count_of(test_data), more_data, sizeof(more_data) );
+    uint32_t pop_count = test_gen_uint( data, 0, test_count );
+    dsim_array_pop_back_n( test_array, pop_count );
+
+    ASSERT_DSIM_ARRAY_INVARIANTS();
+    ASSERT( test_array->count == test_count - pop_count );
+    ASSERT_MEM_EQ( test_array->data, test_data, (test_count-pop_count)*sizeof(uint64_t) );
+
     PASS();
 }
 
-TEST array_non_empty_pop_back()
+TEST array_remove( struct dsim_test_data *data )
 {
-    dsim_array_pop_back( &array );
+    test_setup_dsim_array(uint64_t, 1, 10);
 
-    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) ));
-    ASSERT_INT_EQ( array.count, count_of(test_data) - 1 );
-    ASSERT_MEM_EQ( array.data, test_data, array.count*sizeof(test_data[0]) );
+    unsigned pos = test_gen_uint( data, 0, test_count - 1 );
+    unsigned count = test_gen_uint( data, 0, test_count - pos - 1 );
+    dsim_array_remove( test_array, pos, count );
+
+    ASSERT_DSIM_ARRAY_INVARIANTS();
+    CHECK_CALL(assert_array_remove_ordered( test_array, pos, count, test_data, test_count ));
     PASS();
 }
 
-TEST array_non_empty_pop_back_n()
+TEST array_remove_fast( struct dsim_test_data *data )
 {
-    dsim_array_pop_back_n( &array, 3 );
+    test_setup_dsim_array(uint64_t, 1, 10);
 
-    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) ));
-    ASSERT_INT_EQ( array.count, count_of(test_data) - 3 );
-    ASSERT_MEM_EQ( array.data, test_data, array.count*sizeof(test_data[0]) );
+    unsigned pos = test_gen_uint( data, 0, test_count - 1 );
+    unsigned count = test_gen_uint( data, 0, test_count - pos - 1 );
+    dsim_array_remove_fast( test_array, pos, count );
+
+    ASSERT_DSIM_ARRAY_INVARIANTS();
+    if( test_count - pos - count < count )
+        CHECK_CALL(assert_array_remove_ordered( test_array, pos, count, test_data, test_count ));
+    else
+        CHECK_CALL(assert_array_remove_unordered( test_array, pos, count, test_data, test_count ));
     PASS();
 }
 
-TEST array_non_empty_remove()
+TEST array_clear( struct dsim_test_data *data )
 {
-    dsim_array_remove( &array, 2, 3 );
+    test_setup_dsim_array(uint64_t, 0, 10);
 
-    CHECK_CALL(assert_array_remove_ordered(&array, 2, 3, test_data, count_of(test_data) ));
+    dsim_array_clear( test_array );
+
+    ASSERT_DSIM_ARRAY_INVARIANTS();
+    ASSERT( test_array->capacity >= test_count );
     PASS();
 }
 
-TEST array_non_empty_remove_from_end()
+TEST array_reset( struct dsim_test_data *data )
 {
-    dsim_array_remove( &array, array.count-4, 4 );
+    test_setup_dsim_array(uint64_t, 0, 10);
 
-    CHECK_CALL(assert_array_remove_ordered(&array, array.count, 4, test_data, count_of(test_data) ));
-    PASS();
-}
+    dsim_array_reset( test_array );
 
-TEST array_non_empty_remove_fast_unordered()
-{
-    dsim_array_remove_fast( &array, 3, 2 );
-
-    CHECK_CALL(assert_array_remove_unordered(&array, 3, 2, test_data, count_of(test_data) ));
-    PASS();
-}
-
-TEST array_non_empty_remove_fast_ordered()
-{
-    dsim_array_remove_fast( &array, 2, 4 );
-
-    CHECK_CALL(assert_array_remove_ordered(&array, 2, 4, test_data, count_of(test_data) ));
-    PASS();
-}
-
-TEST array_non_empty_clear()
-{
-    dsim_array_clear( &array );
-
-    CHECK_CALL(assert_array_capacity(&array, count_of(test_data) ));
-    ASSERT_INT_EQ( array.count, 0 );
-    PASS();
-}
-
-TEST array_non_empty_reset()
-{
-    dsim_array_reset( &array );
-
-    CHECK_CALL(assert_array_null( &array ));
+    ASSERT_DSIM_ARRAY_INVARIANTS();
+    ASSERT( test_array->capacity == 0 );
     PASS();
 }
 
 SUITE(test_array)
 {
-    SET_TEARDOWN(teardown_array, 0);
-    RUN_TEST(array_empty_assert_empty);
-    RUN_TEST(array_empty_reserve);
-    RUN_TEST(array_empty_resize);
-    RUN_TEST(array_empty_push_back);
-    RUN_TEST(array_empty_push_back_n);
-    RUN_TEST(array_empty_clear);
-    RUN_TEST(array_empty_reset);
-
-
-    SET_SETUP(setup_array_non_empty, 0);
-    RUN_TEST(array_non_empty_assert_non_empty);
-    RUN_TEST(array_non_empty_reserve_more);
-    RUN_TEST(array_non_empty_reserve_less);
-    RUN_TEST(array_non_empty_resize_more);
-    RUN_TEST(array_non_empty_resize_less);
-    RUN_TEST(array_non_empty_push_back);
-    RUN_TEST(array_non_empty_push_back_n);
-    RUN_TEST(array_non_empty_pop_back);
-    RUN_TEST(array_non_empty_pop_back_n);
-    RUN_TEST(array_non_empty_remove);
-    RUN_TEST(array_non_empty_remove_from_end);
-    RUN_TEST(array_non_empty_remove_fast_unordered);
-    RUN_TEST(array_non_empty_remove_fast_ordered);
-    RUN_TEST(array_non_empty_clear);
-    RUN_TEST(array_non_empty_reset);
+    RUN_TEST_RAND(array_invariants);
+    RUN_TEST_RAND(array_reserve);
+    RUN_TEST_RAND(array_resize);
+    RUN_TEST_RAND(array_push_back);
+    RUN_TEST_RAND(array_push_back_n);
+    RUN_TEST_RAND(array_pop_back);
+    RUN_TEST_RAND(array_pop_back_n);
+    RUN_TEST_RAND(array_remove);
+    RUN_TEST_RAND(array_remove_fast);
+    RUN_TEST_RAND(array_clear);
+    RUN_TEST_RAND(array_reset);
 }
