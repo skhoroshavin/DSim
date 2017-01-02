@@ -1,11 +1,8 @@
 
 #pragma once
 
-#include "test/test_runner.h"
-#include "test/gen_int.h"
-#include "test/gen_array.h"
-
 #include "core/array.h"
+#include "test/test_runner.h"
 
 /*
  * Utility

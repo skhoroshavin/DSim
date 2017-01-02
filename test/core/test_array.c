@@ -85,13 +85,11 @@ DSIM_TEST(array_invariants)
 DSIM_TEST(array_reserve)
 {
     GIVEN_DSIM_ARRAY(uint64_t, test, 0);
-    uint32_t old_capacity = test->capacity;
-    GIVEN_UINT(capacity,0,old_capacity*2);
+    GIVEN_UINT( new_capacity, 0, test->capacity*2 );
 
-    dsim_array_reserve( test, capacity );
+    dsim_array_reserve( test, new_capacity );
 
     ASSERT_DSIM_ARRAY_INVARIANTS(test);
-    ASSERT( test->capacity >= old_capacity );
     ASSERT_INT_EQ( test->count, test_count );
     ASSERT_MEM_EQ( test->data, test_data, test_count*sizeof(uint64_t) );
     PASS();
@@ -105,7 +103,7 @@ DSIM_TEST(array_resize)
     dsim_array_resize( test, new_size );
 
     ASSERT_DSIM_ARRAY_INVARIANTS(test);
-    ASSERT( test->count == new_size );
+    ASSERT_INT_EQ( test->count, new_size );
     ASSERT_MEM_EQ( test->data, test_data, min(new_size,test_count)*sizeof(uint64_t) );
     PASS();
 }
@@ -206,6 +204,7 @@ DSIM_TEST(array_clear)
     dsim_array_clear( test );
 
     ASSERT_DSIM_ARRAY_INVARIANTS(test);
+    ASSERT_INT_EQ( test->count, 0 );
     ASSERT( test->capacity >= test_count );
     PASS();
 }
@@ -217,21 +216,21 @@ DSIM_TEST(array_reset)
     dsim_array_reset( test );
 
     ASSERT_DSIM_ARRAY_INVARIANTS(test);
-    ASSERT( test->capacity == 0 );
+    ASSERT_INT_EQ( test->capacity, 0 );
     PASS();
 }
 
 SUITE(test_array)
 {
-    RUN_TEST_RAND(array_invariants);
-    RUN_TEST_RAND(array_reserve);
-    RUN_TEST_RAND(array_resize);
-    RUN_TEST_RAND(array_push_back);
-    RUN_TEST_RAND(array_push_back_n);
-    RUN_TEST_RAND(array_pop_back);
-    RUN_TEST_RAND(array_pop_back_n);
-    RUN_TEST_RAND(array_remove);
-    RUN_TEST_RAND(array_remove_fast);
-    RUN_TEST_RAND(array_clear);
-    RUN_TEST_RAND(array_reset);
+    DSIM_RUN_TEST(array_invariants);
+    DSIM_RUN_TEST(array_reserve);
+    DSIM_RUN_TEST(array_resize);
+    DSIM_RUN_TEST(array_push_back);
+    DSIM_RUN_TEST(array_push_back_n);
+    DSIM_RUN_TEST(array_pop_back);
+    DSIM_RUN_TEST(array_pop_back_n);
+    DSIM_RUN_TEST(array_remove);
+    DSIM_RUN_TEST(array_remove_fast);
+    DSIM_RUN_TEST(array_clear);
+    DSIM_RUN_TEST(array_reset);
 }
