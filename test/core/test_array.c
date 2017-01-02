@@ -47,13 +47,13 @@ enum greatest_test_res _assert_array_remove_unordered( const void *a_data, uint3
     PASS();
 }
 
-void _test_gen_dsim_array( struct dsim_test_data *data, struct _dsim_array **result )
+void _test_gen_dsim_array( struct dsim_test_context *_ctx, struct _dsim_array **result )
 {
     *result = (struct _dsim_array*)malloc( sizeof(struct _dsim_array) );
-    dsim_test_data_register_ptr( data, *result );
+    dsim_test_context_register_ptr( _ctx, *result );
 
     _dsim_array_init( *result, &dsim_default_allocator );
-    dsim_test_data_register_dtor( data, (dsim_test_dtor)_dsim_array_reset, *result );
+    dsim_test_context_register_dtor( _ctx, (dsim_test_dtor)_dsim_array_reset, *result );
 }
 
 #define test_gen_dsim_array(data,res) _test_gen_dsim_array(data,(struct _dsim_array**)&(res) );

@@ -12,11 +12,11 @@ void dsim_run_test( const char *name, dsim_rand_test test )
 
         for( size_t i = 0; i < 100; ++i )
         {
-            struct dsim_random_test_data data;
+            struct dsim_random_test_context data;
 
-            dsim_random_test_data_init( &data, &dsim_default_allocator );
+            dsim_random_test_context_init( &data, &dsim_default_allocator );
             res = test( &data.base );
-            dsim_random_test_data_done( &data );
+            dsim_random_test_context_done( &data );
 
             if( res == GREATEST_TEST_RES_FAIL )
                 break;
