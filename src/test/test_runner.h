@@ -1,10 +1,7 @@
 
 #pragma once
 
-#include "test_context.h"
-#include "gen_int.h"
-#include "gen_array.h"
-
+#include "test_data.h"
 #include "greatest.h"
 
 DSIM_BEGIN_HEADER
