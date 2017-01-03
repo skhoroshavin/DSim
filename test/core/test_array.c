@@ -1,51 +1,10 @@
 
 #include "test_array.h"
+#include "core/array.h"
 
 /*
  * Utility
  */
-
-enum greatest_test_res _assert_array_null( const void *a_data, uint32_t a_count, uint32_t a_capacity )
-{
-    ASSERT( !a_data );
-    ASSERT_INT_EQ( a_count, 0 );
-    ASSERT_INT_EQ( a_capacity, 0 );
-    PASS();
-}
-
-enum greatest_test_res _assert_array_capacity( const void *a_data, uint32_t a_count, uint32_t a_capacity, uint32_t capacity )
-{
-    ASSERT( a_data );
-    ASSERT( a_capacity >= capacity );
-    ASSERT( a_count <= a_capacity );
-    PASS();
-}
-
-enum greatest_test_res _assert_array_remove_ordered( const void *a_data, uint32_t a_count, uint32_t a_capacity, uint32_t a_elemsize, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
-{
-    CHECK_CALL(_assert_array_capacity( a_data, a_count, a_capacity, old_count ));
-    ASSERT_INT_EQ( a_count, old_count - count );
-    ASSERT_MEM_EQ( a_data, old_data, pos*a_elemsize );
-    if( old_count > pos + count )
-        ASSERT_MEM_EQ( (const char*)a_data + pos*a_elemsize,
-                       (const char*)old_data + (pos + count)*a_elemsize,
-                       (old_count - pos - count)*a_elemsize );
-    PASS();
-}
-
-enum greatest_test_res _assert_array_remove_unordered( const void *a_data, uint32_t a_count, uint32_t a_capacity, uint32_t a_elemsize, uint32_t pos, uint32_t count, const uint64_t *old_data, uint32_t old_count )
-{
-    CHECK_CALL(_assert_array_capacity( a_data, a_count, a_capacity, old_count ));
-    ASSERT_INT_EQ( a_count, old_count - count );
-    ASSERT_MEM_EQ( a_data, old_data, pos*a_elemsize );
-    ASSERT_MEM_EQ( (const char*)a_data + pos*a_elemsize,
-                   (const char*)old_data + (old_count - count)*a_elemsize,
-                   count*a_elemsize );
-    ASSERT_MEM_EQ( (const char*)a_data + (pos + count)*a_elemsize,
-                   (const char*)old_data + (pos + count)*a_elemsize,
-                   (old_count - pos - 2*count)*a_elemsize );
-    PASS();
-}
 
 void _test_gen_dsim_array( struct dsim_test_context *_ctx, struct _dsim_array **result )
 {

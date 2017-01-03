@@ -1,15 +1,6 @@
 
 #pragma once
 
-#include "test_array.h"
-#include "core/hash.h"
-
-/*
- * Utility
- */
-
-/*
- * Runner
- */
+#include "test/test_runner.h"
 
 SUITE_EXTERN(test_hash);

@@ -1,293 +1,167 @@
 
 #include "test_hash.h"
-
-#include <time.h>
-#include <stdlib.h>
-#include <memory.h>
-
-static struct dsim_hash hash = dsim_hash_static_init(&dsim_default_allocator);
-
-#define SMALL_COUNT 10
-#define LARGE_COUNT 100
-
-static uint64_t test_small[SMALL_COUNT];
-static uint64_t test_large[LARGE_COUNT];
-static uint64_t more_small[SMALL_COUNT];
-static uint64_t more_large[LARGE_COUNT];
-
-static void setup_hash_non_empty( void *ctx )
-{
-    dsim_unused(ctx);
-    dsim_hash_push_back_n( &hash, test_large, count_of(test_large) );
-}
-
-static void teardown_hash( void *ctx )
-{
-    dsim_unused(ctx);
-    dsim_hash_reset( &hash );
-}
+#include "core/hash.h"
 
 /*
  * Utility
  */
 
-static uint64_t rand_not_in_array( uint64_t max_value, const uint64_t *values, uint32_t count )
+static void test_gen_dsim_hash( struct dsim_test_context *_ctx, struct dsim_hash **result )
 {
-    while( 1 )
-    {
-        uint64_t result = rand() % max_value;
-        uint32_t pos = 0;
-        dsim_find( pos, result, values, count );
-        if( pos == DSIM_INVALID_INDEX )
-            return result;
-    }
+    *result = (struct dsim_hash*)malloc( sizeof(struct dsim_hash) );
+    dsim_test_context_register_ptr( _ctx, *result );
+
+    dsim_hash_init( *result, &dsim_default_allocator );
+    dsim_test_context_register_dtor( _ctx, (dsim_test_dtor)dsim_hash_reset, *result );
 }
 
-//static void fill_unique_rand( uint64_t max_value, uint64_t *values, uint32_t count )
-//{
-//    for( uint32_t i = 0; i < count; ++i )
-//        values[i] = rand_not_in_array( max_value, values, i );
-//}
+#define GIVEN_DSIM_HASH(name,min_count) \
+    GIVEN_ARRAY(uint64_t,name,min_count); \
+    struct dsim_hash *name; \
+    test_gen_dsim_hash( _ctx, &name ); \
+    dsim_hash_push_back_n( name, name##_data, name##_count );
 
-static int _less_uint64( const void *pa, const void *pb )
+TEST assert_dsim_hash_invariants( const struct dsim_hash *h )
 {
-    uint64_t a = *((uint64_t*)pa);
-    uint64_t b = *((uint64_t*)pb);
-    if( b > a ) return -1;
-    if( b < a ) return 1;
-    return 0;
-}
-
-TEST assert_hash_consistent( const struct dsim_hash *h )
-{
-    ASSERT_INT_EQ( dsim_hash_find_next( h, DSIM_INVALID_INDEX ), DSIM_INVALID_INDEX );
-
-    dsim_array(uint64_t) keys = dsim_array_static_init(&dsim_default_allocator);
-    dsim_array_push_back_n( &keys, h->keys.data, h->keys.count );
-    qsort( keys.data, keys.count, sizeof(uint64_t), _less_uint64 );
-
-    for( uint32_t count, i = 0; i < h->keys.count; i += count )
-    {
-        uint64_t key = keys.at[i];
-
-        count = 0;
-        for( uint32_t j = dsim_hash_find( h, key ); j != DSIM_INVALID_INDEX; j = dsim_hash_find_next( h, j ) )
-        {
-            ASSERT_INT_EQ( h->keys.at[j], key );
-            ASSERT_INT_EQ( keys.at[i+count], key );
-            ++count;
-        }
-    }
-
-    for( uint32_t i = 0; i < 100; ++i )
-    {
-        uint64_t key = rand_not_in_array( 100, keys.data, keys.count );
-        ASSERT_INT_EQ( dsim_hash_find( h, key ), DSIM_INVALID_INDEX );
-    }
-
-    dsim_array_reset( &keys );
+    dsim_unused(h);
     PASS();
 }
 
 /*
- * Empty hash
+ * Tests
  */
 
-TEST hash_empty_assert_empty()
+DSIM_TEST(hash_invariants)
 {
-    CHECK_CALL(assert_array_null( &hash.keys ));
-    CHECK_CALL(assert_hash_consistent( &hash ));
+    GIVEN_DSIM_HASH( test, 0 );
+    CHECK_CALL(assert_dsim_hash_invariants(test));
     PASS();
 }
 
-TEST hash_empty_reserve()
+DSIM_TEST(hash_find)
 {
-    dsim_hash_reserve( &hash, 10 );
+    GIVEN_DSIM_HASH( test, 0 );
+    GIVEN_UINT( key, 0, 10 );
 
-    CHECK_CALL(assert_array_capacity( &hash.keys, 10 ));
-    CHECK_CALL(assert_hash_consistent( &hash ));
+    uint32_t pos = dsim_hash_find( test, key );
+
+    uint32_t test_pos = 0;
+    dsim_find( test_pos, key, test_data, test_count );
+    ASSERT_INT_EQ( pos, test_pos );
+    if( pos != DSIM_INVALID_INDEX )
+        ASSERT_INT_EQ( test->keys.at[pos], key );
     PASS();
 }
 
-TEST hash_empty_push_back()
+DSIM_TEST(hash_find_next)
 {
-    dsim_hash_push_back( &hash, 5 );
+    GIVEN_DSIM_HASH( test, 1 );
+    GIVEN_UINT( pos, 0, test->keys.count - 1 );
 
-    CHECK_CALL(assert_array_capacity( &hash.keys, 1 ));
-    ASSERT_INT_EQ( hash.keys.count, 1 );
-    ASSERT_INT_EQ( hash.keys.at[0], 5 );
+    uint32_t next_pos = dsim_hash_find_next( test, pos );
 
-    CHECK_CALL(assert_hash_consistent( &hash ));
+    uint64_t test_key = test->keys.at[pos];
+    uint32_t test_pos = pos+1;
+    dsim_find( test_pos, test_key, test_data, test_count );
+    ASSERT_INT_EQ( next_pos, test_pos );
+    if( next_pos != DSIM_INVALID_INDEX )
+        ASSERT_INT_EQ( test->keys.at[next_pos], test_key );
     PASS();
 }
 
-TEST hash_empty_push_back_n()
+DSIM_TEST(hash_reserve)
 {
-    dsim_hash_push_back_n( &hash, test_small, count_of(test_small) );
+    GIVEN_DSIM_HASH( test, 0 );
+    GIVEN_UINT( new_capacity, 0, 2*test->keys.count );
 
-    CHECK_CALL(assert_array_capacity( &hash.keys, count_of(test_small) ));
-    ASSERT_INT_EQ( hash.keys.count, count_of(test_small) );
-    ASSERT_MEM_EQ( hash.keys.data, test_small, sizeof(test_small) );
+    dsim_hash_reserve( test, new_capacity );
 
-    CHECK_CALL(assert_hash_consistent( &hash ));
+    CHECK_CALL(assert_dsim_hash_invariants(test));
+    ASSERT_INT_EQ( test->keys.count, test_count );
+    ASSERT_MEM_EQ( test->keys.data, test_data, test_count*sizeof(uint64_t) );
     PASS();
 }
 
-TEST hash_empty_clear()
+DSIM_TEST(hash_push_back)
 {
-    dsim_hash_clear( &hash );
+    GIVEN_DSIM_HASH( test, 0 );
+    GIVEN_UINT( value, 0, 10 );
 
-    CHECK_CALL(assert_array_null( &hash.keys ));
-    CHECK_CALL(assert_hash_consistent( &hash ));
+    dsim_hash_push_back( test, value );
+
+    CHECK_CALL(assert_dsim_hash_invariants(test));
+    ASSERT_INT_EQ( test->keys.count, test_count + 1 );
+    ASSERT_MEM_EQ( test->keys.data, test_data, test_count*sizeof(uint64_t) );
+    ASSERT_INT_EQ( test->keys.at[test_count], value );
     PASS();
 }
 
-TEST hash_empty_reset()
+DSIM_TEST(hash_push_back_n)
 {
-    dsim_hash_reset( &hash );
+    GIVEN_DSIM_HASH( test, 0 );
+    GIVEN_ARRAY(uint64_t, more, 1 );
 
-    CHECK_CALL(assert_array_null( &hash.keys ));
-    CHECK_CALL(assert_hash_consistent( &hash ));
+    dsim_hash_push_back_n( test, more_data, more_count );
+
+    CHECK_CALL(assert_dsim_hash_invariants(test));
+    ASSERT_INT_EQ( test->keys.count, test_count + more_count );
+    ASSERT_MEM_EQ( test->keys.data, test_data, test_count*sizeof(uint64_t) );
+    ASSERT_MEM_EQ( test->keys.data + test_count, more_data, more_count*sizeof(uint64_t) );
     PASS();
 }
 
-/*
- * Non empty array
- */
-
-
-TEST hash_non_empty_assert_non_empty()
+DSIM_TEST(hash_remove_fast)
 {
-    CHECK_CALL(assert_array_capacity( &hash.keys, count_of(test_large) ));
-    ASSERT_INT_EQ( hash.keys.count, count_of(test_large) );
-    ASSERT_MEM_EQ( hash.keys.data, test_large, sizeof(test_large) );
-    CHECK_CALL(assert_hash_consistent( &hash ));
+    GIVEN_DSIM_HASH( test, 1 );
+    GIVEN_UINT( pos, 0, test->keys.count - 1 );
+    GIVEN_UINT( count, 0, test->keys.count - pos - 1 );
+
+    dsim_array(uint64_t) oracle = dsim_array_static_init(test->keys._alloc);
+    dsim_array_push_back_n( &oracle, test_data, test_count );
+
+    dsim_hash_remove_fast( test, pos, count );
+    dsim_array_remove_fast( &oracle, pos, count );
+
+    CHECK_CALL(assert_dsim_hash_invariants(test));
+    ASSERT_INT_EQ( test->keys.count, oracle.count );
+    ASSERT_MEM_EQ( test->keys.data, oracle.data, test->keys.count*sizeof(uint64_t) );
+    dsim_array_reset( &oracle );
     PASS();
 }
 
-TEST hash_non_empty_reserve_more()
+DSIM_TEST(hash_clear)
 {
-    dsim_hash_reserve( &hash, count_of(test_large) + 4 );
+    GIVEN_DSIM_HASH( test, 0 );
 
-    CHECK_CALL(assert_array_capacity( &hash.keys, count_of(test_large) + 4 ));
-    ASSERT_INT_EQ( hash.keys.count, count_of(test_large) );
-    ASSERT_MEM_EQ( hash.keys.data, test_large, sizeof(test_large) );
-    CHECK_CALL(assert_hash_consistent( &hash ));
+    dsim_hash_clear( test );
+
+    CHECK_CALL(assert_dsim_hash_invariants(test));
+    ASSERT_INT_EQ( test->keys.count, 0 );
+    ASSERT( test->keys.capacity >= test_count );
     PASS();
 }
 
-TEST hash_non_empty_reserve_less()
+DSIM_TEST(hash_reset)
 {
-    dsim_hash_reserve( &hash, count_of(test_large) - 4 );
+    GIVEN_DSIM_HASH( test, 0 );
 
-    CHECK_CALL(assert_array_capacity( &hash.keys, count_of(test_large) ));
-    ASSERT_INT_EQ( hash.keys.count, count_of(test_large) );
-    ASSERT_MEM_EQ( hash.keys.data, test_large, sizeof(test_large) );
-    CHECK_CALL(assert_hash_consistent( &hash ));
+    dsim_hash_reset( test );
+
+    CHECK_CALL(assert_dsim_hash_invariants(test));
+    ASSERT_INT_EQ( test->keys.capacity, 0 );
     PASS();
 }
 
-TEST hash_non_empty_push_back()
-{
-    dsim_hash_push_back( &hash, 42 );
-
-    CHECK_CALL(assert_array_capacity( &hash.keys, count_of(test_large) + 1 ));
-    ASSERT_INT_EQ( hash.keys.count, count_of(test_large) + 1 );
-    ASSERT_MEM_EQ( hash.keys.data, test_large, sizeof(test_large) );
-    ASSERT_INT_EQ( hash.keys.at[count_of(test_large)], 42 );
-    CHECK_CALL(assert_hash_consistent( &hash ));
-    PASS();
-}
-
-TEST hash_non_empty_push_back_n_small()
-{
-    dsim_hash_push_back_n( &hash, more_small, count_of(more_small) );
-
-    CHECK_CALL(assert_array_capacity( &hash.keys, count_of(test_large) + count_of(more_small) ));
-    ASSERT_INT_EQ( hash.keys.count, count_of(test_large) + count_of(more_small) );
-    ASSERT_MEM_EQ( hash.keys.data, test_large, sizeof(test_large) );
-    ASSERT_MEM_EQ( hash.keys.data + count_of(test_large), more_small, sizeof(more_small) );
-    CHECK_CALL(assert_hash_consistent( &hash ));
-    PASS();
-}
-
-TEST hash_non_empty_push_back_n_large()
-{
-    dsim_hash_push_back_n( &hash, more_large, count_of(more_large) );
-
-    CHECK_CALL(assert_array_capacity( &hash.keys, count_of(test_large) + count_of(more_large) ));
-    ASSERT_INT_EQ( hash.keys.count, count_of(test_large) + count_of(more_large) );
-    ASSERT_MEM_EQ( hash.keys.data, test_large, sizeof(test_large) );
-    ASSERT_MEM_EQ( hash.keys.data + count_of(test_large), more_large, sizeof(more_large) );
-    CHECK_CALL(assert_hash_consistent( &hash ));
-    PASS();
-}
-
-TEST hash_non_empty_remove_fast_unordered()
-{
-    uint32_t pos = hash.keys.count / 3;
-    uint32_t count = hash.keys.count / 6;
-    dsim_hash_remove_fast( &hash, pos, count );
-
-    CHECK_CALL(assert_array_remove_unordered( &hash.keys, pos, count, test_large, count_of(test_large) ));
-    CHECK_CALL(assert_hash_consistent( &hash ));
-    PASS();
-}
-
-TEST hash_non_empty_remove_fast_ordered()
-{
-    uint32_t pos = hash.keys.count / 3;
-    uint32_t count = hash.keys.count / 2;
-    dsim_hash_remove_fast( &hash, pos, count );
-
-    CHECK_CALL(assert_array_remove_ordered( &hash.keys, pos, count, test_large, count_of(test_large) ));
-    CHECK_CALL(assert_hash_consistent( &hash ));
-    PASS();
-}
-
-TEST hash_non_empty_clear()
-{
-    dsim_hash_clear( &hash );
-
-    CHECK_CALL(assert_array_capacity( &hash.keys, count_of(test_large) ));
-    ASSERT_INT_EQ( hash.keys.count, 0 );
-    CHECK_CALL(assert_hash_consistent( &hash ));
-    PASS();
-}
-
-TEST hash_non_empty_reset()
-{
-    dsim_hash_reset( &hash );
-
-    CHECK_CALL(assert_array_null( &hash.keys ));
-    CHECK_CALL(assert_hash_consistent( &hash ));
-    PASS();
-}
 
 SUITE(test_hash)
 {
-    dsim_fill( test_small, rand() % 10, count_of(test_small) );
-    dsim_fill( test_large, rand() % 10, count_of(test_large) );
-    dsim_fill( more_small, rand() % 10, count_of(more_small) );
-    dsim_fill( more_large, rand() % 10, count_of(more_large) );
-
-    SET_TEARDOWN(teardown_hash, 0);
-    RUN_TEST(hash_empty_assert_empty);
-    RUN_TEST(hash_empty_reserve);
-    RUN_TEST(hash_empty_push_back);
-    RUN_TEST(hash_empty_push_back_n);
-    RUN_TEST(hash_empty_clear);
-    RUN_TEST(hash_empty_reset);
-
-    SET_SETUP(setup_hash_non_empty, 0);
-    RUN_TEST(hash_non_empty_assert_non_empty);
-    RUN_TEST(hash_non_empty_reserve_more);
-    RUN_TEST(hash_non_empty_reserve_less);
-    RUN_TEST(hash_non_empty_push_back);
-    RUN_TEST(hash_non_empty_push_back_n_small);
-    RUN_TEST(hash_non_empty_push_back_n_large);
-    RUN_TEST(hash_non_empty_remove_fast_unordered);
-    RUN_TEST(hash_non_empty_remove_fast_ordered);
-    RUN_TEST(hash_non_empty_clear);
-    RUN_TEST(hash_non_empty_reset);
+    DSIM_RUN_TEST(hash_invariants);
+    DSIM_RUN_TEST(hash_find);
+    DSIM_RUN_TEST(hash_find_next);
+    DSIM_RUN_TEST(hash_reserve);
+    DSIM_RUN_TEST(hash_push_back);
+    DSIM_RUN_TEST(hash_push_back_n);
+    DSIM_RUN_TEST(hash_remove_fast);
+    DSIM_RUN_TEST(hash_clear);
+    DSIM_RUN_TEST(hash_reset);
 }
