@@ -1,6 +1,7 @@
 
 #include "test_hash.h"
 #include "core/hash.h"
+#include "test/test_context.h"
 
 /*
  * Utility

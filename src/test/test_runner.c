@@ -1,5 +1,6 @@
 
 #include "test_runner.h"
+#include "test_context.h"
 #include "core/stack_allocator.h"
 
 GREATEST_MAIN_DEFS();

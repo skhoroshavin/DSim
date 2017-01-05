@@ -1,6 +1,7 @@
 
 #include "test_array.h"
 #include "core/array.h"
+#include "test/test_context.h"
 
 /*
  * Utility

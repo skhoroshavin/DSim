@@ -7,9 +7,21 @@ DSIM_BEGIN_HEADER
 
 typedef void (*dsim_test_dtor)(void*);
 
+struct dsim_test_datagen;
+
+struct dsim_test_input
+{
+    const char *name;
+    void *data;
+    struct dsim_test_datagen *gen;
+};
+
 struct dsim_test_context
 {
     size_t (*gen_data)( struct dsim_test_context *self, void *data, size_t size );
+
+    dsim_array(struct dsim_test_input) inputs;
+
     dsim_array(dsim_test_dtor) dtors;
     dsim_array(void*) ptrs;
 };

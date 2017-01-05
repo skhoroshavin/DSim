@@ -1,36 +1,43 @@
 
 #include "test_data.h"
+#include "test_context.h"
 
-void dsim_test_data_example( struct dsim_test_data *self, struct dsim_test_context *ctx, void *data )
+void dsim_test_data_example( struct dsim_test_datagen *self, struct dsim_test_context *ctx, void *data )
 {
     self->example( self, ctx, data );
 }
 
 
 
-static void dsim_test_uint_in_range_data_example( struct dsim_test_data *self, struct dsim_test_context *ctx, void *data )
+static void dsim_test_uint_in_range_data_example( struct dsim_test_datagen *self, struct dsim_test_context *ctx, void *data )
 {
     struct dsim_test_uint_in_range_data *params = container_of(self, struct dsim_test_uint_in_range_data, base);
 
-    unsigned result;
+    uint64_t result;
     dsim_test_context_gen_data( ctx, &result, sizeof(result) );
     if( (unsigned)(params->max_value - params->min_value) < UINT32_MAX )
         result %= params->max_value - params->min_value + 1;
     result += params->min_value;
-    *(unsigned *)data = result;
+    switch( self->size )
+    {
+    case 1: *(uint8_t *)data  = result; break;
+    case 2: *(uint16_t *)data = result; break;
+    case 4: *(uint32_t *)data = result; break;
+    case 8: *(uint64_t *)data = result; break;
+    }
 }
 
-void dsim_test_uint_in_range_data_init( struct dsim_test_uint_in_range_data *self, unsigned min_value, unsigned max_value )
+void dsim_test_uint_in_range_data_init( struct dsim_test_uint_in_range_data *self, unsigned size, unsigned min_value, unsigned max_value )
 {
     self->base.example = dsim_test_uint_in_range_data_example;
-    self->base.size = sizeof(unsigned);
+    self->base.size = size;
     self->min_value = min_value;
     self->max_value = max_value;
 }
 
 
 
-static void dsim_test_array_data_example( struct dsim_test_data *self, struct dsim_test_context *ctx, void *data )
+static void dsim_test_array_data_example( struct dsim_test_datagen *self, struct dsim_test_context *ctx, void *data )
 {
     struct dsim_test_array_data *params = container_of(self, struct dsim_test_array_data, base);
 
@@ -52,7 +59,7 @@ end:
     *(struct dsim_test_array *)data = result;
 }
 
-void dsim_test_array_data_init( struct dsim_test_array_data *self, struct dsim_test_data *elem, size_t min_count )
+void dsim_test_array_data_init( struct dsim_test_array_data *self, struct dsim_test_datagen *elem, size_t min_count )
 {
     self->base.example = dsim_test_array_data_example;
     self->base.size = sizeof(struct dsim_test_array);
@@ -65,27 +72,25 @@ void dsim_test_array_data_init( struct dsim_test_array_data *self, struct dsim_t
 
 unsigned test_gen_uint( struct dsim_test_context *ctx, unsigned min, unsigned max )
 {
-    assert( min <= max ); //  LCOV_EXCL_BR_LINE
+    unsigned res;
 
-    unsigned result;
-    dsim_test_context_gen_data( ctx, &result, sizeof(result) );
-    if( (unsigned)(max - min) < UINT32_MAX )
-        result %= max - min + 1;
-    result += min;
-    return result;
+    struct dsim_test_uint_in_range_data data;
+    dsim_test_uint_in_range_data_init( &data, sizeof(res), min, max );
+    dsim_test_data_example( &data.base, ctx, &res );
+
+    return res;
 }
 
-void test_gen_array( struct dsim_test_context *ctx, void **ptr, size_t *count, size_t elem_size, size_t min_count, size_t max_count )
+void test_gen_array( struct dsim_test_context *ctx, void **ptr, size_t *count, size_t elem_size, size_t min_count )
 {
-    *count = test_gen_uint( ctx, min_count, max_count );
-    size_t size = *count * elem_size;
-    if( !size )
-    {
-        *ptr = 0;
-        return;
-    }
+    struct dsim_test_array res;
 
-    *ptr = malloc( size );
-    dsim_test_context_gen_data( ctx, *ptr, size );
-    dsim_test_context_register_ptr( ctx, *ptr );
+    struct dsim_test_uint_in_range_data elem;
+    dsim_test_uint_in_range_data_init( &elem, elem_size, 0, 100000 );
+    struct dsim_test_array_data data;
+    dsim_test_array_data_init( &data, &elem.base, min_count );
+    dsim_test_data_example( &data.base, ctx, &res );
+
+    *count = res.count;
+    *ptr = res.data;
 }

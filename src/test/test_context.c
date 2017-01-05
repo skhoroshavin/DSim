@@ -3,6 +3,7 @@
 
 void dsim_test_context_init( struct dsim_test_context *self, struct dsim_allocator *alloc )
 {
+    dsim_array_init( &self->inputs, alloc );
     dsim_array_init( &self->dtors, alloc );
     dsim_array_init( &self->ptrs, alloc );
 }
@@ -14,6 +15,7 @@ void dsim_test_context_done( struct dsim_test_context *self )
         self->dtors.at[i-1]( self->ptrs.at[i-1] );
     dsim_array_reset( &self->dtors );
     dsim_array_reset( &self->ptrs );
+    dsim_array_reset( &self->inputs );
 }
 
 size_t dsim_test_context_gen_data( struct dsim_test_context *self, void *data, size_t size )
