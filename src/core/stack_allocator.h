@@ -27,6 +27,7 @@ struct dsim_stack_allocator
     /* .last_data = */ 0, \
     /* .last_size = */ 0 }
 
+void dsim_stack_allocator_init( struct dsim_stack_allocator *a, struct dsim_allocator *base );
 void dsim_stack_allocator_reset( struct dsim_stack_allocator *a );
 
 extern struct dsim_allocator_operations stack_allocator_ops;

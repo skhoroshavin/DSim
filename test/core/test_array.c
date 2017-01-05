@@ -9,11 +9,8 @@
 
 void _test_gen_dsim_array( struct dsim_test_context *_ctx, struct _dsim_array **result )
 {
-    *result = (struct _dsim_array*)malloc( sizeof(struct _dsim_array) );
-    dsim_test_context_register_ptr( _ctx, *result );
-
+    *result = (struct _dsim_array*)dsim_test_context_alloc( _ctx, sizeof(struct _dsim_array), (dsim_test_dtor)_dsim_array_reset );
     _dsim_array_init( *result, &dsim_default_allocator );
-    dsim_test_context_register_dtor( _ctx, (dsim_test_dtor)_dsim_array_reset, *result );
 }
 
 #define test_gen_dsim_array(data,res) _test_gen_dsim_array(data,(struct _dsim_array**)&(res) );

@@ -9,11 +9,8 @@
 
 static void test_gen_dsim_hash( struct dsim_test_context *_ctx, struct dsim_hash **result )
 {
-    *result = (struct dsim_hash*)malloc( sizeof(struct dsim_hash) );
-    dsim_test_context_register_ptr( _ctx, *result );
-
+    *result = (struct dsim_hash*)dsim_test_context_alloc( _ctx, sizeof(struct dsim_hash), (dsim_test_dtor)dsim_hash_reset );
     dsim_hash_init( *result, &dsim_default_allocator );
-    dsim_test_context_register_dtor( _ctx, (dsim_test_dtor)dsim_hash_reset, *result );
 }
 
 #define GIVEN_DSIM_HASH(name,min_count) \
@@ -46,10 +43,13 @@ DSIM_TEST(hash_find)
 
     uint32_t pos = dsim_hash_find( test, key );
 
-    uint32_t test_pos = 0;
-    dsim_find( test_pos, key, test_data, test_count );
-    ASSERT_INT_EQ( pos, test_pos );
-    if( pos != DSIM_INVALID_INDEX )
+    if( pos == DSIM_INVALID_INDEX )
+    {
+        uint32_t test_pos = 0;
+        dsim_find( test_pos, key, test_data, test_count );
+        ASSERT_INT_EQ( test_pos, DSIM_INVALID_INDEX );
+    }
+    else
         ASSERT_INT_EQ( test->keys.at[pos], key );
     PASS();
 }
@@ -58,6 +58,8 @@ DSIM_TEST(hash_find_next)
 {
     GIVEN_DSIM_HASH( test, 1 );
     GIVEN_UINT( pos, 0, test->keys.count - 1 );
+
+    ASSERT( pos < test->keys.count );
 
     uint32_t next_pos = dsim_hash_find_next( test, pos );
 

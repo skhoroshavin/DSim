@@ -17,10 +17,15 @@ void dsim_run_test( const char *name, dsim_rand_test test )
 
             dsim_random_test_context_init( &data, &dsim_default_allocator );
             res = test( &data.base );
-            dsim_random_test_context_done( &data );
 
             if( res == GREATEST_TEST_RES_FAIL )
+            {
+                dsim_test_context_dump( &data.base );
+                dsim_random_test_context_done( &data );
                 break;
+            }
+
+            dsim_random_test_context_done( &data );
         }
         greatest_post_test( name, res );
     }

@@ -32,6 +32,8 @@ void _dsim_array_reset( struct _dsim_array *a );
         struct dsim_allocator *_alloc; \
     }
 
+typedef dsim_array(char) dsim_byte_array;
+
 #define dsim_array_static_init(alloc) { \
     /* .data = */     { 0 }, \
     /* .count = */    0, \

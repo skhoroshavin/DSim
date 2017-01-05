@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "test_data.h"
+#include "test_datagen.h"
 #include "greatest.h"
 
 DSIM_BEGIN_HEADER

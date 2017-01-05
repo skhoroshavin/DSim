@@ -67,6 +67,17 @@ static void stack_deallocate( struct dsim_allocator *self, void *data )
     }
 }
 
+void dsim_stack_allocator_init( struct dsim_stack_allocator *a, struct dsim_allocator *base )
+{
+    a->alloc._ops = &stack_allocator_ops;
+    a->base_alloc = base;
+    a->data = 0;
+    a->allocated = 0;
+    a->capacity = 0;
+    a->last_data = 0;
+    a->last_size = 0;
+}
+
 void dsim_stack_allocator_reset( struct dsim_stack_allocator *a )
 {
     if( a->data )

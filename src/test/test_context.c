@@ -1,21 +1,28 @@
 
 #include "test_context.h"
+#include "test_datagen.h"
+#include <stdio.h>
+#include <string.h>
 
 void dsim_test_context_init( struct dsim_test_context *self, struct dsim_allocator *alloc )
 {
+    dsim_stack_allocator_init( &self->alloc, alloc );
+    dsim_array_init( &self->objects, alloc );
+
     dsim_array_init( &self->inputs, alloc );
-    dsim_array_init( &self->dtors, alloc );
-    dsim_array_init( &self->ptrs, alloc );
 }
 
 void dsim_test_context_done( struct dsim_test_context *self )
 {
-    assert( self->dtors.count == self->ptrs.count ); //  LCOV_EXCL_BR_LINE
-    for( uint32_t i = self->dtors.count; i != 0; --i )
-        self->dtors.at[i-1]( self->ptrs.at[i-1] );
-    dsim_array_reset( &self->dtors );
-    dsim_array_reset( &self->ptrs );
     dsim_array_reset( &self->inputs );
+
+    for( uint32_t i = self->objects.count; i != 0; --i )
+    {
+        struct dsim_test_object *obj = &self->objects.at[i-1];
+        obj->dtor( obj->data );
+    }
+    dsim_array_reset( &self->objects );
+    dsim_stack_allocator_reset( &self->alloc );
 }
 
 size_t dsim_test_context_gen_data( struct dsim_test_context *self, void *data, size_t size )
@@ -23,15 +30,39 @@ size_t dsim_test_context_gen_data( struct dsim_test_context *self, void *data, s
     return self->gen_data( self, data, size );
 }
 
-void dsim_test_context_register_dtor( struct dsim_test_context *self, dsim_test_dtor dtor, void *ptr )
+void *dsim_test_context_alloc( struct dsim_test_context *self, size_t size, dsim_test_dtor dtor )
 {
-    dsim_array_push_back( &self->dtors, dtor );
-    dsim_array_push_back( &self->ptrs, ptr );
+    void *result = dsim_allocate( &self->alloc.alloc, size );
+    if( dtor )
+    {
+        struct dsim_test_object obj =
+        {
+            .data = result,
+            .dtor = dtor
+        };
+        dsim_array_push_back( &self->objects, obj );
+    }
+    return result;
 }
 
-void dsim_test_context_register_ptr( struct dsim_test_context *self, void *ptr )
+void dsim_test_context_register_input( struct dsim_test_context *self, const char *name, struct dsim_test_datagen *gen, const void *data )
 {
-    dsim_test_context_register_dtor( self, free, ptr );
+    struct dsim_test_input in;
+    in.name = name;
+    in.gen = gen;
+    in.data = dsim_test_context_alloc( self, gen->size, 0 );
+    memcpy( in.data, data, gen->size );
+    dsim_array_push_back( &self->inputs, in );
+}
+
+void dsim_test_context_dump( struct dsim_test_context *self )
+{
+    for( unsigned i = 0; i != self->inputs.count; ++i )
+    {
+        printf( "  %s: ", self->inputs.at[i].name );
+        dsim_test_data_print( self->inputs.at[i].gen, self->inputs.at[i].data );
+        printf( "\n" );
+    }
 }
 
 static size_t gen_random( struct dsim_test_context *self, void *data, size_t size )
