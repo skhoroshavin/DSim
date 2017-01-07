@@ -20,6 +20,7 @@ void dsim_test_data_print( struct dsim_test_datagen *self, const void *data )
 unsigned test_gen_uint( struct dsim_test_context *ctx, unsigned min, unsigned max, const char *name )
 {
     unsigned res;
+
     dsim_test_data_example( dsim_test_uint_in_range( ctx, sizeof(res), min, max ), ctx, &res, name );
     return res;
 }

@@ -59,16 +59,13 @@ DSIM_TEST(hash_find_next)
     GIVEN_DSIM_HASH( test, 1 );
     GIVEN_UINT( pos, 0, test->keys.count - 1 );
 
-    ASSERT( pos < test->keys.count );
-
     uint32_t next_pos = dsim_hash_find_next( test, pos );
 
-    uint64_t test_key = test->keys.at[pos];
-    uint32_t test_pos = pos+1;
-    dsim_find( test_pos, test_key, test_data, test_count );
-    ASSERT_INT_EQ( next_pos, test_pos );
     if( next_pos != DSIM_INVALID_INDEX )
+    {
+        uint64_t test_key = test->keys.at[pos];
         ASSERT_INT_EQ( test->keys.at[next_pos], test_key );
+    }
     PASS();
 }
 

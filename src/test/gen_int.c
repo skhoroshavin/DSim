@@ -30,19 +30,13 @@ static void dsim_test_uint_in_range_data_example( struct dsim_test_datagen *self
 
 static void dsim_test_uint_in_range_data_print( struct dsim_test_datagen *self, const void *data )
 {
-#if 1
     switch( self->size )
     {
-    case 1: printf( "%hhu", *(const uint8_t  *)data );
-    case 2: printf( "%hu",  *(const uint16_t *)data );
-    case 4: printf( "%u",   *(const uint32_t *)data );
-    case 8: printf( "%lu",  *(const uint64_t *)data );
+    case 1: printf( "%hhu", *(const uint8_t  *)data ); break;
+    case 2: printf( "%hu",  *(const uint16_t *)data ); break;
+    case 4: printf( "%u",   *(const uint32_t *)data ); break;
+    case 8: printf( "%lu",  *(const uint64_t *)data ); break;
     }
-#else
-    dsim_unused( self );
-    dsim_unused( data );
-    printf( "x" );
-#endif
 }
 
 struct dsim_test_datagen *dsim_test_uint_in_range( struct dsim_test_context *ctx, unsigned size, unsigned min_value, unsigned max_value )
