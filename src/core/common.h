@@ -49,4 +49,15 @@ uint64_t dsim_next_pow_2( uint64_t value );
         pos = DSIM_INVALID_INDEX; \
     } while(0)
 
+#define dsim_count(cnt, value, data, count) do { \
+    unsigned pos = 0; \
+    while(1) \
+    { \
+        dsim_find( pos, value, data, count ); \
+        if( pos == DSIM_INVALID_INDEX ) \
+            break; \
+        ++cnt; \
+        ++pos; \
+    } } while(0)
+
 DSIM_END_HEADER

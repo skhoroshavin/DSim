@@ -69,6 +69,22 @@ DSIM_TEST(hash_find_next)
     PASS();
 }
 
+DSIM_TEST(hash_count)
+{
+    GIVEN_DSIM_HASH( test, 0 );
+    GIVEN_UINT( key, 0, 10 );
+
+    unsigned count = 0;
+    for( uint32_t pos = dsim_hash_find( test, key ); pos != DSIM_INVALID_INDEX; pos = dsim_hash_find_next( test, pos ) )
+        ++count;
+
+    unsigned simple_count = 0;
+    dsim_count( simple_count, key, test_data, test_count );
+
+    ASSERT_INT_EQ( count, simple_count );
+    PASS();
+}
+
 DSIM_TEST(hash_reserve)
 {
     GIVEN_DSIM_HASH( test, 0 );
@@ -158,6 +174,7 @@ SUITE(test_hash)
     DSIM_RUN_TEST(hash_invariants);
     DSIM_RUN_TEST(hash_find);
     DSIM_RUN_TEST(hash_find_next);
+    DSIM_RUN_TEST(hash_count);
     DSIM_RUN_TEST(hash_reserve);
     DSIM_RUN_TEST(hash_push_back);
     DSIM_RUN_TEST(hash_push_back_n);
