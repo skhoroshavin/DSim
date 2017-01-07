@@ -6,7 +6,7 @@
 
 void dsim_test_context_init( struct dsim_test_context *self, struct dsim_allocator *alloc )
 {
-    dsim_stack_allocator_init( &self->alloc, alloc );
+    dsim_stack_allocator_init( &self->alloc, self->buffer, sizeof(self->buffer) );
     dsim_array_init( &self->objects, alloc );
 
     dsim_array_init( &self->inputs, alloc );

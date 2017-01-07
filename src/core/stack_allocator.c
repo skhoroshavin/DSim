@@ -2,18 +2,9 @@
 #include "stack_allocator.h"
 #include <memory.h>
 
-static void stack_initialize( struct dsim_stack_allocator *alloc )
-{
-    alloc->capacity = 4*1024*1024;
-    alloc->data = dsim_allocate( alloc->base_alloc, alloc->capacity );
-}
-
 static void *stack_allocate( struct dsim_allocator *self, size_t size )
 {
     struct dsim_stack_allocator *alloc = container_of(self, struct dsim_stack_allocator, alloc);
-
-    if( alloc->data == 0 )
-        stack_initialize( alloc );
 
     // LCOV_EXCL_START
     if( alloc->allocated + size > alloc->capacity )
@@ -67,23 +58,19 @@ static void stack_deallocate( struct dsim_allocator *self, void *data )
     }
 }
 
-void dsim_stack_allocator_init( struct dsim_stack_allocator *a, struct dsim_allocator *base )
+void dsim_stack_allocator_init( struct dsim_stack_allocator *a, void *data, size_t size )
 {
     a->alloc._ops = &stack_allocator_ops;
-    a->base_alloc = base;
-    a->data = 0;
+    a->data = data;
+    a->capacity = size;
     a->allocated = 0;
-    a->capacity = 0;
     a->last_data = 0;
     a->last_size = 0;
 }
 
 void dsim_stack_allocator_reset( struct dsim_stack_allocator *a )
 {
-    if( a->data )
-        dsim_deallocate( a->base_alloc, a->data );
-    a->data = 0;
-    a->capacity = 0;
+    a->allocated = 0;
     a->last_data = 0;
     a->last_size = 0;
 }

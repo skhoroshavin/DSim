@@ -25,6 +25,7 @@ struct dsim_test_context
 {
     size_t (*gen_data)( struct dsim_test_context *self, void *data, size_t size );
 
+    char buffer[4096];
     struct dsim_stack_allocator alloc;
     dsim_array(struct dsim_test_object) objects;
 

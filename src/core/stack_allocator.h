@@ -7,27 +7,25 @@ struct dsim_stack_allocator
 {
     struct dsim_allocator alloc;
 
-    struct dsim_allocator *base_alloc;
     void *data;
-    size_t allocated;
     size_t capacity;
+    size_t allocated;
 
     void *last_data;
     size_t last_size;
 };
 
-#define dsim_stack_allocator_static_init(_alloc) { \
+#define dsim_stack_allocator_static_init(_data,_size) { \
     /* .alloc = */ { ._ops = &stack_allocator_ops }, \
     \
-    /* .base_alloc = */ _alloc, \
-    /* .data = */ 0, \
+    /* .data = */ _data, \
+    /* .capacity = */ _size, \
     /* .allocated = */ 0, \
-    /* .capacity = */ 0, \
     \
     /* .last_data = */ 0, \
     /* .last_size = */ 0 }
 
-void dsim_stack_allocator_init( struct dsim_stack_allocator *a, struct dsim_allocator *base );
+void dsim_stack_allocator_init( struct dsim_stack_allocator *a, void *data, size_t size );
 void dsim_stack_allocator_reset( struct dsim_stack_allocator *a );
 
 extern struct dsim_allocator_operations stack_allocator_ops;
